@@ -1,12 +1,12 @@
 import { Route, Routes } from "react-router";
 import { CatchAllNavigate, NavigateToResource } from "@refinedev/react-router";
 import { Authenticated, ErrorComponent } from "@refinedev/core";
-import { Login } from "../pages/login";
-import { Register } from "../pages/register";
 import { ForgotPassword } from "../pages/forgotPassword";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicLayout from "./PublicLayout";
 import { Dashboard } from "../pages/dashboard";
+import { LoginPage } from "../pages/login";
+import { RegisterPage } from "../pages/register";
 
 export default function AppRouter() {
   return (
@@ -38,8 +38,8 @@ export default function AppRouter() {
           </Authenticated>
         }
       >
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />
       </Route>
     </Routes>
