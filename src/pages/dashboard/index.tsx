@@ -1,7 +1,7 @@
-export const Dashboard = () => {
-  return (
-    <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">Dashboard</h2>    
-    </div>
-  )
-}
+export { DashboardPage } from "./pages/DashboardPage";
+export { StatsCard } from "./components/StatsCard";
+export { LatestTasks } from "./components/LatestTasks";
+export { UpcomingEvents } from "./components/UpcomingEvents";
+export { IncomingMessages } from "./components/IncomingMessages";
+export { LeadsPerformanceChart } from "./components/LeadsPerformanceChart";
+export { DashboardGrid } from "./components/DashboardGrid";
