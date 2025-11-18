@@ -8,11 +8,15 @@ export const DashboardFilters = () => {
     const [dateMode, setDateMode] = useState<string>("hoy");
 
     return (
-        <Row justify="space-between" align="middle" style={{ marginBottom: 32 }}>
-            
+        <Row
+            gutter={[16, 16]}
+            justify="space-between"
+            align="middle"
+            style={{ marginBottom: 32 }}
+        >
             {/* Filtros de tiempo */}
-            <Col>
-                <Space size="middle">
+            <Col  lg="auto">
+                <Space size="middle" wrap>
                     <Segmented
                         size="large"
                         value={dateMode}
@@ -35,9 +39,8 @@ export const DashboardFilters = () => {
             </Col>
 
             {/* Filtros de Usuario */}
-            <Col>
-                <Space size="middle">
-
+            <Col lg="auto" >
+                <Space size="middle" wrap>
                     <Segmented
                         size="large"
                         options={[
