@@ -2,11 +2,9 @@ import type { RefineThemedLayoutHeaderProps } from "@refinedev/antd";
 import {
   Layout as AntdLayout, 
   Space,
-  Switch,
   theme,
 } from "antd";
-import React, { useContext } from "react";
-import { ColorModeContext } from "../../contexts/color-mode";
+import React from "react";
 import { Notifications } from "../layout/notifications/Notifications";
 import { CurrentUser } from './CurrentUser';
 import { ToggleTheme } from "./ToggleTheme";

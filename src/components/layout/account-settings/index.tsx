@@ -12,7 +12,7 @@ import {
 
 import styles from "./index.module.css";
 import { Text } from "../../base/text";
-import { CustomAvatar } from "../../header/Custom-avatar";
+import { CustomAvatar } from "../../header/CustomAvatar";
 import { User } from "../../../interfaces";
 
 

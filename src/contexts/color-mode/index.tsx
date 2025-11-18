@@ -53,9 +53,10 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
       <ConfigProvider
         // you can change the theme colors here. example: ...RefineThemes.Magenta,
         theme={{
-          ...RefineThemes.Blue,
+          ...RefineThemes.Magenta,
           algorithm: mode === "light" ? defaultAlgorithm : darkAlgorithm,
           token: {        
+              colorPrimary:  "rgba(146, 84, 201, 1)",
               fontFamily:  "-apple-system, Inter,  Montserrat, Roboto,  BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
           },
         }}
