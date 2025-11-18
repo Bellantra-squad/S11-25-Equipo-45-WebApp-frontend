@@ -6,7 +6,7 @@ const { Title } = Typography;
 export const StatsCard: React.FC<StatsCardProps> = ({ title, value = "—" }) => {
     return (
         <Card
-            bordered
+            variant="borderless"
             style={{
                 height: "100%",
                 display: "flex",

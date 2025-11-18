@@ -8,6 +8,7 @@ import { LoginPage } from "../pages/login";
 import { RegisterPage } from "../pages/register";
 import { DashboardPage } from "../pages/dashboard";
 
+
 export default function AppRouter() {
   return (
     <Routes>

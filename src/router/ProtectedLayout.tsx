@@ -1,7 +1,8 @@
 import { Outlet } from "react-router";
 import { ThemedLayout, ThemedSider } from "@refinedev/antd";
-import { Header } from "../components/header";
+
 import { AppTitle } from "../components/layout/Title";
+import { Header } from "../components";
 
 export default function ProtectedLayout() {
   return (
@@ -10,9 +11,7 @@ export default function ProtectedLayout() {
             {...props}
             render={({ items }) => items} 
             Title={({ collapsed }) => <AppTitle collapsed={collapsed} />}
-            fixed
-            
-
+            fixed 
         />
     }>
       <Outlet />

@@ -55,6 +55,9 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
         theme={{
           ...RefineThemes.Blue,
           algorithm: mode === "light" ? defaultAlgorithm : darkAlgorithm,
+          token: {        
+              fontFamily:  "-apple-system, Inter,  Montserrat, Roboto,  BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
+          },
         }}
       >
         {children}

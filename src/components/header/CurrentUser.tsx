@@ -67,13 +67,15 @@ export const CurrentUser: React.FC = () => {
         placement="bottomRight"
         content={content}
         trigger="click"
-        overlayInnerStyle={{ padding: 0 }}
-        overlayStyle={{ zIndex: 999 }}
+        styles={{ 
+          body: { padding: 0 }, 
+          root: { zIndex: 999 }
+         }}       
       >
         <CustomAvatar
           name={user?.name}
           src= {user?.avatar}
-          size="default"
+          size="large"
           style={{ cursor: "pointer" }}
         />
       </Popover>

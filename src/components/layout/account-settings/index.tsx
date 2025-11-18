@@ -13,8 +13,8 @@ import {
 import styles from "./index.module.css";
 import { Text } from "../../base/text";
 import { CustomAvatar } from "../../header/Custom-avatar";
+import { User } from "../../../interfaces";
 
-import { User } from "../../../interfaces/models/user.interface";
 
 type Props = {
   opened: boolean;
@@ -66,8 +66,10 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
               <Text size="sm">User profile</Text>
             </Space>
           }
-          headStyle={{ padding: "0 12px" }}
-          bodyStyle={{ padding: "0" }}
+          styles={{
+            header: { padding: "0 12px" }, 
+            body: { padding: "0" },
+          }}
         >          
         </Card>
         <Card
@@ -77,8 +79,10 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
               <Text size="sm">Security</Text>
             </Space>
           }
-          headStyle={{ padding: "0 12px" }}
-          bodyStyle={{ padding: "0" }}
+          styles={{
+            header: { padding: "0 12px" }, 
+            body: { padding: "0" },
+          }}
         >          
         </Card>
       </div>
