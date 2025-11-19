@@ -8,18 +8,16 @@ import {
 import routerProvider from "@refinedev/react-router";
 import "@refinedev/antd/dist/reset.css";
 import "antd/dist/reset.css";
-import { App as AntdApp, ConfigProvider } from "antd";
+import { App as AntdApp } from "antd";
 import AppRouter from "./router/AppRouter";
 import { ColorModeContextProvider } from "./contexts/color-mode";
 import { refineOptions } from "./refine/options";
 import { resources } from "./refine/resources";
 import { authProvider, dataProvider } from "./refine/providers";
-import { appTheme } from "./refine/config/theme";
 
 function App() {
   return (
-    <BrowserRouter>
-     <ConfigProvider theme={appTheme}>
+    <BrowserRouter>     
         <RefineKbarProvider>
           <ColorModeContextProvider>
             <AntdApp>
@@ -38,8 +36,7 @@ function App() {
               </DevtoolsProvider>
             </AntdApp>
           </ColorModeContextProvider>
-        </RefineKbarProvider>
-      </ConfigProvider>
+        </RefineKbarProvider>     
     </BrowserRouter>
   );
 }

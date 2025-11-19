@@ -9,7 +9,7 @@ export const Notifications: React.FC = () => {
       trigger="click"
     >
       <Badge dot>
-        <Button shape="circle" icon={<BellOutlined />} style={{ border: 0 }} />
+        <Button shape="circle" size="large" icon={<BellOutlined />} />
       </Badge>
     </Popover>
   );

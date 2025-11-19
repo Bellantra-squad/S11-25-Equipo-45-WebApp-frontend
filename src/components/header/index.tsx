@@ -1,14 +1,13 @@
 import type { RefineThemedLayoutHeaderProps } from "@refinedev/antd";
 import {
-  Layout as AntdLayout,  
+  Layout as AntdLayout, 
   Space,
-  Switch,
   theme,
 } from "antd";
-import React, { useContext } from "react";
-import { ColorModeContext } from "../../contexts/color-mode";
-import { Notifications } from "../layout/Notifications";
+import React from "react";
+import { Notifications } from "../layout/notifications/Notifications";
 import { CurrentUser } from './CurrentUser';
+import { ToggleTheme } from "./ToggleTheme";
 
 const { useToken } = theme;
 
@@ -16,7 +15,6 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = ({
   sticky = true,
 }) => {
   const { token } = useToken();
-  const { mode, setMode } = useContext(ColorModeContext);
 
   const headerStyles: React.CSSProperties = {
     backgroundColor: token.colorBgElevated,
@@ -35,14 +33,9 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = ({
 
   return (
     <AntdLayout.Header style={headerStyles}>
-      <Space style={{ columnGap:"30px" }}>
-        <Switch
-          checkedChildren="🌛"
-          unCheckedChildren="🔆"
-          onChange={() => setMode(mode === "light" ? "dark" : "light")}
-          defaultChecked={mode === "dark"}
-        />
-        <Space  style={{ columnGap:"25px" }} size="middle">
+      <Space style={{ columnGap:"20px" }}>
+        <ToggleTheme />
+        <Space  style={{ columnGap:"20px" }} size="middle">
          <Notifications />    
          <CurrentUser />        
         </Space>

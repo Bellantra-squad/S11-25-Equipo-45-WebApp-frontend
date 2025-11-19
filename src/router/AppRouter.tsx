@@ -4,9 +4,10 @@ import { Authenticated, ErrorComponent } from "@refinedev/core";
 import { ForgotPassword } from "../pages/forgotPassword";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicLayout from "./PublicLayout";
-import { Dashboard } from "../pages/dashboard";
 import { LoginPage } from "../pages/login";
 import { RegisterPage } from "../pages/register";
+import { DashboardPage } from "../pages/dashboard";
+
 
 export default function AppRouter() {
   return (
@@ -25,7 +26,7 @@ export default function AppRouter() {
             </Authenticated>
         }
         >
-        <Route index element={<Dashboard />} />      
+        <Route index element={<DashboardPage />} />      
 
         <Route path="*" element={<ErrorComponent />} />
       </Route>

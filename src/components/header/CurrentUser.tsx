@@ -1,10 +1,8 @@
-// import { useState } from "react";
-
 import { useGetIdentity, useLogout } from "@refinedev/core";
 import { LogoutOutlined, SettingOutlined } from "@ant-design/icons";
 import { Button, Popover } from "antd";
 import { Text } from "../base/text";
-import { CustomAvatar } from "./Custom-avatar";
+import { CustomAvatar } from "./CustomAvatar";
 import { User } from "../../interfaces/models/user.interface";
 import { useState } from "react";
 import { AccountSettings } from "../layout/account-settings";
@@ -50,8 +48,8 @@ export const CurrentUser: React.FC = () => {
         <Button
           style={{ textAlign: "left" }}
           icon={<LogoutOutlined />}
-          type="text"
-          danger
+          type="primary"
+          variant="text"     
           block
           onClick={() => logout()}
         >
@@ -67,13 +65,15 @@ export const CurrentUser: React.FC = () => {
         placement="bottomRight"
         content={content}
         trigger="click"
-        overlayInnerStyle={{ padding: 0 }}
-        overlayStyle={{ zIndex: 999 }}
+        styles={{ 
+          body: { padding: 0 }, 
+          root: { zIndex: 999 }
+         }}       
       >
         <CustomAvatar
           name={user?.name}
           src= {user?.avatar}
-          size="default"
+          size="large"
           style={{ cursor: "pointer" }}
         />
       </Popover>

@@ -8,7 +8,7 @@ import { Logo } from "../base/logo";
 
 const { useToken } = theme;
 
-const name = "DashCSM";
+const name = "CRMStartup";
 
 export const AppTitle: React.FC<RefineLayoutThemedTitleProps> = ({
   collapsed,
