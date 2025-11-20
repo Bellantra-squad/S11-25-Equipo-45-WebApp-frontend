@@ -2,7 +2,7 @@ import { AuthPage } from "@refinedev/antd";
 import { AppTitle } from "../../components/layout/Title";
 import { GoogleOutlined } from "@ant-design/icons";
 
-export const LoginPage = () => {
+const LoginPage = () => {
   return (
     <AuthPage
       type="login"
@@ -27,3 +27,6 @@ export const LoginPage = () => {
     />
   );
 };
+
+
+export default LoginPage;
