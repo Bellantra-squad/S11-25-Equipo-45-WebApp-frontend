@@ -6,6 +6,7 @@ import { Authenticated, ErrorComponent } from "@refinedev/core";
 import ProtectedLayout  from "./ProtectedLayout";
 import PublicLayout  from "./PublicLayout";
 
+
 //lazy loading
 const LoginPage = lazy(() => import('../pages/login'));
 const ForgotPassword = lazy(() => import("../pages/forgotPassword"));
@@ -15,6 +16,12 @@ const ContactList = lazy(()=> import( "../pages/contacts/pages/list"));
 const ContactsCreate = lazy(()=> import( "../pages/contacts/pages/create"));
 const ContactEdit = lazy(()=> import( "../pages/contacts/pages/edit"));
 const ContactsShow = lazy(()=> import( "../pages/contacts/pages/show"));
+const CategoryListPage = lazy(()=> import( "../pages/categories/pages/list"));
+const CategoryCreatePage= lazy(()=> import( "../pages/categories/pages/create"));
+const CategoryEdit = lazy(()=> import( "../pages/categories/pages/edit"));
+const LeadListPage = lazy(()=> import( "../pages/leads/pages/list"));
+const CategoryShow = lazy(()=> import("../pages/categories/pages/show"));
+
 
 export default function AppRouter() {
   return (
@@ -38,6 +45,20 @@ export default function AppRouter() {
             <Route path="create" element={<ContactsCreate />} />
             <Route path="edit/:id" element={<ContactEdit/>} />
             <Route path="show/:id" element={<ContactsShow />} /> 
+          </Route>
+
+          <Route path="categories">
+            <Route index element={<CategoryListPage />} />
+            <Route path="create" element={<CategoryCreatePage />} />
+           <Route path="edit/:id" element={<CategoryEdit/>} />
+            <Route path="show/:id" element={<CategoryShow />} /> 
+          </Route>
+
+           <Route path="leads">
+            <Route index element={<LeadListPage />} />
+            <Route path="create" element={<CategoryCreatePage />} />
+           {/* <Route path="edit/:id" element={<ContactEdit/>} />
+            <Route path="show/:id" element={<ContactsShow />} />  */}
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />

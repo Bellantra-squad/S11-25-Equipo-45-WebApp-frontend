@@ -29,13 +29,25 @@ export const TableView: React.FC<Props> = ({ tableProps, filters, sorters }) => 
       rowKey="id"
     >
       <Table.Column<Contact>
-        dataIndex="name"
-        title="Name"
-        defaultFilteredValue={getDefaultFilter("name", filters)}
-        defaultSortOrder={getDefaultSortOrder("name", sorters)}
+        dataIndex="first_name"
+        title="Nombre"
+        defaultFilteredValue={getDefaultFilter("first_name", filters)}
+        defaultSortOrder={getDefaultSortOrder("first_name", sorters)}
         filterDropdown={(props) => (
           <FilterDropdown {...props}>
-            <Input placeholder="Search Name" />
+            <Input placeholder="Search Nombre" />
+          </FilterDropdown>
+        )}
+        render={(value: string) => <span>{value}</span>}
+      />
+      <Table.Column<Contact>
+        dataIndex="last_name"
+        title="Apellido"
+        defaultFilteredValue={getDefaultFilter("last_name", filters)}
+        defaultSortOrder={getDefaultSortOrder("last_name", sorters)}
+        filterDropdown={(props) => (
+          <FilterDropdown {...props}>
+            <Input placeholder="Search Apellido" />
           </FilterDropdown>
         )}
         render={(value: string) => <span>{value}</span>}

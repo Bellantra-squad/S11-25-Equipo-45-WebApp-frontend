@@ -1,10 +1,10 @@
 import { Edit, useForm } from "@refinedev/antd";
 import { Form } from "antd";
-import { ContactRequest } from "../../../interfaces/models/contact.interface";
+import { Contact } from "../../../interfaces/models/contact.interface";
 import { ContactFormFields } from "../components/contact-form-fields";
 
 export default function ContactEdit() {
-  const { formProps, saveButtonProps, query } = useForm<ContactRequest>();    
+  const { formProps, saveButtonProps, query } = useForm<Contact>();    
 
   return (
    <Edit saveButtonProps={saveButtonProps} isLoading={query?.isLoading}>

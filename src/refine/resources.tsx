@@ -111,6 +111,9 @@ export const resources = [
     {
         name: "categories",
         list: "/categories",
+        create: "/categories/create",
+        edit: "/categories/edit/:id",
+        show: "/categories/show/:id",
         meta: {
             label: "Categorías",
             icon: <TagOutlined />,

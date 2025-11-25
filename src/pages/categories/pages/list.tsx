@@ -1,28 +1,28 @@
 import { useTable, List } from "@refinedev/antd";
 import type { HttpError, LogicalFilter } from "@refinedev/core";
 import { Button, Form, Input, Select, Space } from "antd";
-import { TableView } from "../components/table-view";
-import { Contact } from "../../../interfaces/models/contact.interface";
+
+import { Category } from "../../../interfaces/models/category.interface";
+import { TableViewCategories } from "../components/table-view";
 
 interface ISearch {
-  first_name?: string;
-  last_name?: string;
-  lead?: number;
+  name?: string;
+  color?: string;
 }
 
-export default function ContactsListPage() {
+export default function CategoryListPage() {
     const {
         tableProps,
         searchFormProps,
         filters,
         sorters,
         setFilters,
-    } = useTable<Contact, HttpError, ISearch>({
+    } = useTable<Category, HttpError, ISearch>({
         pagination: { pageSize: 10 },
         sorters: {
             initial: [
                 {
-                    field: "first_name",
+                    field: "name",
                     order: "asc",
                 },
             ],
@@ -30,17 +30,17 @@ export default function ContactsListPage() {
         filters: {
             initial: [
                 {
-                    field: "first_name",
+                    field: "name",
                     operator: "contains",
                     value: undefined,
                 },
                 {
-                  field: "email",
+                  field: "description",
                   value: undefined,
                   operator: "contains",
                 },
                 {
-                  field: "lead",
+                  field: "color",
                   value: undefined,
                   operator: "eq",
                 },
@@ -48,14 +48,11 @@ export default function ContactsListPage() {
         },
         onSearch: (values) => {
             const f: LogicalFilter[] = [];
-                if (values.first_name) {
-                    f.push({ field: "first_name", operator: "contains", value: values.first_name });
+                if (values.name) {
+                    f.push({ field: "name", operator: "contains", value: values.name });
                 }
-                 if (values.last_name) {
-                    f.push({ field: "last_name", operator: "contains", value: values.last_name });
-                }
-                if (values.lead) {
-                    f.push({ field: "lead", operator: "eq", value: values.lead });
+                if (values.color) {
+                    f.push({ field: "color", operator: "eq", value: values.color });
                 }
             return f;
         },
@@ -72,24 +69,23 @@ export default function ContactsListPage() {
 
  <Form {...searchFormProps} style={{ marginBottom: 16, justifyContent: "flex-end" }}>
      <Space.Compact>
-        <Form.Item name="first_name">
+        <Form.Item name="name">
           <Input.Search
             placeholder="Buscar por nombre"
             allowClear
             onSearch={() => searchFormProps.form?.submit()}
           />
         </Form.Item>
-        <Form.Item name="lead">
-          <Select
-            placeholder="Filtrar por Lead"
-            allowClear
-            style={{ width: 160 }}
-            options={[
-              { value: 1, label: "Lead 1" },
-              { value: 2, label: "Lead 2" },
-            ]}
-             onChange={() => searchFormProps.form?.submit()} 
-          />
+        <Form.Item name="color">
+            <Select
+                placeholder="Filtrar por color"
+                style={{ width: 160 }}
+                options={[
+                { value: "#1677ff", label: "Azul" },
+                { value: "#ff0000", label: "Rojo" },
+                ]}
+                onChange={() => searchFormProps.form?.submit()} 
+            />
         </Form.Item>
          <Button onClick={handleResetFilters} type="default">
             Limpiar filtros
@@ -97,7 +93,7 @@ export default function ContactsListPage() {
         </Space.Compact>
         
       </Form>
-        <TableView tableProps={tableProps} filters={filters} sorters={sorters} />
+        <TableViewCategories tableProps={tableProps} filters={filters} sorters={sorters} />
       </List>
     </div>
   );

@@ -9,11 +9,16 @@ export default function ContactsShow() {
     
   const { isLoading } = query;
   return (
-    <Show isLoading={isLoading} title={record?.name}>
-        <Descriptions column={1} bordered>
-            <Descriptions.Item label="Name">{record?.name}</Descriptions.Item>
+    <Show isLoading={isLoading}  title={record?.first_name +" " + record?.last_name} >
+        <Descriptions column={2} bordered>
+            <Descriptions.Item label="Name">{record?.first_name}</Descriptions.Item>
+            <Descriptions.Item label="Apellido">{record?.last_name}</Descriptions.Item>
             <Descriptions.Item label="Email">{record?.email}</Descriptions.Item>
-            <Descriptions.Item label="Phone">{record?.phone}</Descriptions.Item>
+            <Descriptions.Item label="Phone">{record?.phone}</Descriptions.Item>            
+            <Descriptions.Item label="Whatsapp">{record?.whatsapp_number}</Descriptions.Item>
+             <Descriptions.Item label="Lead">{record?.lead}</Descriptions.Item>
+            <Descriptions.Item label="Departamento">{record?.department}</Descriptions.Item>
+            <Descriptions.Item label="Ocupación">{record?.position}</Descriptions.Item>                          
             <Descriptions.Item label="Primary">{record?.is_primary ? "Yes" : "No"}</Descriptions.Item>
             <Descriptions.Item label="Decision Maker">{record?.is_decision_maker ? "Yes" : "No"}</Descriptions.Item>
         </Descriptions>

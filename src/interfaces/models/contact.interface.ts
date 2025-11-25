@@ -1,20 +1,38 @@
-export interface Contact {
-  id: number; 
-  name: string; 
-  email: string; 
-  phone?: string;
-  lead?: number;
-  is_primary: boolean;
-  is_decision_maker: boolean;
-  created_at?: string;
-  updated_at?: string;
+import { Tag } from "./tag.interface";
+
+
+export interface PaginationContact {
+  count:    number;
+  next:     string;
+  previous: null;
+  results:  Contact[];
 }
 
-export interface ContactRequest {
-  name: string;
-  email: string;
-  phone?: string;
-  lead?: number;
-  is_primary?: boolean;
-  is_decision_maker?: boolean;
+export interface Contact {
+  id:                number;
+  lead:              number;
+  first_name:        string;
+  last_name:         string;
+  email:             string;
+  phone:             string;
+  whatsapp_number:   string;
+  position:          string;
+  department:        string;
+  is_primary:        boolean;
+  is_decision_maker: boolean;
+  notes:             string;
+  tags:              Tag[];
+  created_at:        Date;
+  updated_at:        Date;
 }
+
+export interface ContactRequest {   
+  first_name:        string;
+  last_name:         string;
+  email:             string;
+  phone:             string;
+  whatsapp_number:   string;
+  position:          string;
+  department:        string; 
+}
+
