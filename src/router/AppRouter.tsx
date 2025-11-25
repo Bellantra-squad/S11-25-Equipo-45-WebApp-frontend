@@ -7,6 +7,7 @@ import ProtectedLayout  from "./ProtectedLayout";
 import PublicLayout  from "./PublicLayout";
 
 
+
 //lazy loading
 const LoginPage = lazy(() => import('../pages/login'));
 const ForgotPassword = lazy(() => import("../pages/forgotPassword"));
@@ -19,7 +20,7 @@ const ContactsShow = lazy(()=> import( "../pages/contacts/pages/show"));
 const CategoryListPage = lazy(()=> import( "../pages/categories/pages/list"));
 const CategoryCreatePage= lazy(()=> import( "../pages/categories/pages/create"));
 const CategoryEdit = lazy(()=> import( "../pages/categories/pages/edit"));
-const LeadListPage = lazy(()=> import( "../pages/leads/pages/list"));
+const LeadListPage = lazy(()=> import("../pages/leads/pages/list"));
 const CategoryShow = lazy(()=> import("../pages/categories/pages/show"));
 
 

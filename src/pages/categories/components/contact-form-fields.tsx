@@ -12,10 +12,8 @@ export function CategoriesForm() {
       <Form.Item
         label="Color"
         name="color"
-        rules={[{ required: true }]}
-        // 🔥 convierte automáticamente el valor recibido del ColorPicker
-        getValueFromEvent={(color) => color.toHexString()}
-        // 🔥 hace que el Form muestre correctamente el valor HEX
+        rules={[{ required: true }]}        
+        getValueFromEvent={(color) => color.toHexString()}        
         normalize={(value) => value}
       >
         <ColorPicker
