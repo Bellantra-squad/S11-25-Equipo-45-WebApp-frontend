@@ -22,7 +22,7 @@ const LoginPage = () => {
         },        
       ]}
       formProps={{
-        initialValues: { email: "demo@refine.dev", password: "demodemo" },
+        initialValues: { email: "qa@admin.com", password: "2323" },
       }}
     />
   );

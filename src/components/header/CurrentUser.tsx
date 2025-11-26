@@ -25,7 +25,7 @@ export const CurrentUser: React.FC = () => {
           padding: "12px 20px",
         }}
       >
-        {user?.name}
+        {user?.first_name} {user?.last_name}
       </Text>
       <div
         style={{
@@ -71,7 +71,7 @@ export const CurrentUser: React.FC = () => {
          }}       
       >
         <CustomAvatar
-          name={user?.name}
+          name={user?.email}
           src= {user?.avatar}
           size="large"
           style={{ cursor: "pointer" }}

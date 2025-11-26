@@ -1,28 +1,10 @@
 import type { AuthProvider } from "@refinedev/core";
 import { httpApi } from "../api/httpApi";
 
+
 export const TOKEN_KEY = "refine-auth";
 
 export const authProvider: AuthProvider = {
-  // login: async ({ username, email, password }) => {
-  //    if ((username || email) && password) {
-
-  //       localStorage.setItem(TOKEN_KEY, username); 
-
-  //       return {
-  //        success: true,
-  //         redirectTo: "/", 
-  //       }; 
-  //   } 
-  //     return { 
-  //       success: false,
-  //        error: { 
-  //         name: "LoginError",
-  //          message: "Invalid username or password",
-  //          }, 
-  //       }; 
-  //   },
-  
   login: async ({ email, password }) => {
     try {
       const response = await httpApi.post(
@@ -56,7 +38,7 @@ export const authProvider: AuthProvider = {
         success: true,
         redirectTo: "/",
       };
-    } catch (error: any) {
+    } catch (error : any) {
       return {
         success: false,
         error: {
@@ -91,17 +73,34 @@ export const authProvider: AuthProvider = {
   getPermissions: async () => null,
   getIdentity: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
-    if (token) {
+
+    if (!token) return null;
+
+    try {
+   
+      const res = await httpApi.get("/users/me/");
+
       return {
-        id: 1,
-        name: "John Doe",
+        id: res.data.id,
+        email: res.data.email,
+        first_name: res.data.first_name,
+        last_name: res.data.last_name,
+        role: res.data.role,       
         avatar: "https://i.pravatar.cc/300",
       };
+    } catch {
+      return null;
     }
-    return null;
   },
   onError: async (error) => {
-    console.error(error);
-    return { error };
+    if (error.status === 401 || error.status === 403) {
+      return {
+        logout: true,
+        redirectTo: "/login",
+        error,
+      };
+    }
+
+    return {};
   },
 };

@@ -1,307 +1,16 @@
-// import { memo, useMemo } from "react";
-
-// import { useDelete, useNavigation } from "@refinedev/core";
-
-// import {
-//   CheckSquareOutlined,
-//   ClockCircleOutlined,
-//   DeleteOutlined,
-//   EyeOutlined,
-//   MessageOutlined,
-//   MoreOutlined,
-// } from "@ant-design/icons";
-// import type { MenuProps } from "antd";
-// import {
-//   Button,
-//   Card,
-//   ConfigProvider,
-//   Dropdown,
-//   Skeleton,
-//   Space,
-//   Tag,
-//   theme,
-//   Tooltip,
-// } from "antd";
-// import dayjs from "dayjs";
-
-
-
-
-// import { Text } from "../../../../components/base/text";
-// import { CustomAvatar } from "../../../../components/header/CustomAvatar";
-// import { User } from "../../../../interfaces";
-// import { getDateColor } from "../../../../utils/date";
-// import { TextIcon } from "../../../../components/base/TextIcon";
-
-// type ProjectCardProps = {
-//   id: string;
-//   title: string;
-//   comments: {
-//     totalCount: number;
-//   };
-//   dueDate?: string;
-//   users?: {
-//     id: string;
-//     name: string;
-//     avatarUrl?: User["avatar"];
-//   }[];
-//   checkList?: {
-//     title: string;
-//     checked: boolean;
-//   }[];
-// };
-
-// export const ProjectCard = ({
-//   id,
-//   title,
-//   checkList,
-//   comments,
-//   dueDate,
-//   users,
-// }: ProjectCardProps) => {
-//   const { token } = theme.useToken();
-//   const { edit } = useNavigation();
-//   const { mutate } = useDelete();
-
-//   const dropdownItems = useMemo(() => {
-//     const dropdownItems: MenuProps["items"] = [
-//       {
-//         label: "View card",
-//         key: "1",
-//         icon: <EyeOutlined />,
-//         onClick: () => {
-//           edit("tasks", id, "replace");
-//         },
-//       },
-//       {
-//         danger: true,
-//         label: "Delete card",
-//         key: "2",
-//         icon: <DeleteOutlined />,
-//         onClick: () => {
-//           mutate({
-//             resource: "tasks",
-//             id,
-//             meta: {
-//               operation: "task",
-//             },
-//           });
-//         },
-//       },
-//     ];
-
-//     return dropdownItems;
-//   }, []);
-
-//   const dueDateOptions = useMemo(() => {
-//     if (!dueDate) return null;
-
-//     const date = dayjs(dueDate);
-
-//     return {
-//       color: getDateColor({ date: dueDate }) as string,
-//       text: date.format("MMM D"),
-//     };
-//   }, [dueDate]);
-
-//   const checkListCompletionCountOptions = useMemo(() => {
-//     const hasCheckList = checkList && checkList.length > 0;
-//     if (!hasCheckList) {
-//       return null;
-//     }
-
-//     const total = checkList.length;
-//     const checked = checkList?.filter((item) => item.checked).length;
-
-//     const defaulOptions = {
-//       color: "default",
-//       text: `${checked}/${total}`,
-//       allCompleted: false,
-//     };
-
-//     if (checked === total) {
-//       defaulOptions.color = "success";
-//       defaulOptions.allCompleted = true;
-//       return defaulOptions;
-//     }
-
-//     return defaulOptions;
-//   }, [checkList]);
-
-//   return (
-//     <ConfigProvider
-//       theme={{
-//         components: {
-//           Tag: {
-//             colorText: token.colorTextSecondary,
-//           },
-//           Card: {
-//             headerBg: "transparent",
-//           },
-//         },
-//       }}
-//     >
-//       <Card
-//         size="small"
-//         title={<Text ellipsis={{ tooltip: title }}>{title}</Text>}
-//         onClick={() => {
-//           edit("tasks", id, "replace");
-//         }}
-//         extra={
-//           <Dropdown
-//             trigger={["click"]}
-//             menu={{
-//               items: dropdownItems,
-//               onPointerDown: (e) => {
-//                 e.stopPropagation();
-//               },
-//               onClick: (e) => {
-//                 e.domEvent.stopPropagation();
-//               },
-//             }}
-//             placement="bottom"
-//             arrow={{ pointAtCenter: true }}
-//           >
-//             <Button
-//               type="text"
-//               shape="circle"
-//               icon={
-//                 <MoreOutlined
-//                   style={{
-//                     transform: "rotate(90deg)",
-//                   }}
-//                 />
-//               }
-//               onPointerDown={(e) => {
-//                 e.stopPropagation();
-//               }}
-//               onClick={(e) => {
-//                 e.stopPropagation();
-//               }}
-//             />
-//           </Dropdown>
-//         }
-//       >
-//         <div
-//           style={{
-//             display: "flex",
-//             flexWrap: "wrap",
-//             alignItems: "center",
-//             gap: "8px",
-//           }}
-//         >
-//           <TextIcon
-//             style={{
-//               marginRight: "4px",
-//             }}
-//           />
-//           {!!comments?.totalCount && (
-//             <div
-//               style={{
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "center",
-//                 gap: "4px",
-//               }}
-//             >
-//               <MessageOutlined
-//                 style={{
-//                   color: token.colorTextSecondary,
-//                   fontSize: "12px",
-//                 }}
-//               />
-//               <Text size="xs" type="secondary">
-//                 {comments.totalCount}
-//               </Text>
-//             </div>
-//           )}
-//           {dueDateOptions && (
-//             <Tag
-//               icon={
-//                 <ClockCircleOutlined
-//                   style={{
-//                     fontSize: "12px",
-//                   }}
-//                 />
-//               }
-//               style={{
-//                 padding: "0 4px",
-//                 marginInlineEnd: "0",
-//                 backgroundColor:
-//                   dueDateOptions.color === "default" ? "transparent" : "unset",
-//               }}
-//               color={dueDateOptions.color}
-//               bordered={dueDateOptions.color !== "default"}
-//             >
-//               {dueDateOptions.text}
-//             </Tag>
-//           )}
-//           {checkListCompletionCountOptions && (
-//             <Tag
-//               icon={
-//                 <CheckSquareOutlined
-//                   style={{
-//                     fontSize: "12px",
-//                   }}
-//                 />
-//               }
-//               style={{
-//                 padding: "0 4px",
-//                 marginInlineEnd: "0",
-//                 backgroundColor:
-//                   checkListCompletionCountOptions.color === "default"
-//                     ? "transparent"
-//                     : "unset",
-//               }}
-//               color={checkListCompletionCountOptions.color}
-//               bordered={checkListCompletionCountOptions.color !== "default"}
-//             >
-//               {checkListCompletionCountOptions.text}
-//             </Tag>
-//           )}
-//           {!!users?.length && (
-//             <Space
-//               size={4}
-//               wrap
-//               direction="horizontal"
-//               align="center"
-//               style={{
-//                 display: "flex",
-//                 justifyContent: "flex-end",
-//                 marginLeft: "auto",
-//                 marginRight: "0",
-//               }}
-//             >
-//               {users.map((user) => {
-//                 return (
-//                   <Tooltip key={user.id} title={user.name}>
-//                     <CustomAvatar name={user.name} src={user.avatarUrl} />
-//                   </Tooltip>
-//                 );
-//               })}
-//             </Space>
-//           )}
-//         </div>
-//       </Card>
-//     </ConfigProvider>
-//   );
-// };
-
-
 import { memo, useMemo } from "react";
 import { useNavigation, useDelete } from "@refinedev/core";
 import { EyeOutlined, DeleteOutlined, MoreOutlined } from "@ant-design/icons";
 import { Button, Card, Dropdown, Tag, Tooltip, Space, Skeleton } from "antd";
 import type { MenuProps } from "antd";
 import { Text } from "../../../../components/base/text";
+import { Lead } from "../../../../interfaces/models/lead.interface";
 
-// tu interface
 
 export const LeadCard = ({
   id,
   company_name,
   industry,
-  website,
   category,
   status,
   assigned_to,
@@ -333,7 +42,7 @@ export const LeadCard = ({
         onClick: () => mutate({ resource: "leads", id }),
       },
     ],
-    []
+    [edit, id, mutate]
   );
 
   return (
@@ -372,7 +81,7 @@ export const LeadCard = ({
         {/* Lead Source */}
         {lead_source && (
           <Tag color="blue">
-            {lead_source.name}
+            {lead_source}
           </Tag>
         )}
 
@@ -430,7 +139,7 @@ export const LeadCard = ({
   );
 };
 
-export const LeadCardMemo = memo(LeadCard);
+
 
 export const LeadCardSkeleton = () => {
   return (
@@ -467,10 +176,12 @@ export const LeadCardSkeleton = () => {
 // export const LeadCardMemo = memo(LeadCard, (prev, next) => {
 //   return (
 //     prev.id === next.id &&
-//     prev.company_name === next.company_name 
-//     // prev.dueDate === next.dueDate &&
-//     // prev.comments.totalCount === next.comments.totalCount &&
-//     // prev.checkList?.length === next.checkList?.length &&
-//     // prev.users?.length === next.users?.length
+//     prev.company_name === next.company_name &&
+//     prev.created_at === next.created_at &&
+//     prev.contacts_count === next.contacts_count &&
+//     prev.assigned_to === next.assigned_to
 //   );
 // });
+
+
+export const LeadCardMemo = memo(LeadCard);

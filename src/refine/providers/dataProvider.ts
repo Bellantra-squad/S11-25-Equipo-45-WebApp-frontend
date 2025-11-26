@@ -43,7 +43,7 @@ export const dataProvider: DataProvider = {
         return { data: data.data ?? data };
     },
 
-     update: async ({ resource, id, variables }) => {
+    update: async ({ resource, id, variables }) => {
         const { data } = await httpApi.patch(`/${resource}/${id}/`, variables);
         return { data: data.data ?? data };
     },

@@ -160,13 +160,14 @@ import cn from "classnames";
 import styles from "./index.module.css";
 import { Text } from "../../../../components/base/text";
 import { Variant } from "antd/es/config-provider";
+import { Lead } from "../../../../interfaces/models/lead.interface";
 
 type Props = {
   id: string | number;
   title: string;
   description?: ReactNode;
   count: number;
-  data?: any;
+  data?: Lead;
   variant?: "default" | "solid";
   contextMenuItems?: MenuProps["items"];
   onAddClick?: (args: { id: string | number }) => void;
@@ -191,37 +192,42 @@ export const KanbanColumn: FC<PropsWithChildren<Props>> = ({
   return (
     <div ref={setNodeRef} className={cn(styles.container, styles[variant])}>
       <div className={styles.header}>
-        <div className={styles.titleContainer}>
-          <Text strong style={{ textTransform: "uppercase" }}>
+        <div className={styles.title}>
+          <Text size="xs" strong style={{ textTransform: "uppercase" }}>
             {title}
           </Text>
 
-          {!!count && (
-            <div className={styles.count}>
-              <Text size="xs">{count}</Text>
-            </div>
-          )}
+          <div className={styles.titleContainer}>          
 
-          <div className={styles.actionContainer}>
-            {contextMenuItems && (
-              <Dropdown
-                trigger={["click"]}
-                menu={{
-                  items: contextMenuItems,
-                }}
-                placement="bottom"
-              >
-                <Button type="text" shape="circle" icon={<MoreOutlined />} />
-              </Dropdown>
+            {!!count && (
+              <div className={styles.count}>
+                <Text size="xs">{count}</Text>
+              </div>
             )}
 
-            <Button
-              shape="circle"
-              icon={<PlusOutlined />}
-              onClick={() => onAddClick?.({ id })}
-            />
+            <div className={styles.actionContainer}>
+              {contextMenuItems && (
+                <Dropdown
+                  trigger={["click"]}
+                  menu={{
+                    items: contextMenuItems,
+                  }}
+                  placement="bottom"
+                >
+                  <Button type="text" shape="circle" icon={<MoreOutlined />} />
+                </Dropdown>
+              )}
+
+              <Button
+                shape="circle"
+                icon={<PlusOutlined />}
+                onClick={() => onAddClick?.({ id })}
+              />
+            </div>
           </div>
+          
         </div>
+        
 
         {description}
       </div>
