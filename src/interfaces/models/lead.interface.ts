@@ -1,4 +1,6 @@
 import { Category } from "./category.interface";
+import { LeadStatus } from "./lead-status.interfaces";
+import { Tag } from "./tag.interface";
 import { User } from "./user.interface";
 
 export interface paginationLead {
@@ -14,14 +16,14 @@ export interface Lead {
     industry:          string;
     website:           string;
     category:          Category;
-    status:            Category;
+    status:            LeadStatus;
     assigned_to:       User;
     is_client:         boolean;
     lead_source:       LeadSource;
     lead_score:        number;
     estimated_value:   string;
     contacts_count:    number;
-    tags:              Category[];
+    tags:              Tag[];
     last_contact_date: Date;
     next_follow_up:    Date;
     created_at:        Date;

@@ -230,44 +230,72 @@ import { KanbanItem } from "../components/item";// tu tarjeta real
 import { KanbanAddCardButton } from "../components/KanbanAddCardButton";
 import { KanbanAddStageButton } from "../components/KanbanAddStageButton";
 import { LeadCardMemo, LeadCardSkeleton } from "../components/project-kanban-card";
-
+import { Lead } from "../../../interfaces/models/lead.interface";
+import { LeadStatus } from "../../../interfaces/models/lead-status.interfaces";
 
 export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
     const { create, edit } = useNavigation();
 
     // 1️⃣ ESTADOS DE LEADS (columnas del kanban)
-    const { result: statusData } = useList({
+    const { result: statusData } = useList<LeadStatus>({
         resource: "lead-statuses",
         pagination: { mode: "off" },
     });
 
     // 2️⃣ LEADS (tarjetas dentro de columnas)
-    const { result: leadsData } = useList({
+    const { result: leadsData } = useList<Lead>({
         resource: "leads",
         pagination: { mode: "off" },
     });
 
-    const leads = leadsData?.data ?? [];
-    const statuses = statusData?.data ?? [];
+    const leads: Lead[] = useMemo(
+        () => leadsData?.data ?? [],
+        [leadsData?.data]
+    );
 
-    // 3️⃣ AGRUPAR LEADS POR ESTADO
-    const grouped = useMemo(() => {
-        if (!statuses.length)
-            return {
-                unassigned: leads,
-                stages: [],
-            };
+    const statuses: LeadStatus[] = useMemo(
+        () => statusData?.data ?? [],
+        [statusData?.data]
+    );
 
-        const unassigned = leads.filter((l) => !l.status);
+      // 3️⃣ AGRUPAR LEADS POR ESTADO
+    const leadStages = useMemo(() => {
+        if (!statuses || !leads)
+        return {
+            unassignedStage: [],
+            stages: [],
+        };
 
-        const stages = statuses.map((status) => ({
+        const unassignedStage = leads.filter((l) => !l.status);
+
+        const winLead = leads.filter((lead) => lead.status.name === "Ganado (Cliente)");
+
+        const lostLead = leads.filter((lead) => lead.status.name === "Perdido");
+
+        const filteredStages = leads.filter(
+            (lead) =>
+                lead.status.name !== "No asignado" &&
+                lead.status.name !== "Ganado (Cliente)" &&
+                lead.status.name !== "Perdido"
+        );
+
+        const filteredStatus = statuses.filter(
+            (s) =>
+                s.name !== "No asignado" &&
+                s.name !== "Ganado (Cliente)" &&
+                s.name !== "Perdido"
+        );
+
+        const stages = filteredStatus.map((status) => ({
             ...status,
-            leads: leads.filter((l) => l.status?.id === status.id),
+            leads: filteredStages.filter((l) => l.status?.id === status.id),
         }));
 
         return {
-            unassigned,
+            unassignedStage,
+            winLead,
+            lostLead,
             stages,
         };
     }, [leads, statuses]);
@@ -294,6 +322,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
             mutationMode: "pessimistic",
         });
     };
+
 
     // 6️⃣ Add / Edit / Delete columnas
     const handleAddStage = () => create("lead-status");
@@ -335,6 +364,10 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
         ];
     };
 
+    const isLoading = false;
+
+    if (isLoading) return <PageSkeleton />;
+
     return (
         <>
             <KanbanBoard onDragEnd={handleOnDragEnd}>
@@ -342,63 +375,65 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                 <KanbanColumn
                     id="unassigned"
                     title="Sin estado"
-                    count={grouped.unassigned.length}
+                    count={leadStages.unassignedStage.length || 0}
                     onAddClick={() => create("leads")}
                 >
-                    {grouped.unassigned.map((lead) => (
+                    {leadStages.unassignedStage.map((lead) => (
                         <KanbanItem
                             id={lead.id}
                             key={lead.id}
-                            data={{ statusId: null }}
+                            data={{ ... lead, statusId: "unassigned" }}
                         >
                             <LeadCardMemo {...lead} />
                         </KanbanItem>
                     ))}
 
-                    {!grouped.unassigned.length && (
+                    {!leadStages.unassignedStage.length && (
                         <KanbanAddCardButton
                             onClick={() => create("leads")}
-                        />
+                        />                       
                     )}
                 </KanbanColumn>
+                    {leadStages.stages?.map((column) => {
+                    const contextMenuItems = getContextMenuItems(column);
 
-                {/* 9️⃣ Columnas por estado */}
-                {grouped.stages.map((status: any) => (
-                    <KanbanColumn
-                        key={status.id}
-                        id={status.id}
-                        title={status.name}
-                        count={status.leads.length}
-                        contextMenuItems={getContextMenuItems(status)}
-                        onAddClick={() =>
-                            create("leads", {
-                                query: { statusId: status.id },
-                            })
+                    return (
+                        <KanbanColumn
+                        key={column.id}
+                        id={column.id}
+                        title={column.name}
+                        count={column.leads.length}
+                        contextMenuItems={contextMenuItems}
+                         onAddClick={() =>
+                            create("leads")
                         }
-                    >
-                        {status.leads.map((lead: any) => (
-                            <KanbanItem
+                        >
+                        {isLoading && <LeadCardSkeleton />}
+                        {!isLoading &&
+                            column.leads.map((lead) => {
+                            return (
+                                <KanbanItem
                                 key={lead.id}
                                 id={lead.id}
                                 data={{
-                                    statusId: status.id,
+                                    ...lead,
+                                    stageId: column.id,
                                 }}
-                            >
+                                >
                                 <LeadCardMemo {...lead} />
-                            </KanbanItem>
-                        ))}
-
-                        {!status.leads.length && (
+                                </KanbanItem>
+                            );
+                            })}
+                        {!column.leads.length && (
                             <KanbanAddCardButton
-                                onClick={() =>
-                                    create("leads", {
-                                        query: { statusId: status.id },
-                                    })
-                                }
+                            onClick={() =>
+                                    create("leads")
+                            }
                             />
                         )}
-                    </KanbanColumn>
-                ))}
+                        </KanbanColumn>
+                    );
+                    })}
 
                 {/* 10️⃣ Botón agregar columna */}
                 <KanbanAddStageButton onClick={handleAddStage} />
