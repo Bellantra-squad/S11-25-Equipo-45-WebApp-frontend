@@ -6,8 +6,9 @@ import dataProviderSimpleRest from "@refinedev/simple-rest";
 
 import type { LogicalFilter } from "@refinedev/core";
 import { DataProvider } from "@refinedev/core";
-import { API_BASE } from "../config/env";
 import { httpApi } from "../api/httpApi";
+
+const API_BASE = import.meta.env.VITE_API_URL 
 
 const baseProvider = dataProviderSimpleRest(API_BASE, httpApi);
 

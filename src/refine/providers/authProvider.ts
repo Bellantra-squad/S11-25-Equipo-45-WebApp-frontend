@@ -7,18 +7,10 @@ export const TOKEN_KEY = "refine-auth";
 export const authProvider: AuthProvider = {
   login: async ({ email, password }) => {
     try {
-      const response = await httpApi.post(
-        "/auth-token/",
-        new URLSearchParams({
-          username:email,
-          password,
-        }),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        }
-      );
+      const response = await httpApi.post("/auth-token/", {
+        username: email,
+        password,
+      });
 
       const token = response.data?.token;
 
