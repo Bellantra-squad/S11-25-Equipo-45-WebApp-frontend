@@ -1,7 +1,7 @@
 import { DashboardFilters } from "../components/DashboardFilters";
 import { DashboardGrid } from "../components/DashboardGrid";
 
-export const DashboardPage = () => {
+const DashboardPage = () => {
   return (
     <div className="p-6">
       <DashboardFilters />
@@ -9,3 +9,5 @@ export const DashboardPage = () => {
     </div>
   );
 };
+
+export default DashboardPage;

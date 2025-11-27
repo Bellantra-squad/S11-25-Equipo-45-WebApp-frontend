@@ -2,7 +2,7 @@ import { AuthPage } from "@refinedev/antd";
 import { AppTitle } from "../../components/layout/Title";
 import { GoogleOutlined } from "@ant-design/icons";
 
-export const LoginPage = () => {
+const LoginPage = () => {
   return (
     <AuthPage
       type="login"
@@ -22,8 +22,11 @@ export const LoginPage = () => {
         },        
       ]}
       formProps={{
-        initialValues: { email: "demo@refine.dev", password: "demodemo" },
+        initialValues: { email: "qa@admin.com", password: "2323" },
       }}
     />
   );
 };
+
+
+export default LoginPage;
