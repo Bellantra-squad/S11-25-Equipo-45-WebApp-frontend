@@ -1,23 +1,15 @@
 import React from "react";
 
 import { useNavigation } from "@refinedev/core";
-// import { GetFieldsFromList } from "@refinedev/nestjs-query"; // Pending
-
 import { Badge } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
-// import { UpcomingEventsQuery } from "@/graphql/types"; // Pending
-
 import { Text } from "../../../base/text";
 import styles from "../index.module.css";
 
-// type CalendarUpcomingEventProps = {
-//   item: GetFieldsFromList<UpcomingEventsQuery>; // Pending
-// };
-
-export interface CalendarUpcomingEventItem {
+export interface Event {
   id: string | number;
   title: string;
   startDate: string;
@@ -26,7 +18,7 @@ export interface CalendarUpcomingEventItem {
 }
 
 type CalendarUpcomingEventProps = {
-  item: CalendarUpcomingEventItem;
+  item: Event;
 };
 
 export const CalendarUpcomingEvent: React.FC<CalendarUpcomingEventProps> = ({

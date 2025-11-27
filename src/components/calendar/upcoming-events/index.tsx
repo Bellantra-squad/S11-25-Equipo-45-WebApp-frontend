@@ -1,26 +1,30 @@
-import React, { JSX } from "react";
+import React from "react";
 
 import { useList, useNavigation } from "@refinedev/core";
-// import { GetFieldsFromList } from "@refinedev/nestjs-query"; // Pending
 
 import { CalendarOutlined, RightCircleOutlined } from "@ant-design/icons";
 import type { CardProps } from "antd";
 import { Button, Card, Skeleton as AntdSkeleton } from "antd";
 import dayjs from "dayjs";
 
-// import { UpcomingEvents } from "@graphql/types"; // Pending
-
 import { Text } from "../../base/text";
 import { CalendarUpcomingEvent } from "./event";
-import { mockUpcomingEvents } from "../../../mocks/calendarUpcomingEvents.mock";
 import styles from "./index.module.css";
-// import { CALENDAR_UPCOMING_EVENTS_QUERY } from "./queries"; // Pending
 
 type CalendarUpcomingEventsProps = {
   limit?: number;
   cardProps?: CardProps;
   showGoToListButton?: boolean;
 };
+
+interface Event {
+  id: string;
+  title: string;
+  startDate: string;
+  endDate: string;
+  color: string;
+  description?: string;
+}
 
 const NoEvent: React.FC = () => {
   return (
@@ -75,28 +79,25 @@ export const CalendarUpcomingEvents: React.FC<CalendarUpcomingEventsProps> = ({
 }) => {
   const { list } = useNavigation();
 
-//   const { data, isLoading } = useList<GetFieldsFromList<UpcomingEventsQuery>>({
-//     resource: "events",
-//     pagination: {
-//       pageSize: limit,
-//     },
-//     sorters: [
-//       {
-//         field: "startDate",
-//         order: "asc",
-//       },
-//     ],
-//     filters: [
-//       {
-//         field: "startDate",
-//         operator: "gte",
-//         value: dayjs().format("YYYY-MM-DD"),
-//       },
-//     ],
-//     meta: {
-//       gqlQuery: CALENDAR_UPCOMING_EVENTS_QUERY,
-//     },
-//   });
+  const { result: data, query } = useList<Event>({
+    resource: "events",
+    pagination: {
+      pageSize: limit,
+    },
+    sorters: [
+      {
+        field: "startDate",
+        order: "asc",
+      },
+    ],
+    filters: [
+      {
+        field: "startDate",
+        operator: "gte",
+        value: dayjs().format("YYYY-MM-DD"),
+      },
+    ],
+  });
 
   return (
     <Card
@@ -127,15 +128,15 @@ export const CalendarUpcomingEvents: React.FC<CalendarUpcomingEventsProps> = ({
       }
       {...cardProps}
     >
-      {/* {isLoading &&
+      {query.isLoading &&
         Array.from({ length: limit }).map((_, index) => (
           <Skeleton key={index} />
         ))}
-      {!isLoading &&
+      {!query.isLoading &&
         data?.data.map((item) => (
           <CalendarUpcomingEvent key={item.id} item={item} />
         ))}
-      {!isLoading && data?.data.length === 0 && <NoEvent />} */}
+      {!query.isLoading && data?.data.length === 0 && <NoEvent />}
     </Card>
   );
 };

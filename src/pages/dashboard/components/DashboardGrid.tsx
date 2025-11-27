@@ -1,10 +1,9 @@
 import { StatsCard } from "./StatsCard";
 import { LatestTasks } from "./LatestTasks";
 import { IncomingMessages } from "./IncomingMessages";
-import { CalendarUpcomingEvent } from "../../../components/calendar/upcoming-events/event/index";
-import { mockUpcomingEvents } from "../../../mocks/calendarUpcomingEvents.mock";
 import { LeadsPerformanceChart } from "./LeadsPerformanceChart";
 import { Col, Row } from "antd";
+import { CalendarUpcomingEvents } from "../../../components";
 
 export const DashboardGrid = () => {
   const statsCards = [
@@ -41,10 +40,12 @@ export const DashboardGrid = () => {
         </Row>
       </Col>
 
-      <Col style={{ maxHeight: "340px", msOverflowY: "auto", overflowX: "hidden" }} xs={24} lg={8}>
-        {mockUpcomingEvents.map((item) => (
-          <CalendarUpcomingEvent key={item.id} item={item} />
-        ))}
+      <Col
+        style={{ maxHeight: "340px", msOverflowY: "auto", overflowX: "hidden" }}
+        xs={24}
+        lg={8}
+      >
+        <CalendarUpcomingEvents showGoToListButton />
       </Col>
       <Col style={{ minHeight: "340px" }} xs={24} lg={8}>
         <IncomingMessages />

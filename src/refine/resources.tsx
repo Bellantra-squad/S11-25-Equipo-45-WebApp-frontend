@@ -28,8 +28,11 @@ export const resources = [
     },
 
     {
-        name: "calendar",
+        name: "events",
         list: "/calendar",
+        create: "/calendar/create",
+        edit: "/calendar/edit/:id",
+        show: "/calendar/show/:id",
         meta: {
             label: "Calendario",
             icon: <CalendarOutlined />,
