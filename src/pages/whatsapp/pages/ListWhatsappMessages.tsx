@@ -360,6 +360,16 @@ export default function WhatsAppListPage() {
   //Todo : Implementar el setLoading con el backend andando
   const [loading] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 900);
+
+  // Detectar cambios en el tamaño de la ventana
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 900);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Todo: usar cuando conectes con el backend real
   // const { data: conversationsData, isLoading } = useList<WhatsAppConversation>({
@@ -389,6 +399,11 @@ export default function WhatsAppListPage() {
         c.id === conversation.id ? { ...c, unread_count: 0 } : c
       )
     );
+  };
+
+  // Función para volver a la lista en modo móvil
+  const handleBackToList = () => {
+    setSelectedConversation(null);
   };
 
   const handleSendMessage = (content: string) => {
@@ -443,25 +458,34 @@ export default function WhatsAppListPage() {
     // });
   };
 
+  // Determinar si mostrar sidebar o chat en móvil
+  const showSidebar = !isMobileView || !selectedConversation;
+  const showChat = !isMobileView || selectedConversation;
+
   return (
     <div className={`${styles.whatsappContainer} ${styles[mode]}`}>
-      <ConversationList
-        conversations={conversations}
-        loading={loading}
-        selectedConversationId={selectedConversation?.id ?? null}
-        onSelectConversation={handleSelectConversation}
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        filter={filter}
-        onFilterChange={setFilter}
-      />
+      {showSidebar && (
+        <ConversationList
+          conversations={conversations}
+          loading={loading}
+          selectedConversationId={selectedConversation?.id ?? null}
+          onSelectConversation={handleSelectConversation}
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          filter={filter}
+          onFilterChange={setFilter}
+        />
+      )}
 
-      <ChatWindow
-        conversation={selectedConversation}
-        messages={messages}
-        loading={messagesLoading}
-        onSendMessage={handleSendMessage}
-      />
+      {showChat && (
+        <ChatWindow
+          conversation={selectedConversation}
+          messages={messages}
+          loading={messagesLoading}
+          onSendMessage={handleSendMessage}
+          onBack={isMobileView ? handleBackToList : undefined}
+        />
+      )}
     </div>
   );
 }

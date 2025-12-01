@@ -860,26 +860,28 @@
 
 /* Responsive */
 @media (max-width: 900px) {
+  .whatsappContainer {
+    height: calc(100vh - 120px);
+  }
+
   .sidebar {
     width: 100%;
     min-width: unset;
   }
 
   .chatPanel {
-    display: none;
-  }
-
-  .chatPanel.active {
-    display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 100;
+    width: 100%;
   }
 
   .messagesContainer {
     padding: 20px 16px;
+  }
+
+  .chatHeader {
+    padding: 8px 12px;
+  }
+
+  .inputContainer {
+    padding: 8px 12px;
   }
 }
