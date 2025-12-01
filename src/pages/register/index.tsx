@@ -3,7 +3,7 @@ import { AuthPage } from "@refinedev/antd";
 import { GoogleOutlined } from "@ant-design/icons";
 import { AppTitle } from "../../components/layout/Title";
 
-export const RegisterPage: React.FC = () => {
+const RegisterPage: React.FC = () => {
   return <AuthPage 
   type="register" 
   title={<AppTitle collapsed={false} />}
@@ -23,3 +23,5 @@ export const RegisterPage: React.FC = () => {
       ]}  
   />;
 };
+
+export default RegisterPage;  
