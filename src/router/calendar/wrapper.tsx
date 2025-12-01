@@ -44,7 +44,7 @@ export const CalendarPageWrapper: React.FC<React.PropsWithChildren> = ({
         <Col xs={24} xl={18}>
           <Calendar
             onClickEvent={({ id }) => {
-              show("events", id);
+              show("tasks", id);
             }}
             categoryId={selectedEventCategory}
           />

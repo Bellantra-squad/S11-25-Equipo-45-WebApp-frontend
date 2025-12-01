@@ -40,7 +40,7 @@ export const CalendarForm: React.FC<CalendarFormProps> = ({
   setIsAllDayEvent,
 }) => {
   const { selectProps: categorySelectProps } = useSelect<ICategory>({
-    resource: "eventCategories",
+    resource: "tasks",
     optionLabel: "title",
     optionValue: "id",
   });

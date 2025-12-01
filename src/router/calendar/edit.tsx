@@ -47,7 +47,7 @@ export const CalendarEditPage: React.FC = () => {
 
   const { formProps, saveButtonProps, form, onFinish, query } = useForm<IEvent>(
     {
-      resource: "events", // Pending: replace with actual resource name
+      resource: "tasks", // Pending: replace with actual resource name
       action: "edit",
       queryOptions: {
         enabled: true,
@@ -119,7 +119,7 @@ export const CalendarEditPage: React.FC = () => {
       title="Edit Event"
       open
       onCancel={() => {
-        list("events");
+        list("tasks");
       }}
       okButtonProps={{
         ...saveButtonProps,

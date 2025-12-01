@@ -67,7 +67,7 @@ export const CalendarShowPage: React.FC = () => {
   }
 
   const handleOnClose = () => {
-    list("events");
+    list("tasks");
   };
 
   return (

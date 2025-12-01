@@ -59,7 +59,7 @@ export const CalendarUpcomingEvent: React.FC<CalendarUpcomingEventProps> = ({
   return (
     <div
       onClick={() => {
-        show("events", item.id);
+        show("tasks", item.id);
       }}
       key={id}
       className={styles.item}

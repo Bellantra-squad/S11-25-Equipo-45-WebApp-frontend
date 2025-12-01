@@ -28,7 +28,7 @@ export const resources = [
     },
 
     {
-        name: "events",
+        name: "tasks",
         list: "/calendar",
         create: "/calendar/create",
         edit: "/calendar/edit/:id",

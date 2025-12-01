@@ -86,7 +86,7 @@ export const CalendarCreatePage: React.FC = () => {
       title="Create Event"
       open
       onCancel={() => {
-        list("events");
+        list("tasks");
       }}
       okButtonProps={{
         ...saveButtonProps,

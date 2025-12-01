@@ -23,7 +23,14 @@ export const CalendarCategories: React.FC<CalendarCategoriesProps> = ({
   const { token } = theme.useToken();
   const { modalProps, show, close } = useModal();
   const { result: data, query } = useList<ICategory>({
-    resource: "eventCategories",
+    resource: "tasks",
+    filters: [
+      {
+        field: "task_type",
+        operator: "eq",
+        value: "meeting",
+      },
+    ],
   });
 
   return (

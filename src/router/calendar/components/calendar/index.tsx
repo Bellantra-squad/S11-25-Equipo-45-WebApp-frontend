@@ -64,7 +64,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         value: categoryId?.length ? categoryId : undefined,
       },
     ],
-    resource: "events",
+    resource: "tasks",
   });
 
   const events = (data?.data ?? []).map(

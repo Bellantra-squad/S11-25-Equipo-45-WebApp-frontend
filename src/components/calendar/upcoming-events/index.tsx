@@ -80,7 +80,7 @@ export const CalendarUpcomingEvents: React.FC<CalendarUpcomingEventsProps> = ({
   const { list } = useNavigation();
 
   const { result: data, query } = useList<Event>({
-    resource: "events",
+    resource: "tasks",
     pagination: {
       pageSize: limit,
     },
@@ -121,7 +121,7 @@ export const CalendarUpcomingEvents: React.FC<CalendarUpcomingEventsProps> = ({
       }
       extra={
         showGoToListButton && (
-          <Button onClick={() => list("events")} icon={<RightCircleOutlined />}>
+          <Button onClick={() => list("tasks")} icon={<RightCircleOutlined />}>
             See calendar
           </Button>
         )

@@ -20,13 +20,13 @@ export const CalendarManageCategories: React.FC<
   const { mutate: createManyMutation } = useCreateMany();
   const { mutate: deleteMutation } = useDelete();
   const { result: data } = useList<ICategory>({
-    resource: "eventCategories",
+    resource: "tasks",
   });
 
   return (
     <Modal
       {...rest}
-      title="Manage Categories"
+      title="Manage Categoriesss"
       okText="Save"
       destroyOnHidden
       style={{ paddingTop: "1rem" }}
