@@ -5,32 +5,27 @@ import { Authenticated, ErrorComponent } from "@refinedev/core";
 
 import ProtectedLayout from "./ProtectedLayout";
 import PublicLayout from "./PublicLayout";
+import { AppLoader } from "../components/loading/AppLoader";
 
 //lazy loading
 const LoginPage = lazy(() => import("../pages/login"));
 const ForgotPassword = lazy(() => import("../pages/forgotPassword"));
 const RegisterPage = lazy(() => import("../pages/register"));
-const DashboardPage = lazy(
-  () => import("../pages/dashboard/pages/DashboardPage")
-);
+const DashboardPage = lazy(() => import("../pages/dashboard/pages/DashboardPage"));
 const ContactList = lazy(() => import("../pages/contacts/pages/list"));
 const ContactsCreate = lazy(() => import("../pages/contacts/pages/create"));
 const ContactEdit = lazy(() => import("../pages/contacts/pages/edit"));
 const ContactsShow = lazy(() => import("../pages/contacts/pages/show"));
 const CategoryListPage = lazy(() => import("../pages/categories/pages/list"));
-const CategoryCreatePage = lazy(
-  () => import("../pages/categories/pages/create")
-);
+const CategoryCreatePage = lazy(() => import("../pages/categories/pages/create"));
 const CategoryEdit = lazy(() => import("../pages/categories/pages/edit"));
 const LeadListPage = lazy(() => import("../pages/leads/pages/list"));
 const CategoryShow = lazy(() => import("../pages/categories/pages/show"));
-const WhatsAppListPage = lazy(
-  () => import("../pages/whatsapp/pages/ListWhatsappMessages")
-);
+const WhatsAppListPage = lazy(() => import("../pages/whatsapp/pages/ListWhatsappMessages"));
 
 export default function AppRouter() {
   return (
-    <Suspense fallback={<div> Cargando ... </div>}>
+    <Suspense fallback={<AppLoader tip="Cargando..." />}>
       <Routes>
         {/* Rutas protegidas */}
         <Route
@@ -90,5 +85,6 @@ export default function AppRouter() {
         </Route>
       </Routes>
     </Suspense>
+    
   );
 }
