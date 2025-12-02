@@ -21,6 +21,7 @@ const CategoryCreatePage = lazy(() => import("../pages/categories/pages/create")
 const CategoryEdit = lazy(() => import("../pages/categories/pages/edit"));
 const LeadListPage = lazy(() => import("../pages/leads/pages/list"));
 const CategoryShow = lazy(() => import("../pages/categories/pages/show"));
+const WhatsAppListPage = lazy(() => import("../pages/whatsapp/pages/ListWhatsappMessages"));
 
 export default function AppRouter() {
   return (
@@ -58,6 +59,10 @@ export default function AppRouter() {
             <Route path="create" element={<CategoryCreatePage />} />
             {/* <Route path="edit/:id" element={<ContactEdit/>} />
             <Route path="show/:id" element={<ContactsShow />} />  */}
+          </Route>
+
+          <Route path="whatsapp">
+            <Route index element={<WhatsAppListPage />} />
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />
