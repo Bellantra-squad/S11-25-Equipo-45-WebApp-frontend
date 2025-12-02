@@ -39,7 +39,9 @@ export const resources = [
 
     {
         name: "leads",
-        list: "/leads",
+        list: "/leads",        
+        create: "/leads/create",        
+        edit: "/leads/edit/:id",
         meta: {
             label: "Leads (Kanban)",
             icon: <ApartmentOutlined />,
@@ -139,6 +141,9 @@ export const resources = [
     {
         name: "users",
         list: "/users",
+        create: "/users/create",
+        edit: "/users/edit/:id",
+        show: "/users/show/:id",
         meta: {
             label: "Usuarios",
             icon: <TeamOutlined />,
@@ -147,6 +152,15 @@ export const resources = [
         },
     },
 
+
+    //Definicion de recursos que no aparecen en el menu
+    {
+        name: "lead-statuses",
+        create:"/lead-statuses/create",
+        edit:"/lead-statuses/edit/:id",
+        options: { hide: true },
+    },
+    
     // Definición de secciones como "contenedores virtuales"
     {
         name: "entities",

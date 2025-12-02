@@ -1,28 +1,22 @@
 import { memo, useMemo } from "react";
 import { useNavigation, useDelete } from "@refinedev/core";
-import { EyeOutlined, DeleteOutlined, MoreOutlined } from "@ant-design/icons";
+import { EyeOutlined, DeleteOutlined, MoreOutlined, ClockCircleOutlined, StarOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Card, Dropdown, Tag, Tooltip, Space, Skeleton } from "antd";
 import type { MenuProps } from "antd";
 import { Text } from "../../../../components/base/text";
-import { Lead } from "../../../../interfaces/models/lead.interface";
+import {  LeadResponse } from "../../../../interfaces/models/lead.interface";
+import { TextIcon } from "../../../../components/base/TextIcon";
+import { CustomAvatar } from "../../../../components/header/CustomAvatar";
 
 
 export const LeadCard = ({
   id,
   company_name,
-  industry,
-  category,
-  status,
   assigned_to,
-  is_client,
-  lead_source,
   lead_score,
-  estimated_value,
   contacts_count,
-  tags,
   last_contact_date,
-  next_follow_up,
-}: Lead) => {
+}: LeadResponse) => {
   const { edit } = useNavigation();
   const { mutate } = useDelete();
 
@@ -48,108 +42,160 @@ export const LeadCard = ({
   return (
     <Card
       size="small"
-      title={<Text strong>{company_name}</Text>}
-      extra={
+       title={<Text ellipsis={{ tooltip: company_name }}>{company_name}</Text>}
+       onClick={() => {
+          edit("leads", id, "replace");
+        }}
+       extra={
         <Dropdown
-          trigger={["click"]}
-          menu={{ items: dropdownItems }}
-          placement="bottom"
-        >
-          <Button type="text" shape="circle" icon={<MoreOutlined />} />
+            trigger={["click"]}
+            menu={{
+              items: dropdownItems,
+              onPointerDown: (e) => {
+                e.stopPropagation();
+              },
+              onClick: (e) => {
+                e.domEvent.stopPropagation();
+              },
+            }}
+            placement="bottom"
+            arrow={{ pointAtCenter: true }}
+            >
+           <Button
+              type="text"
+              shape="circle"
+              icon={
+                <MoreOutlined
+                  style={{
+                    transform: "rotate(90deg)",
+                  }}
+                />
+              }
+              onPointerDown={(e) => {
+                e.stopPropagation();
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            />  
         </Dropdown>
       }
     >
-      <Space direction="vertical" size={6}>
 
-        {/* Industry */}
-        {industry && <Text type="secondary">{industry}</Text>}
 
-        {/* Status */}
-        {status && (
-          <Tag color={status.color} style={{ textTransform: "capitalize" }}>
-            {status.name}
-          </Tag>
-        )}
+      <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            gap: "3px",
+          }}
+        >
+          <TextIcon
+            style={{
+              marginRight: "1px",
+            }}
+          />
+          
+          {!!lead_score && (
+            
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "1px",
+              }}
+            >
+              <StarOutlined 
+                style={{
+                  color: "#898989",
+                  fontSize: "10px",
+                }}
+              />
+              <Text size="xs" type="secondary">
+                {lead_score}
+              </Text>
+            </div>
+          )}
+          {!!contacts_count && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "1px",
+              }}
+            >
+              <UserOutlined
+                style={{
+                  color: "#898989",
+                  fontSize: "10px",
+                }}
+              />
+              <Text size="xs" type="secondary">
+                {contacts_count}
+              </Text>
+            </div>
+          )}
+          {last_contact_date && (
+            <Tag
+              icon={
+                <ClockCircleOutlined
+                  style={{
+                    fontSize: "10px",
+                  }}
+                />
+              }
+              style={{
+                padding: "1 0px",
+                marginInlineEnd: "0",
+                backgroundColor: "#f6c7c7",
+                color:"#000",
+                border: "1px"
+              }}
+            >
+              {last_contact_date ? new Date(last_contact_date).toLocaleDateString() : "—"}
+            </Tag>
+          )}
+          {assigned_to.id && (
+            <Space
+              size={2}
+              wrap
+              direction="horizontal"
+              align="center"
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginLeft: "auto",
+                marginRight: "0",
+              }}
+            >  
+              <Tooltip key={assigned_to.id} title={assigned_to.first_name + " " + assigned_to.last_name}>
+                  <CustomAvatar                
+                name={assigned_to.email}
+                size={25}
+                style={{ display: "inline-flex" }}
+                />
+              </Tooltip>
+              
+            </Space>
+          )}
+        </div>
 
-        {/* Category */}
-        {category && (
-          <Tag color={category.color}>
-            {category.name}
-          </Tag>
-        )}
-
-        {/* Lead Source */}
-        {lead_source && (
-          <Tag color="blue">
-            {lead_source}
-          </Tag>
-        )}
-
-        {/* Assigned user */}
-        {assigned_to && (
-          <Tooltip title="Asignado a">
-            <Text>
-              👤 {assigned_to.first_name} {assigned_to.last_name}
-            </Text>
-          </Tooltip>
-        )}
-
-        {/* Tags */}
-        {tags?.length > 0 && (
-          <Space wrap>
-            {tags.map((t) => (
-              <Tag key={t.id} color={t.color}>
-                {t.name}
-              </Tag>
-            ))}
-          </Space>
-        )}
-
-        {/* Value */}
-        {estimated_value && (
-          <Text>
-            💰 Valor estimado: <strong>{estimated_value}</strong>
-          </Text>
-        )}
-
-        {/* Score */}
-        <Text>⭐ Score: {lead_score}</Text>
-
-        {/* Contacts */}
-        <Text>📇 Contactos: {contacts_count}</Text>
-
-        {/* Dates */}
-        <Text type="secondary">
-          Último contacto:{" "}
-          {last_contact_date ? new Date(last_contact_date).toLocaleDateString() : "—"}
-        </Text>
-
-        <Text type="secondary">
-          Seguimiento:{" "}
-          {next_follow_up ? new Date(next_follow_up).toLocaleDateString() : "—"}
-        </Text>
-
-        {/* Client flag */}
-        {is_client && (
-          <Tag color="green">Cliente</Tag>
-        )}
-
-      </Space>
     </Card>
   );
 };
 
-
-
 export const LeadCardSkeleton = () => {
   return (
-    <Card
-      size="small"
-      bodyStyle={{
-        display: "flex",
+    <Card   
+      size="small"  
+       styles={{
+        body: {  display: "flex",
         justifyContent: "center",
-        gap: "8px",
-      }}
+        gap: "8px", },       
+      }}    
       title={
         <Skeleton.Button
           active
@@ -172,16 +218,6 @@ export const LeadCardSkeleton = () => {
     </Card>
   );
 };
-
-// export const LeadCardMemo = memo(LeadCard, (prev, next) => {
-//   return (
-//     prev.id === next.id &&
-//     prev.company_name === next.company_name &&
-//     prev.created_at === next.created_at &&
-//     prev.contacts_count === next.contacts_count &&
-//     prev.assigned_to === next.assigned_to
-//   );
-// });
 
 
 export const LeadCardMemo = memo(LeadCard);

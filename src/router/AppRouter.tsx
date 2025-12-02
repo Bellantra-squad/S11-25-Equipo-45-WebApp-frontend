@@ -7,7 +7,6 @@ import ProtectedLayout  from "./ProtectedLayout";
 import PublicLayout  from "./PublicLayout";
 
 
-
 //lazy loading
 const LoginPage = lazy(() => import('../pages/login'));
 const ForgotPassword = lazy(() => import("../pages/forgotPassword"));
@@ -20,8 +19,9 @@ const ContactsShow = lazy(()=> import( "../pages/contacts/pages/show"));
 const CategoryListPage = lazy(()=> import( "../pages/categories/pages/list"));
 const CategoryCreatePage= lazy(()=> import( "../pages/categories/pages/create"));
 const CategoryEdit = lazy(()=> import( "../pages/categories/pages/edit"));
-const LeadListPage = lazy(()=> import("../pages/leads/pages/list"));
 const CategoryShow = lazy(()=> import("../pages/categories/pages/show"));
+const LeadListPage = lazy(()=> import("../pages/leads/pages/list"));
+const LeadCreateModal = lazy(()=> import("../pages/leads/pages/create"));
 
 
 export default function AppRouter() {
@@ -55,11 +55,9 @@ export default function AppRouter() {
             <Route path="show/:id" element={<CategoryShow />} /> 
           </Route>
 
-           <Route path="leads">
+          <Route path="leads">
             <Route index element={<LeadListPage />} />
-            <Route path="create" element={<CategoryCreatePage />} />
-           {/* <Route path="edit/:id" element={<ContactEdit/>} />
-            <Route path="show/:id" element={<ContactsShow />} />  */}
+            <Route path="create" element={<LeadCreateModal />} />            
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />
