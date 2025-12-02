@@ -29,15 +29,18 @@ export const AppTitle: React.FC<RefineLayoutThemedTitleProps> = ({
         style={{
           display: "flex",
           alignItems: "center",
-          fontSize: "inherit",
+          gap: "10px",
           ...wrapperStyles,
         }}
       >
         <div
           style={{
-            height: "36px",
-            width: "30px",
+            height: "42px",
+            width: "36px",
             color: token.colorPrimary,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <Logo />
@@ -46,9 +49,11 @@ export const AppTitle: React.FC<RefineLayoutThemedTitleProps> = ({
         {!collapsed && (
           <Typography.Title
             style={{
-              fontSize: "inherit",
+              fontSize: "18px",
               marginBottom: 0,
               fontWeight: 700,
+              letterSpacing: "-0.3px",
+              color: token.colorText,
             }}
           >
             {name}

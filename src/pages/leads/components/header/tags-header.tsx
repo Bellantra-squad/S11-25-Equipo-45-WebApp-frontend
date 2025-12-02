@@ -1,7 +1,6 @@
 import { Space, Tag as AntTag, Typography } from "antd";
 import { Tag } from "../../../../interfaces/models/tag.interface";
 
-
 type Props = {
   tags?: Tag[];
 };
@@ -29,5 +28,5 @@ export const TagsHeader = ({  tags = [] }: Props) => {
     );
   }
 
-  return <Typography.Link>Add tags & categories</Typography.Link>;
+  return <Typography.Link>Agregar Tags</Typography.Link>;
 };

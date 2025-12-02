@@ -8,7 +8,7 @@ export const ModalFooter = () => {
     <DeleteButton
       type="link"
       onSuccess={() => {
-        list("tasks", "replace");
+        list("leads", "replace");
       }}
     >
       Delete card

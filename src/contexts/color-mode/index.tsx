@@ -59,6 +59,14 @@ export const ColorModeContextProvider: React.FC<PropsWithChildren> = ({
               colorPrimary:  "rgba(146, 84, 201, 1)",
               fontFamily:  "-apple-system, Inter,  Montserrat, Roboto,  BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', 'Arial', 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'",
           },
+          components: {
+            Menu: {
+              fontSize: 15,         // Default: 14px → +7%
+              iconSize: 18,         // Default: 14px → +28%
+              itemHeight: 48,       // Default: 40px → +20%
+              subMenuItemBg: "transparent",
+            },
+          },
         }}
       >
         {children}

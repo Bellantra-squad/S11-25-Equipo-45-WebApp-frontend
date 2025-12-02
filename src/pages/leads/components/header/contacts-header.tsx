@@ -34,5 +34,5 @@ export const ContactssHeader = ({ contacts = [] }: Props) => {
     );
   }
 
-  return <Typography.Link>Assign to users</Typography.Link>;
+  return <Typography.Link>Asignar contactos</Typography.Link>;
 };
