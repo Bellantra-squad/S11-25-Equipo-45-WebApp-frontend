@@ -4,15 +4,7 @@ import {
   SafetyCertificateOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Card,
-  Drawer,
-  Input,
-  Space,
-  Spin,
-  Typography,  
-} from "antd";
+import { Button, Card, Drawer, Input, Space, Spin, Typography } from "antd";
 
 import styles from "./index.module.css";
 import { Text } from "../../base/text";
@@ -22,7 +14,6 @@ import { useState } from "react";
 import { useOne } from "@refinedev/core";
 import { SingleElementForm } from "../../single-element-form";
 
-
 type Props = {
   opened: boolean;
   setOpened: (opened: boolean) => void;
@@ -31,35 +22,35 @@ type Props = {
 
 type FormKeys = "email" | "first_name" | "last_name" | "role";
 
-export const AccountSettings = ({ opened, setOpened , user }: Props) => {
-   const [activeForm, setActiveForm] = useState<FormKeys>();
+export const AccountSettings = ({ opened, setOpened, user }: Props) => {
+  const [activeForm, setActiveForm] = useState<FormKeys>();
 
   /** GET USER (REST API) */
- const { result, query } = useOne<User>({
+  const { result, query } = useOne<User>({
     resource: "users",
     id: user.id,
     queryOptions: { enabled: opened },
   });
-  
-  const { id, first_name, last_name, email  } = result ?? {};
+
+  const { id, first_name, last_name, email } = result ?? {};
 
   const isLoading = query.isLoading;
- 
+
   const closeModal = () => {
     setOpened(false);
   };
 
- const getActiveForm = (key: FormKeys) => {
-    if (activeForm === key) return "form";   
+  const getActiveForm = (key: FormKeys) => {
+    if (activeForm === key) return "form";
 
     if (!result) return "empty";
-  
+
     if (!result[key as keyof User]) return "empty";
 
     return "view";
-};
+  };
 
-   if (isLoading) {
+  if (isLoading) {
     return (
       <Drawer
         open={opened}
@@ -75,7 +66,7 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
       </Drawer>
     );
   }
-  
+
   return (
     <Drawer
       onClose={closeModal}
@@ -103,22 +94,26 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
               fontSize: "40px",
             }}
             size={96}
-            src={user.avatar}
-            name={user.email}
-          /> 
+            name={user?.first_name}
+            last_name={user?.last_name}
+          />
           <div className="styles.subtitle">
             <Typography.Title
               level={3}
-              style={{ padding: 0, margin: 0, width: "100%" }} 
-              className={styles.title}              
-            >              
+              style={{ padding: 0, margin: 0, width: "100%" }}
+              className={styles.title}
+            >
               {first_name} {last_name}
-            </Typography.Title> 
-             <Text size="sm" style={{ padding: 0, margin: 0, width: "100%" }} type="secondary" className={styles.title}>
+            </Typography.Title>
+            <Text
+              size="sm"
+              style={{ padding: 0, margin: 0, width: "100%" }}
+              type="secondary"
+              className={styles.title}
+            >
               {email}
             </Text>
-            </div>         
-           
+          </div>
         </div>
         <Card
           title={
@@ -128,12 +123,12 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
             </Space>
           }
           styles={{
-            header: { padding: "0 12px" }, 
+            header: { padding: "0 12px" },
             body: { padding: "0" },
           }}
-        >   
-         <SingleElementForm
-            icon={<IdcardOutlined className="tertiary" />}           
+        >
+          <SingleElementForm
+            icon={<IdcardOutlined className="tertiary" />}
             itemProps={{
               name: "first_name",
               label: "Nombre",
@@ -144,15 +139,15 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
             }}
             formProps={{ initialValues: { first_name } }}
             view={<Text>{first_name}</Text>}
-            state={getActiveForm("first_name")} 
+            state={getActiveForm("first_name")}
             onClick={() => setActiveForm("first_name")}
             onUpdate={() => setActiveForm(undefined)}
-            onCancel={() => setActiveForm(undefined)}          
+            onCancel={() => setActiveForm(undefined)}
           >
             <Input />
-        </SingleElementForm>
-        <SingleElementForm
-            icon={<IdcardOutlined className="tertiary" />}           
+          </SingleElementForm>
+          <SingleElementForm
+            icon={<IdcardOutlined className="tertiary" />}
             itemProps={{
               name: "last_name",
               label: "Apellido",
@@ -163,15 +158,13 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
             }}
             formProps={{ initialValues: { last_name } }}
             view={<Text>{last_name}</Text>}
-            state={getActiveForm("last_name")} 
+            state={getActiveForm("last_name")}
             onClick={() => setActiveForm("last_name")}
             onUpdate={() => setActiveForm(undefined)}
-            onCancel={() => setActiveForm(undefined)}          
+            onCancel={() => setActiveForm(undefined)}
           >
             <Input />
-        </SingleElementForm>  
-        
-               
+          </SingleElementForm>
         </Card>
         <Card
           title={
@@ -181,29 +174,29 @@ export const AccountSettings = ({ opened, setOpened , user }: Props) => {
             </Space>
           }
           styles={{
-            header: { padding: "0 12px" }, 
+            header: { padding: "0 12px" },
             body: { padding: "0" },
           }}
-        >    
+        >
           <SingleElementForm
-              icon={<IdcardOutlined className="tertiary" />}           
-              itemProps={{
-                name: "email",
-                label: "Email",
-              }}
-              useFormProps={{
-                id,
-                resource: "users", // refine llamará PATCH /users/:id
-              }}
-              formProps={{ initialValues: { email } }}
-              view={<Text>{email}</Text>}
-              state={getActiveForm("email")} 
-              onClick={() => setActiveForm("email")}
-              onUpdate={() => setActiveForm(undefined)}
-              onCancel={() => setActiveForm(undefined)}          
-            >
-              <Input />
-          </SingleElementForm>        
+            icon={<IdcardOutlined className="tertiary" />}
+            itemProps={{
+              name: "email",
+              label: "Email",
+            }}
+            useFormProps={{
+              id,
+              resource: "users", // refine llamará PATCH /users/:id
+            }}
+            formProps={{ initialValues: { email } }}
+            view={<Text>{email}</Text>}
+            state={getActiveForm("email")}
+            onClick={() => setActiveForm("email")}
+            onUpdate={() => setActiveForm(undefined)}
+            onCancel={() => setActiveForm(undefined)}
+          >
+            <Input />
+          </SingleElementForm>
         </Card>
       </div>
     </Drawer>
