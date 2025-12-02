@@ -1,6 +1,7 @@
 import { Row, Col, Segmented, DatePicker, Select, Button, Space } from "antd";
 import { FilterOutlined, CalendarOutlined } from "@ant-design/icons";
 import { useState } from "react";
+import styles from "./DashboardFilters.module.css";
 
 const { RangePicker } = DatePicker;
 
@@ -12,7 +13,7 @@ export const DashboardFilters = () => {
             gutter={[16, 16]}
             justify="space-between"
             align="middle"
-            style={{ marginBottom: 32 }}
+            className={styles.filtersRow}
         >
             {/* Filtros de tiempo */}
             <Col  lg="auto">
@@ -52,7 +53,7 @@ export const DashboardFilters = () => {
                     <Select
                         placeholder="Elija un usuario"
                         size="large"
-                        style={{ width: 180 }}
+                        className={styles.userSelect}
                         options={[
                             { label: "Usuario 1", value: "u1" },
                             { label: "Usuario 2", value: "u2" },
