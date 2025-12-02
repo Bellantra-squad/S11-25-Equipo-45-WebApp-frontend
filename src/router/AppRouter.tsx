@@ -22,6 +22,7 @@ const CategoryEdit = lazy(()=> import( "../pages/categories/pages/edit"));
 const CategoryShow = lazy(()=> import("../pages/categories/pages/show"));
 const LeadListPage = lazy(()=> import("../pages/leads/pages/list"));
 const LeadCreateModal = lazy(()=> import("../pages/leads/pages/create"));
+const LeadEditModal = lazy(()=> import("../pages/leads/pages/edit"));
 
 
 export default function AppRouter() {
@@ -57,7 +58,8 @@ export default function AppRouter() {
 
           <Route path="leads">
             <Route index element={<LeadListPage />} />
-            <Route path="create" element={<LeadCreateModal />} />            
+            <Route path="create" element={<LeadCreateModal />} />
+            <Route path="edit/:id" element={<LeadEditModal/>} />
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />
