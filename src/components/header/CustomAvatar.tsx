@@ -1,23 +1,48 @@
 import { FC, memo } from "react";
-
 import type { AvatarProps } from "antd";
-import { Avatar as AntdAvatar } from "antd";
-
-// import { getNameInitials, getRandomColorFromString } from "@/utilities";
+import { Avatar as AntdAvatar, Skeleton } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { useCustomAvatar } from "./useCustomAvatar";
 
 type Props = AvatarProps & {
   name?: string;
+  last_name?: string;
 };
 
-const CustomAvatarComponent: FC<Props> = ({ name = "", style, ...rest }) => {
+const CustomAvatarComponent: FC<Props> = ({
+  name,
+  last_name,
+  style,
+  size = "small",
+  ...rest
+}) => {
+  const { isLoading, initials, hasInitials, bgColor } = useCustomAvatar({
+    name,
+    last_name,
+  });
+
+  if (isLoading) {
+    return (
+      <Skeleton.Avatar
+        active
+        size={size === "large" ? "large" : size === "small" ? "small" : "default"}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          border: "none",
+          ...style,
+        }}
+      />
+    );
+  }
+
   return (
     <AntdAvatar
       alt={name}
-      size="small"
+      size={size}
+      icon={!hasInitials ? <UserOutlined /> : undefined}
       style={{
-        backgroundColor: rest?.src
-          ? "transparent"
-          : "white",
+        backgroundColor: bgColor,
         display: "flex",
         alignItems: "center",
         border: "none",
@@ -25,7 +50,7 @@ const CustomAvatarComponent: FC<Props> = ({ name = "", style, ...rest }) => {
       }}
       {...rest}
     >
-      {name}
+      {hasInitials ? initials : null}
     </AntdAvatar>
   );
 };
@@ -33,6 +58,10 @@ const CustomAvatarComponent: FC<Props> = ({ name = "", style, ...rest }) => {
 export const CustomAvatar = memo(
   CustomAvatarComponent,
   (prevProps, nextProps) => {
-    return prevProps.name === nextProps.name && prevProps.src === nextProps.src;
-  },
+    return (
+      prevProps.name === nextProps.name &&
+      prevProps.last_name === nextProps.last_name &&
+      prevProps.src === nextProps.src
+    );
+  }
 );
