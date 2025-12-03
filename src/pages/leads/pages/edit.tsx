@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useModal } from "@refinedev/antd";
 import { HttpError, useNavigation, useShow, useUpdate } from "@refinedev/core";
 
-import { Modal, Typography } from "antd";
+import { Modal, Skeleton, Typography } from "antd";
 import { Lead, LeadUpdate } from "../../../interfaces/models/lead.interface";
 import { ModalFooter } from "../components/modal-footer";
 import { AlignLeftOutlined, EditOutlined, TagsOutlined, UsergroupAddOutlined, UserOutlined } from "@ant-design/icons";
@@ -35,13 +35,10 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
   } = useShow<Lead>({
     resource: "leads",
   });
-
-    
-   
+ 
   return (
     <Modal
       {...modalProps}
-      open={modalProps.open ?? modalProps.visible}
       title={
         <Typography.Title
             level={3}
@@ -67,11 +64,11 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
         close();
         list("leads", "replace");
       }}
-      width={640}
+      width={700}
       footer={<ModalFooter />}
     >
       {query.isLoading ? (
-        <p>Cargando...</p>
+         <Skeleton active />
       ) : (
         <>
             <StageForm initialValues={{ is_client:lead!.is_client, status: lead!.status }} isLoading={query.isLoading}/>
@@ -158,7 +155,7 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
 
            <div
             style={{
-                backgroundColor: "#f0f2f5",
+                backgroundColor: "#fcfbfb",
                 padding: "24px",
                 display: "flex",
                 flexDirection: "column",
