@@ -2,6 +2,7 @@
  * Interfaz para las métricas del dashboard
  * Basado en los endpoints de /api/docs/#/
  */
+import { AssignedUser } from "./user.interface";
 
 export interface DashboardMetrics {
   active_contacts: number;
