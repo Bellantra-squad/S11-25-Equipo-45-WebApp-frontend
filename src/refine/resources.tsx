@@ -104,10 +104,9 @@ export const resources = [
   {
     name: "tags",
     list: "/tags",
-    create: "/tags",
-    edit: "/tags/:id",
-    show: "/tags/:id",
-    delete: "/tags/:id",
+    create: "/tags/create",
+    edit: "/tags/edit/:id",
+    show: "/tags/show/:id",
     meta: {
       label: "Etiquetas",
       icon: <TagsOutlined />,
