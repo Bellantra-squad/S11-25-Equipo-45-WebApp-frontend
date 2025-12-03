@@ -1,366 +1,91 @@
-import React, { useState, useEffect, useContext } from "react";
-//import { useList, useCreate } from "@refinedev/core";
+import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from "react";
+import { useList } from "@refinedev/core";
+import { message as antdMessage } from "antd";
 import {
   WhatsAppConversation,
+  WhatsAppConversationWithContact,
   WhatsAppMessage,
 } from "../../../interfaces/models/whatsapp.interface";
+import { Contact } from "../../../interfaces/models/contact.interface";
 import { ConversationList } from "../components/ConversationList";
 import { ChatWindow } from "../components/ChatWindow";
 import { ColorModeContext } from "../../../contexts/color-mode";
+import { useWhatsAppMessageListener } from "../../../hooks/useWebSocket";
+import { httpApi } from "../../../refine/api/httpApi";
 import styles from "../index.module.css";
-
-// Datos mock para demostración
-const mockConversations: WhatsAppConversation[] = [
-  {
-    id: 1,
-    contact: {
-      id: 1,
-      lead: 1,
-      first_name: "María",
-      last_name: "García",
-      email: "maria@example.com",
-      phone: "+54 11 2345-6789",
-      whatsapp_number: "+54 11 2345-6789",
-      position: "Gerente",
-      department: "Ventas",
-      is_primary: true,
-      is_decision_maker: true,
-      notes: "",
-      tags: [],
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-    last_message: {
-      id: 101,
-      conversation_id: 1,
-      sender_type: "contact",
-      content: "Hola, quisiera saber más sobre sus servicios de CRM",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 5),
-      updated_at: new Date(),
-    },
-    unread_count: 2,
-    status: "active",
-    assigned_agent_name: "Juan Pérez",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 2,
-    contact: {
-      id: 2,
-      lead: 2,
-      first_name: "Carlos",
-      last_name: "López",
-      email: "carlos@empresa.com",
-      phone: "+54 11 3456-7890",
-      whatsapp_number: "+54 11 3456-7890",
-      position: "Director",
-      department: "IT",
-      is_primary: true,
-      is_decision_maker: true,
-      notes: "",
-      tags: [],
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-    last_message: {
-      id: 201,
-      conversation_id: 2,
-      sender_type: "agent",
-      content: "Perfecto, te envío la propuesta por email",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 2),
-      updated_at: new Date(),
-    },
-    unread_count: 0,
-    status: "active",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 3,
-    contact: {
-      id: 3,
-      lead: 3,
-      first_name: "Ana",
-      last_name: "Martínez",
-      email: "ana@startup.io",
-      phone: "+54 11 4567-8901",
-      whatsapp_number: "+54 11 4567-8901",
-      position: "CEO",
-      department: "Dirección",
-      is_primary: true,
-      is_decision_maker: true,
-      notes: "",
-      tags: [],
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-    last_message: {
-      id: 301,
-      conversation_id: 3,
-      sender_type: "contact",
-      content: "¿Tienen integración con WhatsApp Business API?",
-      message_type: "text",
-      status: "delivered",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24),
-      updated_at: new Date(),
-    },
-    unread_count: 1,
-    status: "active",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 4,
-    contact: {
-      id: 4,
-      lead: 4,
-      first_name: "Roberto",
-      last_name: "Sánchez",
-      email: "roberto@corp.com",
-      phone: "+54 11 5678-9012",
-      whatsapp_number: "+54 11 5678-9012",
-      position: "CTO",
-      department: "Tecnología",
-      is_primary: true,
-      is_decision_maker: false,
-      notes: "",
-      tags: [],
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-    last_message: {
-      id: 401,
-      conversation_id: 4,
-      sender_type: "agent",
-      content: "Gracias por contactarnos. ¿En qué podemos ayudarte?",
-      message_type: "text",
-      status: "sent",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 3),
-      updated_at: new Date(),
-    },
-    unread_count: 0,
-    status: "active",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-  {
-    id: 5,
-    contact: {
-      id: 5,
-      lead: 5,
-      first_name: "Laura",
-      last_name: "Fernández",
-      email: "laura@pyme.com",
-      phone: "+54 11 6789-0123",
-      whatsapp_number: "+54 11 6789-0123",
-      position: "Propietaria",
-      department: "General",
-      is_primary: true,
-      is_decision_maker: true,
-      notes: "",
-      tags: [],
-      created_at: new Date(),
-      updated_at: new Date(),
-    },
-    last_message: {
-      id: 501,
-      conversation_id: 5,
-      sender_type: "contact",
-      content: "Excelente, esperaré su llamada entonces 👍",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24 * 5),
-      updated_at: new Date(),
-    },
-    unread_count: 0,
-    status: "archived",
-    created_at: new Date(),
-    updated_at: new Date(),
-  },
-];
-
-const mockMessages: { [conversationId: number]: WhatsAppMessage[] } = {
-  1: [
-    {
-      id: 1,
-      conversation_id: 1,
-      sender_type: "contact",
-      content: "Hola, buenas tardes",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60),
-      updated_at: new Date(),
-    },
-    {
-      id: 2,
-      conversation_id: 1,
-      sender_type: "agent",
-      content:
-        "¡Hola María! Buenas tardes, bienvenida a nuestro servicio de atención.",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 55),
-      updated_at: new Date(),
-    },
-    {
-      id: 3,
-      conversation_id: 1,
-      sender_type: "agent",
-      content: "¿En qué podemos ayudarte hoy?",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 54),
-      updated_at: new Date(),
-    },
-    {
-      id: 4,
-      conversation_id: 1,
-      sender_type: "contact",
-      content:
-        "Estoy buscando una solución CRM para mi empresa, somos una pyme de 50 empleados",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 45),
-      updated_at: new Date(),
-    },
-    {
-      id: 5,
-      conversation_id: 1,
-      sender_type: "agent",
-      content:
-        "¡Perfecto! Tenemos planes especiales para pymes. Nuestro sistema incluye gestión de contactos, seguimiento de leads, integración con WhatsApp y mucho más.",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 40),
-      updated_at: new Date(),
-    },
-    {
-      id: 6,
-      conversation_id: 1,
-      sender_type: "contact",
-      content: "¿Tienen alguna demo disponible?",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 30),
-      updated_at: new Date(),
-    },
-    {
-      id: 7,
-      conversation_id: 1,
-      sender_type: "agent",
-      content:
-        "¡Por supuesto! Puedo agendarte una demo personalizada. ¿Qué día te vendría bien?",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 25),
-      updated_at: new Date(),
-    },
-    {
-      id: 8,
-      conversation_id: 1,
-      sender_type: "contact",
-      content: "Hola, quisiera saber más sobre sus servicios de CRM",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 5),
-      updated_at: new Date(),
-    },
-  ],
-  2: [
-    {
-      id: 201,
-      conversation_id: 2,
-      sender_type: "contact",
-      content: "Buenos días, necesito información sobre precios",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 3),
-      updated_at: new Date(),
-    },
-    {
-      id: 202,
-      conversation_id: 2,
-      sender_type: "agent",
-      content:
-        "Buenos días Carlos! Nuestros planes comienzan desde $99/mes para equipos pequeños.",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 2.5),
-      updated_at: new Date(),
-    },
-    {
-      id: 203,
-      conversation_id: 2,
-      sender_type: "contact",
-      content: "Interesante, ¿pueden enviarme una propuesta formal?",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 2.3),
-      updated_at: new Date(),
-    },
-    {
-      id: 204,
-      conversation_id: 2,
-      sender_type: "agent",
-      content: "Perfecto, te envío la propuesta por email",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 2),
-      updated_at: new Date(),
-    },
-  ],
-  3: [
-    {
-      id: 301,
-      conversation_id: 3,
-      sender_type: "contact",
-      content: "Hola! Vi su página web y me interesó el producto",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 25),
-      updated_at: new Date(),
-    },
-    {
-      id: 302,
-      conversation_id: 3,
-      sender_type: "agent",
-      content: "¡Hola Ana! Gracias por tu interés. ¿Qué te gustaría saber?",
-      message_type: "text",
-      status: "read",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24.5),
-      updated_at: new Date(),
-    },
-    {
-      id: 303,
-      conversation_id: 3,
-      sender_type: "contact",
-      content: "¿Tienen integración con WhatsApp Business API?",
-      message_type: "text",
-      status: "delivered",
-      created_at: new Date(Date.now() - 1000 * 60 * 60 * 24),
-      updated_at: new Date(),
-    },
-  ],
-};
 
 export default function WhatsAppListPage() {
   const { mode } = useContext(ColorModeContext);
   const [selectedConversation, setSelectedConversation] =
-    useState<WhatsAppConversation | null>(null);
+    useState<WhatsAppConversationWithContact | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState<"all" | "unread" | "archived">("all");
-  const [conversations, setConversations] =
-    useState<WhatsAppConversation[]>(mockConversations);
+  const [conversations, setConversations] = useState<WhatsAppConversationWithContact[]>([]);
   const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
-  //Todo : Implementar el setLoading con el backend andando
-  const [loading] = useState(false);
   const [messagesLoading, setMessagesLoading] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false);
   const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 900);
+  const [processingConversations, setProcessingConversations] = useState(false);
+
+  // Refs para mantener valores actualizados en callbacks
+  const selectedConversationRef = useRef(selectedConversation);
+  useEffect(() => {
+    selectedConversationRef.current = selectedConversation;
+  }, [selectedConversation]);
+
+  // Obtener conversaciones del backend filtradas por canal whatsapp
+  const { result: conversationsResult, query: conversationsQuery } = useList<WhatsAppConversation>({
+    resource: "conversations",
+    pagination: { pageSize: 50 },
+    sorters: [{ field: "updated_at", order: "desc" }],
+    filters: [{ field: "channel", operator: "eq", value: "whatsapp" }],
+  });
+
+  const conversationsData = useMemo(() => conversationsResult?.data ?? [], [conversationsResult]);
+  const conversationsLoading = conversationsQuery.isLoading;
+  const refetchConversations = conversationsQuery.refetch;
+
+  // Función para obtener mensajes de una conversación
+  const fetchMessages = useCallback(async (conversationId: number) => {
+    setMessagesLoading(true);
+    try {
+      const response = await httpApi.get(`/conversations/${conversationId}/messages/`);
+      // Los mensajes vienen en el formato del backend
+      const messagesData: WhatsAppMessage[] = response.data.results || response.data;
+      console.log("[WhatsApp] Mensajes cargados:", messagesData.length);
+      setMessages(messagesData);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+      antdMessage.error("Error al cargar los mensajes");
+      setMessages([]);
+    } finally {
+      setMessagesLoading(false);
+    }
+  }, []);
+
+  // Callback para cuando llega un nuevo mensaje via WebSocket
+  // Usa función simple sin parámetros ya que el hook usa refs internamente
+  const handleNewMessage = useCallback(() => {
+    console.log("[WhatsApp] 🔄 Refrescando por nuevo mensaje WebSocket");
+    
+    // Refetch conversaciones para actualizar unread_count y last_message
+    refetchConversations();
+    
+    // Si hay una conversación seleccionada, refetch sus mensajes
+    const currentConversation = selectedConversationRef.current;
+    if (currentConversation) {
+      console.log("[WhatsApp] 📩 Refrescando mensajes de conversación:", currentConversation.id);
+      fetchMessages(currentConversation.id);
+    }
+  }, [refetchConversations, fetchMessages]);
+
+  // Conectar al WebSocket para escuchar mensajes nuevos
+  const { isConnected } = useWhatsAppMessageListener(handleNewMessage);
+
+  // Log del estado de conexión WebSocket
+  useEffect(() => {
+    console.log("[WhatsApp] WebSocket conectado:", isConnected);
+  }, [isConnected]);
 
   // Detectar cambios en el tamaño de la ventana
   useEffect(() => {
@@ -371,29 +96,108 @@ export default function WhatsAppListPage() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Todo: usar cuando conectes con el backend real
-  // const { data: conversationsData, isLoading } = useList<WhatsAppConversation>({
-  //   resource: "whatsapp-conversations",
-  //   pagination: { pageSize: 50 },
-  //   sorters: [{ field: "updated_at", order: "desc" }],
-  // });
+  // Procesar conversaciones del backend y obtener contactos
+  useEffect(() => {
+    const processConversations = async () => {
+      if (!conversationsData || conversationsData.length === 0) {
+        console.log("[WhatsApp] No hay datos de conversaciones");
+        setConversations([]);
+        return;
+      }
 
-  // const { mutate: sendMessage } = useCreate<WhatsAppMessage>();
+      console.log("[WhatsApp] Procesando conversaciones:", conversationsData.length);
+      setProcessingConversations(true);
 
+      try {
+        // Obtener IDs únicos de contactos que necesitamos cargar
+        const contactIdsToFetch = new Set<number>();
+        conversationsData.forEach((conv: WhatsAppConversation) => {
+          if (typeof conv.contact === "number") {
+            contactIdsToFetch.add(conv.contact);
+          }
+        });
+
+        console.log("[WhatsApp] Contactos a cargar:", Array.from(contactIdsToFetch));
+
+        // Cargar todos los contactos en paralelo
+        const contactsMap = new Map<number, Contact>();
+        
+        if (contactIdsToFetch.size > 0) {
+          const contactPromises = Array.from(contactIdsToFetch).map(async (contactId) => {
+            try {
+              const response = await httpApi.get(`/contacts/${contactId}/`);
+              return { id: contactId, data: response.data as Contact };
+            } catch (error) {
+              console.error(`[WhatsApp] Error fetching contact ${contactId}:`, error);
+              return { id: contactId, data: null };
+            }
+          });
+
+          const contactResults = await Promise.all(contactPromises);
+          contactResults.forEach((result) => {
+            if (result.data) {
+              contactsMap.set(result.id, result.data);
+            }
+          });
+        }
+
+        console.log("[WhatsApp] Contactos cargados:", contactsMap.size);
+
+        // Procesar conversaciones con los contactos obtenidos
+        const conversationsWithContacts: WhatsAppConversationWithContact[] = [];
+
+        for (const conv of conversationsData) {
+          let contact: Contact | null = null;
+
+          if (typeof conv.contact === "number") {
+            contact = contactsMap.get(conv.contact) || null;
+          } else if (conv.contact && typeof conv.contact === "object") {
+            contact = conv.contact as Contact;
+          }
+
+          // Si no hay contacto, omitir esta conversación
+          if (!contact) {
+            console.warn(`[WhatsApp] Conversación ${conv.id} sin contacto válido`);
+            continue;
+          }
+
+          // Obtener el último mensaje de la conversación
+          const lastMessage = conv.messages && conv.messages.length > 0
+            ? conv.messages[conv.messages.length - 1]
+            : undefined;
+
+          conversationsWithContacts.push({
+            ...conv,
+            contact,
+            last_message: lastMessage,
+          });
+        }
+
+        console.log("[WhatsApp] Conversaciones procesadas:", conversationsWithContacts.length);
+        setConversations(conversationsWithContacts);
+      } catch (error) {
+        console.error("[WhatsApp] Error procesando conversaciones:", error);
+        antdMessage.error("Error al cargar las conversaciones");
+      } finally {
+        setProcessingConversations(false);
+      }
+    };
+
+    processConversations();
+  }, [conversationsData]);
+
+  // Cargar mensajes cuando se selecciona una conversación
   useEffect(() => {
     if (selectedConversation) {
-      setMessagesLoading(true);
-      // Simular carga de mensajes
-      setTimeout(() => {
-        setMessages(mockMessages[selectedConversation.id] || []);
-        setMessagesLoading(false);
-      }, 300);
+      fetchMessages(selectedConversation.id);
+    } else {
+      setMessages([]);
     }
-  }, [selectedConversation]);
+  }, [selectedConversation, fetchMessages]);
 
-  const handleSelectConversation = (conversation: WhatsAppConversation) => {
+  const handleSelectConversation = (conversation: WhatsAppConversationWithContact) => {
     setSelectedConversation(conversation);
-    // Marcar como leídos
+    // Actualizar unread_count localmente
     setConversations((prev) =>
       prev.map((c) =>
         c.id === conversation.id ? { ...c, unread_count: 0 } : c
@@ -406,68 +210,78 @@ export default function WhatsAppListPage() {
     setSelectedConversation(null);
   };
 
-  const handleSendMessage = (content: string) => {
-    if (!selectedConversation) return;
+  const handleSendMessage = async (content: string) => {
+    if (!selectedConversation || sendingMessage) return;
 
-    const newMessage: WhatsAppMessage = {
-      id: Date.now(),
-      conversation_id: selectedConversation.id,
-      sender_type: "agent",
+    setSendingMessage(true);
+
+    // Crear mensaje optimista para mostrar inmediatamente
+    const optimisticMessage: WhatsAppMessage = {
+      id: Date.now(), // ID temporal
+      conversation: selectedConversation.id,
+      sender_type: "user",
+      sender_id: "", // Se llenará con el ID del usuario actual
       content,
       message_type: "text",
-      status: "sent",
-      created_at: new Date(),
-      updated_at: new Date(),
+      is_read: false,
+      sent_at: new Date().toISOString(),
     };
 
-    // Agregar mensaje localmente
-    setMessages((prev) => [...prev, newMessage]);
+    // Agregar mensaje optimista
+    setMessages((prev) => [...prev, optimisticMessage]);
 
-    // Actualizar última conversación
-    setConversations((prev) =>
-      prev.map((c) =>
-        c.id === selectedConversation.id
-          ? { ...c, last_message: newMessage, updated_at: new Date() }
-          : c
-      )
-    );
+    try {
+      // Enviar mensaje al backend
+      const response = await httpApi.post(
+        `/conversations/${selectedConversation.id}/send_whatsapp/`,
+        {
+          content,
+          message_type: "text",
+        }
+      );
 
-    // Simular cambio de estado del mensaje
-    setTimeout(() => {
+      // Reemplazar mensaje optimista con el real del servidor
+      const serverMessage: WhatsAppMessage = response.data;
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === newMessage.id ? { ...m, status: "delivered" } : m
+        prev.map((m) => (m.id === optimisticMessage.id ? serverMessage : m))
+      );
+
+      // Actualizar last_message en la conversación
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === selectedConversation.id
+            ? { ...c, last_message: serverMessage, updated_at: new Date().toISOString() }
+            : c
         )
       );
-    }, 1000);
-
-    setTimeout(() => {
-      setMessages((prev) =>
-        prev.map((m) => (m.id === newMessage.id ? { ...m, status: "read" } : m))
-      );
-    }, 2500);
-
-    // Todo: enviar al backend real
-    // sendMessage({
-    //   resource: "whatsapp-messages",
-    //   values: {
-    //     conversation_id: selectedConversation.id,
-    //     content,
-    //     message_type: "text",
-    //   },
-    // });
+    } catch (error: unknown) {
+      console.error("Error sending message:", error);
+      
+      // Remover mensaje optimista en caso de error
+      setMessages((prev) => prev.filter((m) => m.id !== optimisticMessage.id));
+      
+      // Mostrar error al usuario
+      const axiosError = error as { response?: { data?: { error?: string } } };
+      const errorMsg = axiosError?.response?.data?.error || "Error al enviar el mensaje";
+      antdMessage.error(errorMsg);
+    } finally {
+      setSendingMessage(false);
+    }
   };
 
   // Determinar si mostrar sidebar o chat en móvil
   const showSidebar = !isMobileView || !selectedConversation;
   const showChat = !isMobileView || selectedConversation;
 
+  // Mostrar loading mientras se cargan o procesan conversaciones
+  const isLoading = conversationsLoading || processingConversations;
+
   return (
     <div className={`${styles.whatsappContainer} ${styles[mode]}`}>
       {showSidebar && (
         <ConversationList
           conversations={conversations}
-          loading={loading}
+          loading={isLoading}
           selectedConversationId={selectedConversation?.id ?? null}
           onSelectConversation={handleSelectConversation}
           searchTerm={searchTerm}
@@ -484,6 +298,8 @@ export default function WhatsAppListPage() {
           loading={messagesLoading}
           onSendMessage={handleSendMessage}
           onBack={isMobileView ? handleBackToList : undefined}
+          isConnected={isConnected}
+          isSending={sendingMessage}
         />
       )}
     </div>

@@ -1,18 +1,18 @@
 import React from "react";
-import { Input, Skeleton, Avatar, Badge } from "antd";
+import { Input, Skeleton, Badge } from "antd";
 import {
   SearchOutlined,
   FilterOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { WhatsAppConversation } from "../../../interfaces/models/whatsapp.interface";
+import { WhatsAppConversationWithContact } from "../../../interfaces/models/whatsapp.interface";
 import styles from "../index.module.css";
 
 interface ConversationListProps {
-  conversations: WhatsAppConversation[];
+  conversations: WhatsAppConversationWithContact[];
   loading: boolean;
   selectedConversationId: number | null;
-  onSelectConversation: (conversation: WhatsAppConversation) => void;
+  onSelectConversation: (conversation: WhatsAppConversationWithContact) => void;
   searchTerm: string;
   onSearchChange: (value: string) => void;
   filter: "all" | "unread" | "archived";
@@ -29,9 +29,10 @@ export const ConversationList: React.FC<ConversationListProps> = ({
   filter,
   onFilterChange,
 }) => {
-  const formatTime = (date: Date) => {
+  // Formatear tiempo usando sent_at (string ISO)
+  const formatTime = (dateStr: string) => {
     const now = new Date();
-    const messageDate = new Date(date);
+    const messageDate = new Date(dateStr);
     const diff = now.getTime() - messageDate.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
@@ -63,12 +64,15 @@ export const ConversationList: React.FC<ConversationListProps> = ({
       `${conv.contact.first_name} ${conv.contact.last_name}`
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
-      conv.contact.whatsapp_number.includes(searchTerm);
+      conv.contact.whatsapp_number?.includes(searchTerm);
 
+    // Mapear status del backend a filtros de UI
+    // Backend: "open" | "closed" | "pending"
+    // UI filters: "all" | "unread" | "archived"
     const matchesFilter =
       filter === "all" ||
       (filter === "unread" && conv.unread_count > 0) ||
-      (filter === "archived" && conv.status === "archived");
+      (filter === "archived" && conv.status === "closed");
 
     return matchesSearch && matchesFilter;
   });
@@ -77,11 +81,20 @@ export const ConversationList: React.FC<ConversationListProps> = ({
     <div className={styles.sidebar}>
       {/* Header */}
       <div className={styles.sidebarHeader}>
-        <Avatar
-          size={40}
-          icon={<UserOutlined />}
-          style={{ backgroundColor: "#00a884" }}
-        />
+        <div
+          style={{
+            width: 40,
+            height: 40,
+            borderRadius: "50%",
+            backgroundColor: "#00a884",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+          }}
+        >
+          <UserOutlined />
+        </div>
         <div className={styles.sidebarHeaderActions}>
           <button title="Filtros">
             <FilterOutlined />
@@ -170,14 +183,16 @@ export const ConversationList: React.FC<ConversationListProps> = ({
                     }`}
                   >
                     {conversation.last_message
-                      ? formatTime(conversation.last_message.created_at)
+                      ? formatTime(conversation.last_message.sent_at)
+                      : conversation.updated_at
+                      ? formatTime(conversation.updated_at)
                       : ""}
                   </span>
                 </div>
 
                 <div className={styles.conversationPreview}>
                   <span className={styles.conversationLastMessage}>
-                    {conversation.last_message?.sender_type === "agent" && "✓ "}
+                    {conversation.last_message?.sender_type === "user" && "✓ "}
                     {conversation.last_message?.content || "Sin mensajes"}
                   </span>
                   {conversation.unread_count > 0 && (
@@ -202,4 +217,3 @@ export const ConversationList: React.FC<ConversationListProps> = ({
 };
 
 export default ConversationList;
-
