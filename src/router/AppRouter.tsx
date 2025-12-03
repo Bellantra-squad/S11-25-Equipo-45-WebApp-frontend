@@ -24,6 +24,10 @@ const CategoryShow = lazy(() => import("../pages/categories/pages/show"));
 const WhatsAppListPage = lazy(() => import("../pages/whatsapp/pages/ListWhatsappMessages"));
 const LeadCreateModal = lazy(()=> import("../pages/leads/pages/create"));
 const LeadEditModal = lazy(()=> import("../pages/leads/pages/edit"));
+const TableViewTags = lazy(()=> import("../pages/tags/pages/list"));
+const TagShow = lazy(()=> import("../pages/tags/pages/show"));
+const TagEdit = lazy(()=> import("../pages/tags/pages/edit"));
+const TagCreatePage = lazy(()=> import("../pages/tags/pages/create"));
 
 export default function AppRouter() {
   return (
@@ -64,6 +68,13 @@ export default function AppRouter() {
 
           <Route path="whatsapp">
             <Route index element={<WhatsAppListPage />} />
+          </Route>
+
+          <Route path="tags">
+            <Route index element={<TableViewTags />} />
+            <Route path="show/:id" element={<TagShow />} />
+            <Route path="create" element={<TagCreatePage />} />
+            <Route path="edit/:id" element={<TagEdit />} />
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />
