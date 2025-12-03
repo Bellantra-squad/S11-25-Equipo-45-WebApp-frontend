@@ -1,12 +1,6 @@
 import { Contact } from "./contact.interface";
+import { AssignedUser } from "./user.interface";
 
-// Interfaz del usuario asignado
-export interface AssignedUser {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-}
 
 // Mensaje de WhatsApp - alineado con MessageSerializer del backend
 export interface WhatsAppMessage {

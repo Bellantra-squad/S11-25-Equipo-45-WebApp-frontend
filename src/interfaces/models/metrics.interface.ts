@@ -32,13 +32,6 @@ export interface LeadsPerformance {
   in_progress: number;
 }
 
-export interface AssignedUser {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  role: string;
-}
 
 export interface RecentTask {
   id: number;
