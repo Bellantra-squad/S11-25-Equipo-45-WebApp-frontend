@@ -1,27 +1,42 @@
 import { Contact } from "./contact.interface";
+import { AssignedUser } from "./user.interface";
 
+
+// Mensaje de WhatsApp - alineado con MessageSerializer del backend
 export interface WhatsAppMessage {
   id: number;
-  conversation_id: number;
-  sender_type: "agent" | "contact"; // 'agent' = nosotros, 'contact' = cliente
+  conversation?: number;
+  sender_type: "user" | "contact"; // 'user' = nosotros, 'contact' = cliente
+  sender_id?: string;
   content: string;
   message_type: "text" | "image" | "audio" | "video" | "document" | "location";
-  media_url?: string;
-  status: "sent" | "delivered" | "read" | "failed";
-  created_at: Date;
-  updated_at: Date;
+  external_message_id?: string;
+  is_read: boolean;
+  sent_at: string;
+  delivered_at?: string | null;
+  read_at?: string | null;
 }
 
+// Conversación de WhatsApp - alineado con ConversationSerializer del backend
 export interface WhatsAppConversation {
   id: number;
+  lead?: number | null;
+  contact?: number | Contact | null;
+  channel: "whatsapp" | "email" | "sms" | "other";
+  subject?: string;
+  status: "open" | "closed" | "pending";
+  assigned_to?: AssignedUser | null;
+  messages?: WhatsAppMessage[];
+  messages_count?: number;
+  unread_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+// Conversación con contacto expandido para la UI
+export interface WhatsAppConversationWithContact extends Omit<WhatsAppConversation, 'contact'> {
   contact: Contact;
   last_message?: WhatsAppMessage;
-  unread_count: number;
-  status: "active" | "archived" | "blocked";
-  assigned_agent_id?: number;
-  assigned_agent_name?: string;
-  created_at: Date;
-  updated_at: Date;
 }
 
 export interface PaginationWhatsAppConversation {
@@ -39,9 +54,27 @@ export interface PaginationWhatsAppMessage {
 }
 
 export interface SendMessageRequest {
-  conversation_id: number;
   content: string;
-  message_type: "text" | "image" | "audio" | "video" | "document" | "location";
-  media_url?: string;
+  message_type?: "text" | "image" | "audio" | "video" | "document" | "location";
 }
 
+// Evento de WebSocket para actividad de mensaje
+export interface WebSocketActivityEvent {
+  type: "activity_created" | "connection_established" | "pong" | "error";
+  data?: {
+    id: number;
+    activity_type: string;
+    description: string;
+    metadata: {
+      message_id?: string;
+      channel?: string;
+      message_type?: string;
+      conversation_id?: number;
+    };
+    lead_id?: number;
+    contact_id?: number;
+    created_at: string;
+  };
+  message?: string;
+  channel?: string;
+}

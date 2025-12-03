@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Input, Avatar, Dropdown, Spin } from "antd";
+import { Input, Avatar, Dropdown, Spin, Tooltip } from "antd";
 import type { MenuProps } from "antd";
 import {
   SearchOutlined,
@@ -13,19 +13,24 @@ import {
   PhoneOutlined,
   VideoCameraOutlined,
   ArrowLeftOutlined,
+  WifiOutlined,
+  DisconnectOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
 import {
-  WhatsAppConversation,
+  WhatsAppConversationWithContact,
   WhatsAppMessage,
 } from "../../../interfaces/models/whatsapp.interface";
 import styles from "../index.module.css";
 
 interface ChatWindowProps {
-  conversation: WhatsAppConversation | null;
+  conversation: WhatsAppConversationWithContact | null;
   messages: WhatsAppMessage[];
   loading: boolean;
   onSendMessage: (content: string) => void;
   onBack?: () => void;
+  isConnected?: boolean;
+  isSending?: boolean;
 }
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -34,6 +39,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   loading,
   onSendMessage,
   onBack,
+  isConnected = false,
+  isSending = false,
 }) => {
   const [messageInput, setMessageInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -47,7 +54,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   }, [messages]);
 
   const handleSend = () => {
-    if (messageInput.trim()) {
+    if (messageInput.trim() && !isSending) {
       onSendMessage(messageInput.trim());
       setMessageInput("");
     }
@@ -60,16 +67,17 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
-  const formatMessageTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString("es-ES", {
+  // Usar sent_at del backend (string ISO) en lugar de created_at
+  const formatMessageTime = (dateStr: string) => {
+    return new Date(dateStr).toLocaleTimeString("es-ES", {
       hour: "2-digit",
       minute: "2-digit",
     });
   };
 
-  const formatDateDivider = (date: Date) => {
+  const formatDateDivider = (dateStr: string) => {
     const now = new Date();
-    const messageDate = new Date(date);
+    const messageDate = new Date(dateStr);
     const diff = now.getTime() - messageDate.getTime();
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
@@ -88,7 +96,15 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
-  const getStatusIcon = (status: WhatsAppMessage["status"]) => {
+  // Estado del mensaje basado en is_read, delivered_at, read_at
+  const getMessageStatus = (message: WhatsAppMessage): "sent" | "delivered" | "read" => {
+    if (message.read_at) return "read";
+    if (message.delivered_at) return "delivered";
+    return "sent";
+  };
+
+  const getStatusIcon = (message: WhatsAppMessage) => {
+    const status = getMessageStatus(message);
     switch (status) {
       case "sent":
         return <CheckOutlined className={styles.sent} />;
@@ -111,11 +127,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     }
   };
 
+  // Agrupar mensajes por fecha usando sent_at
   const groupMessagesByDate = (messages: WhatsAppMessage[]) => {
     const groups: { [key: string]: WhatsAppMessage[] } = {};
 
     messages.forEach((message) => {
-      const date = new Date(message.created_at).toDateString();
+      const date = new Date(message.sent_at).toDateString();
       if (!groups[date]) {
         groups[date] = [];
       }
@@ -158,6 +175,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             <br />
             Selecciona una conversación para comenzar.
           </p>
+          <div style={{ marginTop: 16, fontSize: 12, color: "#8696a0" }}>
+            <Tooltip title={isConnected ? "Conexión en tiempo real activa" : "Sin conexión en tiempo real"}>
+              {isConnected ? (
+                <span style={{ color: "#00a884" }}>
+                  <WifiOutlined /> Conectado
+                </span>
+              ) : (
+                <span style={{ color: "#f5222d" }}>
+                  <DisconnectOutlined /> Desconectado
+                </span>
+              )}
+            </Tooltip>
+          </div>
         </div>
       </div>
     );
@@ -199,6 +229,11 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           </div>
           <div className={styles.chatHeaderStatus}>
             {conversation.contact.whatsapp_number}
+            {isConnected && (
+              <Tooltip title="Conexión en tiempo real activa">
+                <WifiOutlined style={{ marginLeft: 8, color: "#00a884", fontSize: 12 }} />
+              </Tooltip>
+            )}
           </div>
         </div>
 
@@ -230,12 +265,17 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           <div style={{ textAlign: "center", padding: 40 }}>
             <Spin size="large" />
           </div>
+        ) : messages.length === 0 ? (
+          <div style={{ textAlign: "center", padding: 40, color: "#8696a0" }}>
+            <p>No hay mensajes en esta conversación</p>
+            <p style={{ fontSize: 12 }}>Envía un mensaje para comenzar</p>
+          </div>
         ) : (
           Object.entries(messageGroups).map(([date, msgs]) => (
             <div key={date} className={styles.dateGroup}>
               <div className={styles.dateDivider}>
                 <span className={styles.dateDividerLabel}>
-                  {formatDateDivider(new Date(date))}
+                  {formatDateDivider(date)}
                 </span>
               </div>
 
@@ -243,14 +283,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                 <div
                   key={message.id}
                   className={`${styles.messageWrapper} ${
-                    message.sender_type === "agent"
+                    message.sender_type === "user"
                       ? styles.sent
                       : styles.received
                   }`}
                 >
                   <div
                     className={`${styles.messageBubble} ${
-                      message.sender_type === "agent"
+                      message.sender_type === "user"
                         ? styles.sent
                         : styles.received
                     }`}
@@ -260,13 +300,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                     </span>
                     <span className={styles.messageFooter}>
                       <span className={styles.messageTime}>
-                        {formatMessageTime(message.created_at)}
+                        {formatMessageTime(message.sent_at)}
                       </span>
-                      {message.sender_type === "agent" && (
+                      {message.sender_type === "user" && (
                         <span
-                          className={`${styles.messageStatus} ${styles[message.status]}`}
+                          className={`${styles.messageStatus} ${styles[getMessageStatus(message)]}`}
                         >
-                          {getStatusIcon(message.status)}
+                          {getStatusIcon(message)}
                         </span>
                       )}
                     </span>
@@ -298,15 +338,23 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyDown={handleKeyPress}
             autoSize={{ minRows: 1, maxRows: 4 }}
+            disabled={isSending}
           />
         </div>
 
         <button
-          className={`${styles.sendButton} ${messageInput.trim() ? styles.active : ""}`}
+          className={`${styles.sendButton} ${messageInput.trim() && !isSending ? styles.active : ""}`}
           onClick={handleSend}
-          title={messageInput.trim() ? "Enviar mensaje" : "Mensaje de voz"}
+          disabled={isSending}
+          title={isSending ? "Enviando..." : messageInput.trim() ? "Enviar mensaje" : "Mensaje de voz"}
         >
-          {messageInput.trim() ? <SendOutlined /> : <AudioOutlined />}
+          {isSending ? (
+            <LoadingOutlined />
+          ) : messageInput.trim() ? (
+            <SendOutlined />
+          ) : (
+            <AudioOutlined />
+          )}
         </button>
       </div>
     </div>
@@ -314,4 +362,3 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 };
 
 export default ChatWindow;
-

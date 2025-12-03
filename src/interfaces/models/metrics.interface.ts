@@ -2,6 +2,7 @@
  * Interfaz para las métricas del dashboard
  * Basado en los endpoints de /api/docs/#/
  */
+import { AssignedUser } from "./user.interface";
 
 export interface DashboardMetrics {
   active_contacts: number;
@@ -32,13 +33,6 @@ export interface LeadsPerformance {
   in_progress: number;
 }
 
-export interface AssignedUser {
-  id: number;
-  email: string;
-  first_name: string;
-  last_name: string;
-  role: string;
-}
 
 export interface RecentTask {
   id: number;
