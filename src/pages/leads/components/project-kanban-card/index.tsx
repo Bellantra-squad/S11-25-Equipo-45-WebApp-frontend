@@ -158,7 +158,7 @@ export const LeadCard = ({
               {last_contact_date ? new Date(last_contact_date).toLocaleDateString() : "—"}
             </Tag>
           )}
-          {assigned_to.id && (
+          {assigned_to && (
             <Space
               size={2}
               wrap
@@ -171,11 +171,11 @@ export const LeadCard = ({
                 marginRight: "0",
               }}
             >  
-              <Tooltip key={assigned_to.id} title={assigned_to.first_name + " " + assigned_to.last_name}>
-                  <CustomAvatar                
-                name={assigned_to.email}
-                size={25}
-                style={{ display: "inline-flex" }}
+              <Tooltip key={assigned_to?.id} title={assigned_to?.first_name + " " + assigned_to?.last_name}>
+                 <CustomAvatar
+                 
+                  name={assigned_to?.first_name}
+                  last_name={assigned_to?.last_name}
                 />
               </Tooltip>
               

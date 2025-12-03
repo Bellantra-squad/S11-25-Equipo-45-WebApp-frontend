@@ -26,6 +26,7 @@ export const MessageListItem = ({ item }: { item: Message }) => {
     <div style={{ display: "flex", gap: "12px" }}>
       <CustomAvatar
         style={{ flexShrink: 0 }}
+        size={40}
         name={query.isLoading ? "..." : senderName}
       />
 

@@ -22,10 +22,15 @@ export const ContactssHeader = ({ contacts = [] }: Props) => {
             }}
             >
             <Space size={4}>
-                <CustomAvatar                
-                name={contact.first_name + " " + contact.last_name}
-                style={{ display: "inline-flex" }}
-                />
+               <CustomAvatar
+                  style={{
+                    display: "inline-flex",
+                    fontSize: "14px",
+                  }}
+                  size={30}
+                  name={contact?.first_name}
+                  last_name={contact?.last_name}
+                />               
                 {contact.first_name + " " + contact.last_name}
             </Space>
             </Tag>

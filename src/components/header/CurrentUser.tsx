@@ -49,7 +49,7 @@ export const CurrentUser: React.FC = () => {
           style={{ textAlign: "left" }}
           icon={<LogoutOutlined />}
           type="primary"
-          variant="text"     
+          variant="text"
           block
           onClick={() => logout()}
         >
@@ -65,24 +65,20 @@ export const CurrentUser: React.FC = () => {
         placement="bottomRight"
         content={content}
         trigger="click"
-        styles={{ 
-          body: { padding: 0 }, 
-          root: { zIndex: 999 }
-         }}       
+        styles={{
+          body: { padding: 0 },
+          root: { zIndex: 999 },
+        }}
       >
         <CustomAvatar
-          name={user?.email}
-          src= {user?.avatar}
-          size="large"
+          name={user?.first_name}
+          last_name={user?.last_name}
           style={{ cursor: "pointer" }}
+          size="large"
         />
       </Popover>
       {user && (
-        <AccountSettings
-          opened={opened}
-          setOpened={setOpened}
-          user={user}
-        />
+        <AccountSettings opened={opened} setOpened={setOpened} user={user} />
       )}
     </>
   );

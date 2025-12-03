@@ -1,56 +1,67 @@
 import { FC, memo } from "react";
 import type { AvatarProps } from "antd";
-import { Avatar as AntdAvatar } from "antd";
+import { Avatar as AntdAvatar, Skeleton } from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import { useCustomAvatar } from "./useCustomAvatar";
 
 type Props = AvatarProps & {
   name?: string;
+  last_name?: string;
 };
 
-const getNameInitials = (name: string): string => {
-  if (!name) return "?";
+const CustomAvatarComponent: FC<Props> = ({
+  name,
+  last_name,
+  style,
+  size = "small",
+  ...rest
+}) => {
+  const { isLoading, initials, hasInitials, bgColor } = useCustomAvatar({
+    name,
+    last_name,
+  });
 
-  const parts = name.trim().split(" ");
-  if (parts.length === 1) return parts[0][0].toUpperCase();
-
-  return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
-};
-
-const getRandomColorFromString = (str: string): string => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  if (isLoading) {
+    return (
+      <Skeleton.Avatar
+        active
+        size={size === "large" ? "large" : size === "small" ? "small" : "default"}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          border: "none",
+          ...style,
+        }}
+      />
+    );
   }
-  // Genera un color pastel
-  const hue = Math.abs(hash) % 360;
-  return `hsl(${hue}, 70%, 80%)`;
-};
-
-const CustomAvatarComponent: FC<Props> = ({ name = "", src, style, ...rest }) => {
-  const initials = getNameInitials(name);
-  const bgColor = getRandomColorFromString(name);
 
   return (
     <AntdAvatar
       alt={name}
-      src={src}
+      size={size}
+      icon={!hasInitials ? <UserOutlined /> : undefined}
       style={{
-        backgroundColor: src ? "transparent" : bgColor,
-        color: "#333",
+        backgroundColor: bgColor,
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
-        fontWeight: 600,
         border: "none",
         ...style,
       }}
       {...rest}
     >
-      {!src && initials}
+      {hasInitials ? initials : null}
     </AntdAvatar>
   );
 };
 
 export const CustomAvatar = memo(
   CustomAvatarComponent,
-  (prev, next) => prev.name === next.name && prev.src === next.src
+  (prevProps, nextProps) => {
+    return (
+      prevProps.name === nextProps.name &&
+      prevProps.last_name === nextProps.last_name &&
+      prevProps.src === nextProps.src
+    );
+  }
 );

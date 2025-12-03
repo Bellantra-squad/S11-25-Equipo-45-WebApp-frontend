@@ -3,21 +3,17 @@ import { Space, Typography } from "antd";
 import { Conversation } from "../../../interfaces/models/conversation.interface";
 import { MessageListItem } from "./message-list-item";
 
-
 const useLeadConversations = () => {
   const { id: leadId } = useParsed();
 
-  return useList<Conversation>({
-    resource: `leads/${leadId}/conversations`,
-    pagination: { mode: "off" },
-  });
+    return useList<Conversation>({
+      resource: `leads/${leadId}/conversations`,
+      pagination: { mode: "off" },
+    });
 };
 
 export const MessageList = () => {
   const { result: data, query } = useLeadConversations();
-
-
-  
 
   if (query.isLoading) return <p>Cargando mensajes…</p>;
   if (!data?.data?.length) return <p>No hay mensajes.</p>;
