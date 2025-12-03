@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router";
 import { CatchAllNavigate, NavigateToResource } from "@refinedev/react-router";
 import { Authenticated, ErrorComponent } from "@refinedev/core";
@@ -22,6 +22,8 @@ const CategoryEdit = lazy(() => import("../pages/categories/pages/edit"));
 const LeadListPage = lazy(() => import("../pages/leads/pages/list"));
 const CategoryShow = lazy(() => import("../pages/categories/pages/show"));
 const WhatsAppListPage = lazy(() => import("../pages/whatsapp/pages/ListWhatsappMessages"));
+const LeadCreateModal = lazy(()=> import("../pages/leads/pages/create"));
+const LeadEditModal = lazy(()=> import("../pages/leads/pages/edit"));
 
 export default function AppRouter() {
   return (
@@ -56,9 +58,8 @@ export default function AppRouter() {
 
           <Route path="leads">
             <Route index element={<LeadListPage />} />
-            <Route path="create" element={<CategoryCreatePage />} />
-            {/* <Route path="edit/:id" element={<ContactEdit/>} />
-            <Route path="show/:id" element={<ContactsShow />} />  */}
+            <Route path="create" element={<LeadCreateModal />} />
+            <Route path="edit/:id" element={<LeadEditModal/>} />
           </Route>
 
           <Route path="whatsapp">

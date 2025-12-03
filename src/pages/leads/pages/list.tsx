@@ -5,6 +5,7 @@ import {
     useUpdateMany,
     useDelete,
     useNavigation,
+    HttpError,
 } from "@refinedev/core";
 
 import { DragEndEvent } from "@dnd-kit/core";
@@ -15,26 +16,33 @@ import { KanbanItem } from "../components/item";// tu tarjeta real
 import { KanbanAddCardButton } from "../components/KanbanAddCardButton";
 import { KanbanAddStageButton } from "../components/KanbanAddStageButton";
 import { LeadCardMemo, LeadCardSkeleton } from "../components/project-kanban-card";
-import { Lead } from "../../../interfaces/models/lead.interface";
+import { Lead, LeadResponse, LeadUpdate } from "../../../interfaces/models/lead.interface";
 import { LeadStatus } from "../../../interfaces/models/lead-status.interfaces";
+import { ClearOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+
+
+type LeadStageColumn = LeadStatus & {
+    leads: LeadResponse[];
+};
+
 
 export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
     const { create, edit } = useNavigation();
 
     // 1️⃣ ESTADOS DE LEADS (columnas del kanban)
-    const { result: statusData } = useList<LeadStatus>({
+    const { result: statusData, query: qstatus } = useList<LeadStatus>({
         resource: "lead-statuses",
         pagination: { mode: "off" },
     });
 
     // 2️⃣ LEADS (tarjetas dentro de columnas)
-    const { result: leadsData } = useList<Lead>({
+    const { result: leadsData , query: qlead} = useList<LeadResponse>({
         resource: "leads",
         pagination: { mode: "off" },
     });
 
-    const leads: Lead[] = useMemo(
+    const leads: LeadResponse[] = useMemo(
         () => leadsData?.data ?? [],
         [leadsData?.data]
     );
@@ -86,7 +94,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
     }, [leads, statuses]);
 
     // 4️⃣ MUTATIONS
-    const { mutate: updateLead } = useUpdate();
+    const { mutate: updateLead } = useUpdate<Lead, HttpError, LeadUpdate>();
     const { mutate: updateMany } = useUpdateMany();
     const { mutate: deleteStatus } = useDelete();
 
@@ -102,16 +110,22 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
             resource: "leads",
             id: leadId,
             values: {
-                status: newStatusId === null ? null : { id: newStatusId },
+                status_id: newStatusId === null ? 1 :  newStatusId ,
             },
             mutationMode: "pessimistic",
         });
     };
 
 
+   
     // 6️⃣ Add / Edit / Delete columnas
-    const handleAddStage = () => create("lead-status");
-    const handleEditStage = (id: number) => edit("lead-status", id);
+    const handleAddStage = () => {
+        create("lead-status", "replace");
+    };  
+   
+    const handleEditStage = (id: number) => edit("lead-status", id);   
+
+   
     const handleDeleteStage = (id: number) =>
         deleteStatus({
             resource: "lead-status",
@@ -119,23 +133,25 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
         });
 
     // 7️⃣ Context menu de cada columna
-    const getContextMenuItems = (column: any): MenuProps["items"] => {
+    const getContextMenuItems = (column: LeadStageColumn): MenuProps["items"] => {
         const hasItems = column.leads.length > 0;
 
         return [
             {
-                label: "Editar etapa",
+                label: "Edit status",
                 key: "1",
-                onClick: () => handleEditStage(column.id),
+                icon: <EditOutlined />,
+                onClick: () => handleEditStage( column.id ),
             },
             {
                 label: "Vaciar tarjetas",
                 key: "2",
+                icon: <ClearOutlined />,
                 disabled: !hasItems,
                 onClick: () =>
                     updateMany({
                         resource: "leads",
-                        ids: column.leads.map((l: any) => l.id),
+                        ids: column.leads.map((l) => l.id),
                         values: { status: null },
                     }),
             },
@@ -143,13 +159,14 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                 label: "Eliminar etapa",
                 danger: true,
                 key: "3",
+                icon: <DeleteOutlined />,
                 disabled: hasItems,
                 onClick: () => handleDeleteStage(column.id),
             },
         ];
     };
 
-    const isLoading = false;
+    const isLoading = qlead.isLoading || qstatus.isLoading;
 
     if (isLoading) return <PageSkeleton />;
 
@@ -167,7 +184,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                         <KanbanItem
                             id={lead.id}
                             key={lead.id}
-                            data={{ ... lead, statusId: "unassigned" }}
+                            data={{ ... lead }}
                         >
                             <LeadCardMemo {...lead} />
                         </KanbanItem>
@@ -180,7 +197,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                     )}
                 </KanbanColumn>
                     {leadStages.stages?.map((column) => {
-                    const contextMenuItems = getContextMenuItems(column);
+                    const contextMenuItems = getContextMenuItems({...column});
 
                     return (
                         <KanbanColumn
@@ -202,7 +219,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                                 id={lead.id}
                                 data={{
                                     ...lead,
-                                    stageId: column.id,
+                                    id: column.id,
                                 }}
                                 >
                                 <LeadCardMemo {...lead} />
@@ -211,16 +228,12 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                             })}
                         {!column.leads.length && (
                             <KanbanAddCardButton
-                            onClick={() =>
-                                    create("leads")
-                            }
+                                onClick={() => create("leads")}
                             />
                         )}
                         </KanbanColumn>
                     );
-                    })}
-
-                {/* 10️⃣ Botón agregar columna */}
+                    })}           
                 <KanbanAddStageButton onClick={handleAddStage} />
             </KanbanBoard>
 
