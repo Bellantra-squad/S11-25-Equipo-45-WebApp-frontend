@@ -267,4 +267,24 @@ export function useWhatsAppMessageListener(onNewMessage: () => void) {
   });
 }
 
+export const useActivityWebSocket = (onNewActivity: () => void) => {
+  const callbackRef = useRef(onNewActivity);
+
+  useEffect(() => {
+    callbackRef.current = onNewActivity;
+  }, [onNewActivity]);
+
+  const handleMessage = useCallback((event: WebSocketActivityEvent) => {
+    if (event.type === "activity_created") {
+      console.log("📩 Nueva actividad desde WebSocket:", event);
+      callbackRef.current();
+    }
+  }, []);
+
+  return useWebSocket({
+    channel: "activities",
+    onMessage: handleMessage,
+  });
+};
+
 export default useWebSocket;
