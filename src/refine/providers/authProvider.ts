@@ -62,7 +62,26 @@ export const authProvider: AuthProvider = {
       redirectTo: "/login",
     };
   },
-  getPermissions: async () => null,
+   getPermissions: async () => {
+        const token = localStorage.getItem(TOKEN_KEY);
+        if (!token) return null;
+
+        try {
+            const res = await httpApi.get("/users/me/");
+            const user = res.data;
+
+            // Construimos permisos
+            const permissions = [];
+
+            if (user.role) permissions.push(user.role);            
+            if (user.role === "ROLE_ADMIN") permissions.push("admin");
+            if (user.is_superuser) permissions.push("superuser");
+
+            return permissions;
+        } catch {
+            return null;
+        }
+    },
   getIdentity: async () => {
     const token = localStorage.getItem(TOKEN_KEY);
 
@@ -77,8 +96,9 @@ export const authProvider: AuthProvider = {
         email: res.data.email,
         first_name: res.data.first_name,
         last_name: res.data.last_name,
-        role: res.data.role,       
-        avatar: "https://i.pravatar.cc/300",
+        is_active: res.data.is_active,
+        role: res.data.role,
+        is_superuser: res.data.is_superuser        
       };
     } catch {
       return null;

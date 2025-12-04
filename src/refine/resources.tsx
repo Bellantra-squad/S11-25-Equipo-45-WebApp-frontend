@@ -37,11 +37,13 @@ export const resources = [
 
   {
     name: "leads",
-    list: "/leads",
+    list: "/leads",        
+    create: "/leads/create",        
+    edit: "/leads/edit/:id",
     meta: {
-      label: "Leads",
-      icon: <ApartmentOutlined />,
-      order: 3,
+        label: "Leads",
+        icon: <ApartmentOutlined />,
+        order: 3,          
     },
   },
 
@@ -102,10 +104,9 @@ export const resources = [
   {
     name: "tags",
     list: "/tags",
-    create: "/tags",
-    edit: "/tags/:id",
-    show: "/tags/:id",
-    delete: "/tags/:id",
+    create: "/tags/create",
+    edit: "/tags/edit/:id",
+    show: "/tags/show/:id",
     meta: {
       label: "Etiquetas",
       icon: <TagsOutlined />,
@@ -124,20 +125,24 @@ export const resources = [
       label: "Ajustes",
       icon: <SettingOutlined />,
       parent: "admin",
-      authority: ["admin"], // permisos
+      authority: ["admin", "superuser"], // permisos
     },
   },
 
   {
     name: "users",
     list: "/users",
+    create: "/users/create",
+    edit: "/users/edit/:id",
+    show: "/users/show/:id",
     meta: {
-      label: "Usuarios",
-      icon: <TeamOutlined />,
-      parent: "admin",
-      authority: ["admin"],
+        label: "Usuarios",
+        icon: <TeamOutlined />,
+        parent: "admin",
+        authority: ["admin", "superuser"],
     },
   },
+
 
   // Definición de secciones como "contenedores virtuales"
 
@@ -148,4 +153,12 @@ export const resources = [
       icon: <SettingOutlined />,
     },
   },
+
+  //Definicion de recursos que no aparecen en el menu
+    {
+        name: "lead-statuses",
+        create:"/lead-statuses/create",
+        edit:"/lead-statuses/edit/:id",
+        options: { hide: true },
+    },
 ];
