@@ -24,7 +24,7 @@ export interface WhatsAppConversation {
   contact?: number | Contact | null;
   channel: "whatsapp" | "email" | "sms" | "other";
   subject?: string;
-  status: "open" | "closed" | "pending";
+  status: "open" | "closed" | "pending" | "resolved";
   assigned_to?: AssignedUser | null;
   messages?: WhatsAppMessage[];
   messages_count?: number;
