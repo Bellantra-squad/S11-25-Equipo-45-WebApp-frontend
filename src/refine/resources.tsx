@@ -151,6 +151,7 @@ export const resources = [
     meta: {
       label: "Administración",
       icon: <SettingOutlined />,
+      authority: ["admin", "superuser"],
     },
   },
 

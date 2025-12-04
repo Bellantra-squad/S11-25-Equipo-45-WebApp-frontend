@@ -275,10 +275,10 @@ export const useActivityWebSocket = (onNewActivity: () => void) => {
   }, [onNewActivity]);
 
   const handleMessage = useCallback((event: WebSocketActivityEvent) => {
-    if (event.type === "activity_created") {
+     if (event.type === "activity_created") {
       console.log("📩 Nueva actividad desde WebSocket:", event);
       callbackRef.current();
-    }
+     }
   }, []);
 
   return useWebSocket({

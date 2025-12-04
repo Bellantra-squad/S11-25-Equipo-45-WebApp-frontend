@@ -1,7 +1,7 @@
 import { Edit, useForm } from "@refinedev/antd";
 import { Form } from "antd";
-import { UserFormFields } from "../components/user-form-fields";
 import { AssignedUser } from "../../../../interfaces";
+import { UserFormEditFields } from "../components/user-form-edit";
 
 export default function UserEdit() {
   const { formProps, saveButtonProps, query } = useForm<AssignedUser>();    
@@ -9,7 +9,7 @@ export default function UserEdit() {
   return (
    <Edit saveButtonProps={saveButtonProps} isLoading={query?.isLoading}>
       <Form {...formProps} layout="vertical">
-        <UserFormFields />
+        <UserFormEditFields  />
       </Form>
     </Edit>
   );

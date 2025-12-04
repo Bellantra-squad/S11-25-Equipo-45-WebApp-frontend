@@ -1,10 +1,7 @@
 import { Form, Input, Checkbox, Row, Col, Select } from "antd";
 import { Role } from "../../../../interfaces";
-import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 
-
-
-export function UserFormFields() {
+export function UserFormEditFields() {
   return (
     <>
       <Row gutter="2rem">
@@ -66,54 +63,7 @@ export function UserFormFields() {
           >
             <Checkbox />
           </Form.Item>
-        </Col>
-
-        {/* Password y Confirmación */}
-        <Col span={24}>
-          <Form.Item
-            label="Password"
-            name="password"
-            rules={[
-              { required: true, message: "La contraseña es obligatoria" },
-              { min: 6, message: "Debe tener al menos 6 caracteres" },
-            ]}
-            hasFeedback
-          >
-            <Input.Password
-              placeholder="Password"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Confirmación de Password"
-            name="password_confirmation"
-            dependencies={["password"]}
-            hasFeedback
-            rules={[
-              { required: true, message: "Confirma la contraseña" },
-              ({ getFieldValue }) => ({
-                validator(_, value) {
-                  if (!value || getFieldValue("password") === value) {
-                    return Promise.resolve();
-                  }
-                  return Promise.reject(
-                    new Error("Las contraseñas no coinciden")
-                  );
-                },
-              }),
-            ]}
-          >
-            <Input.Password
-              placeholder="Confirmación"
-              iconRender={(visible) =>
-                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
-              }
-            />
-          </Form.Item>
-        </Col>
+        </Col>          
       </Row>     
     </>
   );

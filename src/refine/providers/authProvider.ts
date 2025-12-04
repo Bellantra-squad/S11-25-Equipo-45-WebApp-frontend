@@ -76,7 +76,7 @@ export const authProvider: AuthProvider = {
             if (user.role) permissions.push(user.role);            
             if (user.role === "ROLE_ADMIN") permissions.push("admin");
             if (user.is_superuser) permissions.push("superuser");
-
+            console.log(permissions);
             return permissions;
         } catch {
             return null;

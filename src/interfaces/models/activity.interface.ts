@@ -23,17 +23,10 @@ export enum ActivityType {
 }
 
 export interface Metadata {
-    channel?:      Channel;
+    channel?:      string;
     message_id?:   string;
-    message_type?: MessageType;
+    message_type?: string;
     source?:       string;
     duration?:     number;
 }
 
-export enum Channel {
-    Whatsapp = "whatsapp",
-}
-
-export enum MessageType {
-    Text = "text",
-}

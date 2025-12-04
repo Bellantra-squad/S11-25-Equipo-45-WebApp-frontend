@@ -6,6 +6,7 @@ import { Activity } from "../../../interfaces/models/activity.interface";
 import { CustomAvatar } from "../../header/CustomAvatar";
 import { Text } from "../../base/text";
 import { useActivityWebSocket } from "../../../hooks/useWebSocket";
+import { NotificationMessage } from "./notification-messages";
 
 export const Notifications: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -15,16 +16,15 @@ export const Notifications: React.FC = () => {
   // === LISTADO DE ACTIVIDADES ===
   const { result } = useList<Activity>({
     resource: "activities",
-    pagination: { pageSize: 10 },
+    pagination: { pageSize: 5 },
     sorters: [{ field: "created_at", order: "desc" }],    
     queryOptions: { enabled: open },
   });
 
-  // === FUNCIÓN QUE SE EJECUTA CUANDO LLEGA UNA NUEVA ACTIVIDAD ===
+
   const handleNewActivity = useCallback(() => {
     setIsLoadingNotification(true);
 
-    // Mostrar alerta con Ant Design
     notification.open({
       message: "Nueva actividad registrada",
       description: "Se registró una nueva actividad en tiempo real.",
@@ -33,8 +33,7 @@ export const Notifications: React.FC = () => {
 
     setAlertCount((prev) => prev + 1);
 
-    // efecto visual
-    setTimeout(() => {
+   setTimeout(() => {
       setIsLoadingNotification(false);
     }, 1200);
   }, []);
@@ -54,7 +53,7 @@ export const Notifications: React.FC = () => {
           <CustomAvatar size={48} shape="square" name={audit?.activity_type} />
           <Space direction="vertical" size={0}>
             <Text size="sm">
-              {audit.activity_type}
+              <NotificationMessage audit={audit}></NotificationMessage>
             </Text>
             <Text size="xs" type="secondary">
               {audit.created_at.toString()}
@@ -83,8 +82,6 @@ export const Notifications: React.FC = () => {
       trigger="click"
       onOpenChange={(newOpen) => {
         setOpen(newOpen);
-
-        // si abre, borramos alertas nuevas
         if (newOpen) {
           setAlertCount(0);
         }
