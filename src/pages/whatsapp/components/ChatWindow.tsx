@@ -1,23 +1,24 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import { Input, Avatar, Dropdown, Spin, Tooltip } from "antd";
 import type { MenuProps } from "antd";
 import {
   SearchOutlined,
   MoreOutlined,
-  SmileOutlined,
-  PaperClipOutlined,
-  AudioOutlined,
   SendOutlined,
   CheckOutlined,
   UserOutlined,
-  PhoneOutlined,
-  VideoCameraOutlined,
   ArrowLeftOutlined,
   WifiOutlined,
   DisconnectOutlined,
   LoadingOutlined,
+  InfoOutlined,
+  CiOutlined,
+  CloseOutlined,
+  CheckCircleOutlined,
+  ClockCircleOutlined,
 } from "@ant-design/icons";
 import {
+  WhatsAppConversation,
   WhatsAppConversationWithContact,
   WhatsAppMessage,
 } from "../../../interfaces/models/whatsapp.interface";
@@ -31,6 +32,9 @@ interface ChatWindowProps {
   onBack?: () => void;
   isConnected?: boolean;
   isSending?: boolean;
+  onChangeStatus?: (status: WhatsAppConversation["status"]) => void;
+  onOpenContactInfo?: () => void;
+  onMarkAsRead?: () => void;
 }
 
 export const ChatWindow: React.FC<ChatWindowProps> = ({
@@ -41,9 +45,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   onBack,
   isConnected = false,
   isSending = false,
+  onChangeStatus,
+  onOpenContactInfo,
+  onMarkAsRead,
 }) => {
   const [messageInput, setMessageInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -52,6 +61,12 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Reset búsqueda al cambiar de conversación
+  useEffect(() => {
+    setIsSearchOpen(false);
+    setSearchQuery("");
+  }, [conversation]);
 
   const handleSend = () => {
     if (messageInput.trim() && !isSending) {
@@ -143,12 +158,49 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   };
 
   const contactMenuItems: MenuProps["items"] = [
-    { key: "info", label: "Info del contacto" },
-    { key: "mute", label: "Silenciar notificaciones" },
-    { key: "archive", label: "Archivar chat" },
-    { key: "delete", label: "Eliminar chat" },
-    { key: "block", label: "Bloquear" },
+    { key: "info", label: "Info del contacto", icon: <InfoOutlined /> },
+    {
+      key: "open",
+      label: "Marcar como abierto",
+      icon: <CiOutlined />,
+    },
+    {
+      key: "pending",
+      label: "Marcar como pendiente",
+      icon: <ClockCircleOutlined />,
+    },
+    {
+      key: "resolved",
+      label: "Marcar como resuelto",
+      icon: <CheckCircleOutlined />,
+    },
+    {
+      key: "closed",
+      label: "Marcar como cerrado",
+      icon: <CloseOutlined />,
+    },
   ];
+
+  const handleContactMenuClick: MenuProps["onClick"] = ({ key }) => {
+    if (key === "info") {
+      onOpenContactInfo?.();
+      return;
+    }
+
+    if (["open", "closed", "pending", "resolved"].includes(key)) {
+      onChangeStatus?.(key as WhatsAppConversation["status"]);
+    }
+  };
+
+  const filteredMessages = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) {
+      return messages;
+    }
+    return messages.filter((message) =>
+      message.content.toLowerCase().includes(query)
+    );
+  }, [messages, searchQuery]);
 
   // Empty state
   if (!conversation) {
@@ -193,7 +245,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
     );
   }
 
-  const messageGroups = groupMessagesByDate(messages);
+  const messageGroups = groupMessagesByDate(filteredMessages);
 
   return (
     <div className={styles.chatPanel}>
@@ -202,6 +254,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         {onBack && (
           <button
             onClick={onBack}
+            title="Volver a la lista de conversaciones"
             style={{
               background: "transparent",
               border: "none",
@@ -238,17 +291,14 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
         </div>
 
         <div className={styles.chatHeaderActions}>
-          <button title="Llamar">
-            <PhoneOutlined />
-          </button>
-          <button title="Videollamada">
-            <VideoCameraOutlined />
-          </button>
-          <button title="Buscar">
+          <button
+            title="Buscar en el chat"
+            onClick={() => setIsSearchOpen((prev) => !prev)}
+          >
             <SearchOutlined />
           </button>
           <Dropdown
-            menu={{ items: contactMenuItems }}
+            menu={{ items: contactMenuItems, onClick: handleContactMenuClick }}
             trigger={["click"]}
             placement="bottomRight"
           >
@@ -258,6 +308,19 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           </Dropdown>
         </div>
       </div>
+
+      {isSearchOpen && (
+        <div style={{ padding: "4px 16px", borderBottom: "1px solid #202c33" }}>
+          <Input
+            size="small"
+            allowClear
+            prefix={<SearchOutlined style={{ color: "#8696a0" }} />}
+            placeholder="Buscar en esta conversación"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      )}
 
       {/* Messages */}
       <div className={styles.messagesContainer}>
@@ -321,15 +384,6 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
 
       {/* Input */}
       <div className={styles.inputContainer}>
-        <div className={styles.inputActions}>
-          <button title="Emoji">
-            <SmileOutlined />
-          </button>
-          <button title="Adjuntar">
-            <PaperClipOutlined />
-          </button>
-        </div>
-
         <div className={styles.messageInputWrapper}>
           <Input.TextArea
             placeholder="Escribe un mensaje"
@@ -337,6 +391,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
             value={messageInput}
             onChange={(e) => setMessageInput(e.target.value)}
             onKeyDown={handleKeyPress}
+            onFocus={() => onMarkAsRead?.()}
             autoSize={{ minRows: 1, maxRows: 4 }}
             disabled={isSending}
           />
@@ -346,15 +401,13 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
           className={`${styles.sendButton} ${messageInput.trim() && !isSending ? styles.active : ""}`}
           onClick={handleSend}
           disabled={isSending}
-          title={isSending ? "Enviando..." : messageInput.trim() ? "Enviar mensaje" : "Mensaje de voz"}
+          title={isSending ? "Enviando..." : messageInput.trim() ? "Enviar mensaje" : ""}
         >
           {isSending ? (
             <LoadingOutlined />
           ) : messageInput.trim() ? (
             <SendOutlined />
-          ) : (
-            <AudioOutlined />
-          )}
+          ) : null}
         </button>
       </div>
     </div>

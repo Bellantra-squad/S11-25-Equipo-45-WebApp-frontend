@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback, useMemo, useRef } from "react";
-import { useList } from "@refinedev/core";
+import { useList, useNavigation } from "@refinedev/core";
 import { message as antdMessage } from "antd";
 import {
   WhatsAppConversation,
@@ -16,10 +16,11 @@ import styles from "../index.module.css";
 
 export default function WhatsAppListPage() {
   const { mode } = useContext(ColorModeContext);
+  const { show } = useNavigation();
   const [selectedConversation, setSelectedConversation] =
     useState<WhatsAppConversationWithContact | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filter, setFilter] = useState<"all" | "unread" | "archived">("all");
+  const [filter, setFilter] = useState<"open" | "closed" | "pending" | "resolved">("open");
   const [conversations, setConversations] = useState<WhatsAppConversationWithContact[]>([]);
   const [messages, setMessages] = useState<WhatsAppMessage[]>([]);
   const [messagesLoading, setMessagesLoading] = useState(false);
@@ -60,6 +61,16 @@ export default function WhatsAppListPage() {
       setMessages([]);
     } finally {
       setMessagesLoading(false);
+    }
+  }, []);
+
+  const markContactMessagesAsRead = useCallback(async (contactId: number) => {
+    try {
+      await httpApi.post("/conversations/mark-contact-messages-read/", {
+        contact_id: contactId,
+      });
+    } catch (error) {
+      console.error("[WhatsApp] Error marcando mensajes como leídos:", error);
     }
   }, []);
 
@@ -203,6 +214,11 @@ export default function WhatsAppListPage() {
         c.id === conversation.id ? { ...c, unread_count: 0 } : c
       )
     );
+
+    // Marcar mensajes del contacto como leídos en el backend
+    if (conversation.contact?.id) {
+      markContactMessagesAsRead(conversation.contact.id);
+    }
   };
 
   // Función para volver a la lista en modo móvil
@@ -269,6 +285,59 @@ export default function WhatsAppListPage() {
     }
   };
 
+  const handleChangeConversationStatus = useCallback(
+    async (status: WhatsAppConversation["status"]) => {
+      if (!selectedConversation) return;
+
+      try {
+        const response = await httpApi.patch<WhatsAppConversation>(
+          `/conversations/${selectedConversation.id}/`,
+          { status }
+        );
+
+        const updated = response.data;
+
+        setSelectedConversation((prev) =>
+          prev ? { ...prev, status: updated.status } : prev
+        );
+
+        setConversations((prev) =>
+          prev.map((c) =>
+            c.id === updated.id ? { ...c, status: updated.status } : c
+          )
+        );
+      } catch (error) {
+        console.error("[WhatsApp] Error actualizando estado de conversación:", error);
+        antdMessage.error("Error al actualizar el estado de la conversación");
+      }
+    },
+    [selectedConversation]
+  );
+
+  const handleOpenContactInfo = useCallback(() => {
+    if (!selectedConversation) return;
+    show("contacts", selectedConversation.contact.id);
+  }, [selectedConversation, show]);
+
+  const handleMarkAsReadFromInput = useCallback(() => {
+    if (!selectedConversation?.contact?.id) return;
+
+    // Solo enviar petición si realmente hay mensajes no leídos
+    const hasUnreadMessages = messages.some(
+      (m) => !m.is_read && m.sender_type === "contact"
+    );
+    if (!hasUnreadMessages) return;
+
+    markContactMessagesAsRead(selectedConversation.contact.id);
+
+    // Poner en 0 el contador de no leídos por si todavía queda algo local
+    setConversations((prev) =>
+      prev.map((c) =>
+        c.id === selectedConversation.id ? { ...c, unread_count: 0 } : c
+      )
+    );
+  }, [markContactMessagesAsRead, messages, selectedConversation]);
+
   // Determinar si mostrar sidebar o chat en móvil
   const showSidebar = !isMobileView || !selectedConversation;
   const showChat = !isMobileView || selectedConversation;
@@ -300,6 +369,9 @@ export default function WhatsAppListPage() {
           onBack={isMobileView ? handleBackToList : undefined}
           isConnected={isConnected}
           isSending={sendingMessage}
+          onChangeStatus={handleChangeConversationStatus}
+          onOpenContactInfo={handleOpenContactInfo}
+          onMarkAsRead={handleMarkAsReadFromInput}
         />
       )}
     </div>

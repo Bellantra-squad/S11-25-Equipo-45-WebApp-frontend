@@ -15,8 +15,8 @@ interface ConversationListProps {
   onSelectConversation: (conversation: WhatsAppConversationWithContact) => void;
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  filter: "all" | "unread" | "archived";
-  onFilterChange: (filter: "all" | "unread" | "archived") => void;
+  filter: "open" | "closed" | "pending" | "resolved";
+  onFilterChange: (filter: "open" | "closed" | "pending" | "resolved") => void;
 }
 
 export const ConversationList: React.FC<ConversationListProps> = ({
@@ -66,13 +66,8 @@ export const ConversationList: React.FC<ConversationListProps> = ({
         .includes(searchTerm.toLowerCase()) ||
       conv.contact.whatsapp_number?.includes(searchTerm);
 
-    // Mapear status del backend a filtros de UI
-    // Backend: "open" | "closed" | "pending"
-    // UI filters: "all" | "unread" | "archived"
-    const matchesFilter =
-      filter === "all" ||
-      (filter === "unread" && conv.unread_count > 0) ||
-      (filter === "archived" && conv.status === "closed");
+    // Filtro directo por estado de la conversación
+    const matchesFilter = conv.status === filter;
 
     return matchesSearch && matchesFilter;
   });
@@ -117,22 +112,28 @@ export const ConversationList: React.FC<ConversationListProps> = ({
       {/* Filter tabs */}
       <div className={styles.filterTabs}>
         <button
-          className={`${styles.filterTab} ${filter === "all" ? styles.active : ""}`}
-          onClick={() => onFilterChange("all")}
+          className={`${styles.filterTab} ${filter === "open" ? styles.active : ""}`}
+          onClick={() => onFilterChange("open")}
         >
-          Todos
+          Abiertos
         </button>
         <button
-          className={`${styles.filterTab} ${filter === "unread" ? styles.active : ""}`}
-          onClick={() => onFilterChange("unread")}
+          className={`${styles.filterTab} ${filter === "closed" ? styles.active : ""}`}
+          onClick={() => onFilterChange("closed")}
         >
-          No leídos
+          Cerrados
         </button>
         <button
-          className={`${styles.filterTab} ${filter === "archived" ? styles.active : ""}`}
-          onClick={() => onFilterChange("archived")}
+          className={`${styles.filterTab} ${filter === "pending" ? styles.active : ""}`}
+          onClick={() => onFilterChange("pending")}
         >
-          Archivados
+          Pendientes
+        </button>
+        <button
+          className={`${styles.filterTab} ${filter === "resolved" ? styles.active : ""}`}
+          onClick={() => onFilterChange("resolved")}
+        >
+          Resueltos
         </button>
       </div>
 
