@@ -125,7 +125,7 @@ export const resources = [
       label: "Ajustes",
       icon: <SettingOutlined />,
       parent: "admin",
-      authority: ["admin", "superuser"], // permisos
+      authority: ["admin", "superadmin"], // permisos
     },
   },
 
@@ -139,7 +139,7 @@ export const resources = [
         label: "Usuarios",
         icon: <TeamOutlined />,
         parent: "admin",
-        authority: ["admin", "superuser"],
+        authority: ["admin", "superadmin"],
     },
   },
 
@@ -151,6 +151,7 @@ export const resources = [
     meta: {
       label: "Administración",
       icon: <SettingOutlined />,
+      authority: ["admin", "superadmin"],
     },
   },
 
