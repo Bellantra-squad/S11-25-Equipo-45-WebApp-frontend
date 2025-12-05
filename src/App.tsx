@@ -14,6 +14,7 @@ import { ColorModeContextProvider } from "./contexts/color-mode";
 import { refineOptions } from "./refine/options";
 import { resources } from "./refine/resources";
 import { authProvider, dataProvider } from "./refine/providers";
+import { accessControlProvider } from "./refine/providers/accessControlProvider";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
                 <Refine
                   dataProvider={dataProvider}
                   authProvider={authProvider}
+                  accessControlProvider={accessControlProvider}
                   routerProvider={routerProvider}
                   notificationProvider={useNotificationProvider}
                   resources={resources}

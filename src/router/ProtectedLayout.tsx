@@ -3,6 +3,7 @@ import { ThemedLayout, ThemedSider } from "@refinedev/antd";
 
 import { AppTitle } from "../components/layout/Title";
 import { Header } from "../components";
+import { CanAccess } from "@refinedev/core";
 
 export default function ProtectedLayout() {
   return (
@@ -14,7 +15,9 @@ export default function ProtectedLayout() {
             fixed 
         />
     }>
-      <Outlet />
+      <CanAccess>
+        <Outlet />
+      </CanAccess>      
     </ThemedLayout>
   );
 }

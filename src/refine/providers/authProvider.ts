@@ -76,8 +76,11 @@ export const authProvider: AuthProvider = {
             if (user.role) permissions.push(user.role);            
             if (user.role === "ROLE_ADMIN") permissions.push("admin");
             if (user.is_superuser) permissions.push("superuser");
-            console.log(permissions);
+
+            localStorage.setItem("permissions", JSON.stringify(permissions));
+
             return permissions;
+
         } catch {
             return null;
         }
@@ -90,6 +93,14 @@ export const authProvider: AuthProvider = {
     try {
    
       const res = await httpApi.get("/users/me/");
+
+          // Guardar permisos en localStorage
+      const roles = [];
+      if (res.data.is_superuser) roles.push("superadmin");
+      if (res.data.role) roles.push(res.data.role);
+      if (res.data.role  === "ROLE_ADMIN") roles.push("admin");
+
+      localStorage.setItem("permissions", JSON.stringify(roles));
 
       return {
         id: res.data.id,

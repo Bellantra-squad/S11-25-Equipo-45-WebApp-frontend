@@ -56,7 +56,7 @@ export const Notifications: React.FC = () => {
               <NotificationMessage audit={audit}></NotificationMessage>
             </Text>
             <Text size="xs" type="secondary">
-              {audit.created_at.toString()}
+              {new Date(audit.created_at).toLocaleDateString()}
             </Text>
           </Space>
         </Space>
