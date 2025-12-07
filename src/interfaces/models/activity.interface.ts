@@ -7,6 +7,7 @@ export interface Activity {
     user:          User | null;
     activity_type: ActivityType;
     description:   string;
+    is_read?:      boolean;
     metadata:      Metadata;
     created_at:    Date;
 }
@@ -28,5 +29,12 @@ export interface Metadata {
     message_type?: string;
     source?:       string;
     duration?:     number;
+}
+
+
+export enum propsFilter{
+  All= "all",
+  Read= "read",
+  Unread= "unread"
 }
 
