@@ -37,6 +37,12 @@ const EmailTemplate = lazy(()=> import("../pages/email/pages/templates/list"));
 const TemplateEdit = lazy(()=> import("../pages/email/pages/templates/edit"));
 const TemplateCreatePage = lazy(()=> import("../pages/email/pages/templates/create"));
 const SendEmailTemplatePage = lazy(()=> import("../pages/email/pages/templates/send-email-template"));
+const CalendarPageWrapper = lazy(()=> import("../pages/calender/pages/wrapper"));
+
+const CalendarCreatePage = lazy(()=> import("../pages/calender/pages/create"));
+const TaskListPage = lazy(()=> import("../pages/calender/pages/list"));
+const TaskShowModal = lazy(()=> import("../pages/calender/pages/show"));
+const TaskEdit = lazy(()=> import("../pages/calender/pages/edit"));
 
 export default function AppRouter() {
   return (
@@ -104,6 +110,17 @@ export default function AppRouter() {
           </Route>
 
           <Route path="/email-templates/send" element={<SendEmailTemplatePage />} />
+
+          <Route path="calendar">
+            <Route index element={<CalendarPageWrapper />} />
+          </Route>
+
+          <Route path="tasks">
+            <Route index element={<TaskListPage />} />
+            <Route path="create" element={<CalendarCreatePage />} />
+            <Route path="edit/:id" element={<TaskEdit />} />
+            <Route path="show/:id" element={<TaskShowModal />} />
+          </Route>
 
           <Route path="*" element={<ErrorComponent />} />
         </Route>
