@@ -160,6 +160,18 @@ export const resources = [
         name: "lead-statuses",
         create:"/lead-statuses/create",
         edit:"/lead-statuses/edit/:id",
-        options: { hide: true },
+        meta: {
+          hide: true,
+        }
+    },
+    {
+      name: "email-templates",      
+      list: "/email-templates",
+      create:"/email-templates/create",
+      edit:"/email-templates/edit/:id",
+      meta: {
+        label: "Plantillas de Correo",
+        hide: true,
+      }
     },
 ];
