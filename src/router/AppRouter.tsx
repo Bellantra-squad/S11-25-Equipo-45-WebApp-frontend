@@ -32,6 +32,10 @@ const UsersListPage = lazy(()=> import("../pages/administration/users/pages/list
 const UserCreate = lazy(()=> import("../pages/administration/users/pages/create"));
 const UserEdit = lazy(()=> import("../pages/administration/users/pages/edit"));
 const UserShow = lazy(()=> import("../pages/administration/users/pages/show"));
+const EmailPageWrapper = lazy(()=> import("../pages/email/pages/wrapper"));
+const EmailTemplate = lazy(()=> import("../pages/email/pages/templates/list"));
+const TemplateEdit = lazy(()=> import("../pages/email/pages/templates/edit"));
+const TemplateCreatePage = lazy(()=> import("../pages/email/pages/templates/create"));
 
 export default function AppRouter() {
   return (
@@ -86,6 +90,16 @@ export default function AppRouter() {
             <Route path="show/:id" element={<UserShow />} />
             <Route path="create" element={<UserCreate />} />
             <Route path="edit/:id" element={<UserEdit />} />
+          </Route>
+
+          <Route path="emails">
+            <Route index element={<EmailPageWrapper />} />
+          </Route>
+
+          <Route path="email-templates">
+            <Route index element={<EmailTemplate />} />
+            <Route path="create" element={<TemplateCreatePage />} />
+            <Route path="edit/:id" element={<TemplateEdit />} />
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />
