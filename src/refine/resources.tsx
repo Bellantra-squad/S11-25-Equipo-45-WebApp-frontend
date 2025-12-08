@@ -80,9 +80,9 @@ export const resources = [
   {
     name: "tasks",
     list: "/tasks",
-    create: "/tasks",
-    edit: "/tasks/:id",
-    show: "/tasks/:id",
+    create: "/tasks/create",
+    edit: "/tasks/edit/:id",
+    show: "/tasks/show/:id",
     meta: {
       label: "Tareas",
       icon: <CheckSquareOutlined />,
