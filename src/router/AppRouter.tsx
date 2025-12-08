@@ -36,6 +36,7 @@ const EmailPageWrapper = lazy(()=> import("../pages/email/pages/wrapper"));
 const EmailTemplate = lazy(()=> import("../pages/email/pages/templates/list"));
 const TemplateEdit = lazy(()=> import("../pages/email/pages/templates/edit"));
 const TemplateCreatePage = lazy(()=> import("../pages/email/pages/templates/create"));
+const SendEmailTemplatePage = lazy(()=> import("../pages/email/pages/templates/send-email-template"));
 
 export default function AppRouter() {
   return (
@@ -101,6 +102,8 @@ export default function AppRouter() {
             <Route path="create" element={<TemplateCreatePage />} />
             <Route path="edit/:id" element={<TemplateEdit />} />
           </Route>
+
+          <Route path="/email-templates/send" element={<SendEmailTemplatePage />} />
 
           <Route path="*" element={<ErrorComponent />} />
         </Route>

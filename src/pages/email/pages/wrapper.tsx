@@ -11,7 +11,7 @@ import { EmailPreview } from "../components/email-preview";
 import { emailsByFolder } from "../../../mocks/mockData";
 import { EmailMessage } from "../../../interfaces/internal/email.interface";
 import { AppstoreOutlined, FileSearchOutlined, MoreOutlined } from "@ant-design/icons";
-import { useNavigation } from "@refinedev/core";
+import { useGo, useNavigation } from "@refinedev/core";
 const { Header, Footer, Sider, Content } = Layout;
 
 
@@ -39,7 +39,9 @@ const footerStyle: React.CSSProperties = {
 
   export default function EmailPageWrapper() {
 
-     const { list } = useNavigation();
+  const go = useGo();
+
+  const { list, create } = useNavigation();
   
   const [folder, setFolder] = useState("inbox");
   const [selectedEmail, setSelectedEmail] = useState<EmailMessage | null>(null);
@@ -69,11 +71,20 @@ const footerStyle: React.CSSProperties = {
       <Header className="headerStyle" style={{padding:"0px 10px"}}>
           <Flex  style={{ justifyContent:"space-between", width: "100%", display:"flex", }} align="center">
             <Space>
+              <CreateButton 
+              size="large" 
+              onClick={() => go({ to: "/email-templates/send" })}
+              style={{ marginBottom: "1rem" }}
+              >
+                Enviar Email con plantillas
+              </CreateButton>
+            </Space>
+            <Space>
               <Button
                 type="text"
                 icon={<FileSearchOutlined />}
                 style={{ fontWeight: 500 }}
-                 onClick={() => list("email-templates")}
+                onClick={() => list("email-templates")}
               >
                 Ver Plantillas
               </Button>
@@ -82,19 +93,16 @@ const footerStyle: React.CSSProperties = {
                 type="text"
                 icon={<AppstoreOutlined />}
                 style={{ fontWeight: 500 }}
+                onClick={() => create("email-templates")}
               >
-                Plantillas
+                Crear Plantilla
               </Button>
 
               <Dropdown menu={{ items: menuItems }} trigger={["click"]}>
                 <Button type="text" icon={<MoreOutlined />} />
               </Dropdown>
             </Space>
-            <Space>
-              <CreateButton size="large" style={{ marginBottom: "1rem" }}>
-                Enviar Email con plantillas
-              </CreateButton>
-            </Space>
+            
           </Flex>
         </Header>
       <Layout>
