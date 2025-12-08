@@ -172,6 +172,9 @@ export const resources = [
       meta: {
         label: "Plantillas de Correo",
         hide: true,
+        routes: {
+          send: "/email-templates/send", // ruta personalizada
+        },
       }
     },
 ];
