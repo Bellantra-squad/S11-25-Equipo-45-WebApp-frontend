@@ -28,7 +28,7 @@ const NoTask: React.FC = () => {
         height: "220px",
       }}
     >
-      No Upcoming Tasks
+      No hay Proximas tareas
     </span>
   );
 };
@@ -87,7 +87,7 @@ export const CalendarUpcomingTasks: React.FC<CalendarUpcomingEventsProps> = ({
         field: "due_date",
         operator: "gte",
         value: dayjs().format("YYYY-MM-DD"),
-      }
+      },
     ],
   });
 
@@ -111,7 +111,7 @@ export const CalendarUpcomingTasks: React.FC<CalendarUpcomingEventsProps> = ({
         >
           <CalendarOutlined />
           <Text size="sm" style={{ marginLeft: ".7rem" }}>
-            Upcoming Task
+            Próximas Tareas
           </Text>
         </div>
       }

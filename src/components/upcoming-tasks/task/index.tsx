@@ -8,6 +8,7 @@ import styles from "../index.module.css";
 import { Priority, Task } from "../../../interfaces/models/task.interface";
 import { Text } from "../../base/text";
 import TaskShowDrawer from "../../../pages/calender/pages/show-drawer";
+import { priorityLabels } from "../../../interfaces/constants/task-labels";
 
 type CalendarUpcomingEventProps = {
   item: Task;
@@ -21,7 +22,7 @@ const priorityColorMap: Record<Priority, string> = {
 };
 
 export const CalendarUpcomingTask: React.FC<CalendarUpcomingEventProps> = ({
-  item,
+  item
 }) => {
   const { id, title, priority, due_date } = item;
   const [open, setOpen] = useState(false);
@@ -60,7 +61,7 @@ export const CalendarUpcomingTask: React.FC<CalendarUpcomingEventProps> = ({
             color={priorityColorMap[priority]}
             style={{ marginLeft: "8px", fontSize: "10px" }}
           >
-            {priority.toUpperCase()}
+            {priorityLabels[priority].toUpperCase()}
           </Tag>
         </div>
         <Text ellipsis={{ tooltip: true }} strong className={styles.title}>
@@ -70,7 +71,7 @@ export const CalendarUpcomingTask: React.FC<CalendarUpcomingEventProps> = ({
 
       {/* Modal de show */}
       <TaskShowDrawer
-        task={item}
+        id={item.id}
         open={open}
         onClose={() => setOpen(false)}
       />

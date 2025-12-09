@@ -1,6 +1,6 @@
-import React from "react";
+
+import React, { useState } from "react";
 import {
-  Checkbox,
   Col,
   DatePicker,
   Form,
@@ -11,27 +11,24 @@ import {
   Select,
   TimePicker,
 } from "antd";
-import dayjs from "dayjs";
 import { Priority, Status, Task_Type } from "../../../interfaces/models/task.interface";
 import { User } from "../../../interfaces";
 import { useSelect } from "@refinedev/antd";
+import { priorityLabels, statusLabels, taskTypeLabels } from "../../../interfaces/constants/task-labels";
+import { BaseOption } from "@refinedev/core";
 
-type CalendarFormProps = {
-  isAllDayEvent: boolean;
-  setIsAllDayEvent: (value: boolean) => void;
+type CalendarFormProps = { 
   formProps: FormProps;
   form: FormInstance;
 };
 
-const { RangePicker } = DatePicker;
 
 export const CalendarForm: React.FC<CalendarFormProps> = ({
   form,
   formProps,
-  isAllDayEvent = false,
-  setIsAllDayEvent,
 }) => {
  
+ const [selectedLeadId, setSelectedLeadId] = useState<BaseOption["value"] | null>(null);
 
   const { selectProps: userSelectProps } = useSelect<User>({
     resource: "users",
@@ -39,81 +36,96 @@ export const CalendarForm: React.FC<CalendarFormProps> = ({
     optionValue: "id",
   });
 
-  const rangeDate = form.getFieldsValue()?.rangeDate;
-  const date = form.getFieldsValue()?.date;
 
+  const { selectProps: leadSelectProps, query: leadQuery  } = useSelect({
+    resource: "leads",
+    optionLabel: "company_name",
+    optionValue: "id",
+  });
+
+  const { selectProps: contactSelectProps,  query: contactQuery } = useSelect({
+    resource:  `leads/${selectedLeadId}/contacts`,
+    optionLabel: "email",
+    optionValue: "id",
+    queryOptions: {
+      enabled: !!selectedLeadId, 
+    },
+  });
+  
   return (
-    <Form layout="vertical" form={form} {...formProps}>
+    <Form 
+    layout="vertical"     
+    form={form} 
+    {...formProps}
+     autoComplete="off"
+    >
       {/* Title */}
       <Form.Item
-        label="Title"
+        label="Título"
         name="title"
-        rules={[{ required: true }]}
+        rules={[{ required: true, message: "El Título es obligatorio" }]}
       >
         <Input />
       </Form.Item>
 
       {/* Description */}
       <Form.Item
-        label="Description"
+        label="Descripción"
         name="description"
-        rules={[{ required: true }]}
+        rules={[{ required: true , message: "La Descripción es obligatoria"}]}
       >
-        <Input.TextArea />
-      </Form.Item>
-
-      {/* Date & Time */}
-      <Form.Item label="Date & Time" rules={[{ required: true }]}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Checkbox
-            checked={isAllDayEvent}
-            onChange={(e) => setIsAllDayEvent(e.target.checked)}
-            style={{ marginRight: "1rem" }}
-          >
-            All Day
-          </Checkbox>
-
-          {isAllDayEvent ? (
-            <Form.Item name="rangeDate" rules={[{ required: true }]} noStyle>
-              <RangePicker
-                style={{ width: 416 }}
-                format="YYYY/MM/DD"
-                defaultValue={[dayjs(date), dayjs(date)]}
-              />
-            </Form.Item>
-          ) : (
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <Form.Item name="date" rules={[{ required: true }]} noStyle>
-                <DatePicker
-                  style={{ width: 160 }}
-                  format="YYYY/MM/DD"
-                  defaultValue={dayjs(rangeDate ? rangeDate[0] : undefined)}
-                />
-              </Form.Item>
-              <Form.Item name="time" rules={[{ required: true }]} noStyle>
-                <TimePicker.RangePicker
-                  style={{ width: 240 }}
-                  format="HH:mm"
-                  minuteStep={15}
-                />
-              </Form.Item>
-            </div>
-          )}
-        </div>
+        <Input.TextArea rows={3}  />
       </Form.Item>
 
       <Row gutter={[32, 32]}>
-        {/* Task Type */}
         <Col span={12}>
+      <Form.Item label="Fecha y Hora" rules={[{ required: true }]}>
+        <div style={{ display: "flex", alignItems: "center" }}>        
+              <Form.Item name="date" rules={[{ required: true , message: "La Fecha es obligatoria" }]} noStyle>
+                <DatePicker
+                  style={{ width: 250 }}
+                  format="YYYY/MM/DD"
+                  
+                />
+              </Form.Item>
+              <Form.Item name="time" rules={[{ required: true, message: "La Hora es obligatorio" }]} noStyle>
+                <TimePicker
+                  style={{ width: 160 }}
+                  format="HH:mm"
+                  minuteStep={15}
+                />
+              </Form.Item>            
+        </div>
+      </Form.Item>
+      </Col>
+      <Col span={12}>
           <Form.Item
-            label="Task Type"
-            name="task_type"
+            label="Estado"
+            name="status"
             rules={[{ required: true }]}
           >
             <Select>
+                {Object.values(Status).map((s) => (
+                  <Select.Option key={s} value={s}>
+                    {statusLabels[s]}
+                  </Select.Option>
+                ))}
+              </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row gutter={[32, 32]}>
+        <Col span={12}>
+          <Form.Item
+            label="Tipo de Tarea"
+            name="task_type"
+            rules={[{ required: true }]}
+          >
+             <Select>
               {Object.values(Task_Type).map((type) => (
                 <Select.Option key={type} value={type}>
-                  {type}
+                  {taskTypeLabels[type]}
                 </Select.Option>
               ))}
             </Select>
@@ -123,14 +135,14 @@ export const CalendarForm: React.FC<CalendarFormProps> = ({
         {/* Priority */}
         <Col span={12}>
           <Form.Item
-            label="Priority"
+            label="Prioridad"
             name="priority"
             rules={[{ required: true }]}
           >
             <Select>
-              {Object.values(Priority).map((priority) => (
-                <Select.Option key={priority} value={priority}>
-                  {priority}
+              {Object.values(Priority).map((p) => (
+                <Select.Option key={p} value={p}>
+                  {priorityLabels[p]}
                 </Select.Option>
               ))}
             </Select>
@@ -139,51 +151,55 @@ export const CalendarForm: React.FC<CalendarFormProps> = ({
       </Row>
 
       {/* Status */}
-      <Form.Item
-        label="Status"
-        name="status"
-        rules={[{ required: true }]}
-      >
-        <Select>
-          {Object.values(Status).map((status) => (
-            <Select.Option key={status} value={status}>
-              {status}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+      
 
       <Row gutter={[32, 32]}>
         {/* Lead */}
-        <Col span={12}>
-          <Form.Item
-            label="Lead"
-            name="lead"
-            rules={[{ required: true }]}
-          >
-            <Input type="number" />
-          </Form.Item>
+        <Col span={12}>  
+         <Form.Item
+              label="Lead"
+              name="lead"
+              rules={[{ required: true, message: "Selecciona un lead" }]}
+            >
+              <Select
+                {...leadSelectProps}
+                loading={leadQuery.isLoading}
+                placeholder="Selecciona un lead"
+                onSelect={(value) => {
+                  setSelectedLeadId(value);
+                  form.setFieldsValue({ contact_id: null, });
+                }}
+              />
+            </Form.Item>        
+        
         </Col>
 
         {/* Contact */}
-        <Col span={12}>
-          <Form.Item
-            label="Contact"
-            name="contact"
-            rules={[{ required: true }]}
-          >
-            <Input type="number" />
-          </Form.Item>
+        <Col span={12}>           
+            <Form.Item
+              label="Contacto"
+              name="contact"
+              rules={[{ required: true, message: "Selecciona un contacto" }]}
+            >
+              <Select
+                {...contactSelectProps}
+                loading={contactQuery.isLoading}
+                placeholder="Selecciona un contacto"
+                onSelect={(option) => {
+                  form.setFieldsValue({ to: option.label });
+                }}
+              />
+            </Form.Item>
         </Col>
       </Row>
 
       {/* Assigned To */}
       <Form.Item
-        label="Assigned To"
-        name="assigned_to_id"
-      >
-        <Select allowClear {...userSelectProps} />
+        label="Asignado a"
+        name="assigned_to_id">
+        <Select  {...userSelectProps} />
       </Form.Item>
     </Form>
   );
 };
+

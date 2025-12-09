@@ -7,6 +7,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { Status } from "../../interfaces/models/task.interface";
+import { statusLabels } from "../../interfaces/constants/task-labels";
 
 
 const statusVariant: Record<Status, { color: string; icon: ReactElement }> = {
@@ -39,7 +40,7 @@ export const StatusTaskTag: FC<Props> = ({ status }) => {
       color={statusVariant[status].color}
       icon={statusVariant[status].icon}
     >
-      {status.toLowerCase()}
+     {statusLabels[status].toLowerCase()} 
     </Tag>
   );
 };

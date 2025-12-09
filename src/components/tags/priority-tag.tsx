@@ -7,6 +7,7 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import { Priority } from "../../interfaces/models/task.interface";
+import { priorityLabels } from "../../interfaces/constants/task-labels";
 
 
 const priorityVariant: Record<Priority, { color: string; icon: ReactElement }> = {
@@ -39,7 +40,7 @@ export const PriorityTag: FC<Props> = ({ priority }) => {
       color={priorityVariant[priority].color}
       icon={priorityVariant[priority].icon}
     >
-      {priority.toLowerCase()}
+      {priorityLabels[priority]}
     </Tag>
   );
 };
