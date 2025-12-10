@@ -30,6 +30,8 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
     const { create, edit } = useNavigation();
 
+    // const go = useGo();
+
     // 1️⃣ ESTADOS DE LEADS (columnas del kanban)
     const { result: statusData, query: qstatus } = useList<LeadStatus>({
         resource: "lead-statuses",
@@ -39,7 +41,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
     // 2️⃣ LEADS (tarjetas dentro de columnas)
     const { result: leadsData , query: qlead} = useList<LeadResponse>({
         resource: "leads",
-        pagination: { mode: "off" },
+        pagination: { pageSize:50},
     });
 
     const leads: LeadResponse[] = useMemo(
@@ -62,22 +64,22 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
         const unassignedStage = leads.filter((l) => !l.status);
 
-        const winLead = leads.filter((lead) => lead.status.name === "Ganado (Cliente)");
+        // const winLead = leads.filter((lead) => lead.status.name === "Ganado (Cliente)");
 
-        const lostLead = leads.filter((lead) => lead.status.name === "Perdido");
+        // const lostLead = leads.filter((lead) => lead.status.name === "Perdido");
 
         const filteredStages = leads.filter(
             (lead) =>
-                lead.status.name !== "No asignado" &&
-                lead.status.name !== "Ganado (Cliente)" &&
-                lead.status.name !== "Perdido"
+                lead.status.name !== "No asignado" 
+                // lead.status.name !== "Ganado (Cliente)" &&
+                // lead.status.name !== "Perdido"
         );
 
         const filteredStatus = statuses.filter(
             (s) =>
-                s.name !== "No asignado" &&
-                s.name !== "Ganado (Cliente)" &&
-                s.name !== "Perdido"
+                s.name !== "No asignado" 
+                // s.name !== "Ganado (Cliente)" &&
+                // s.name !== "Perdido"
         );
 
         const stages = filteredStatus.map((status) => ({
@@ -87,15 +89,15 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
         return {
             unassignedStage,
-            winLead,
-            lostLead,
+            // winLead,
+            // lostLead,
             stages,
         };
     }, [leads, statuses]);
 
     // 4️⃣ MUTATIONS
     const { mutate: updateLead } = useUpdate<Lead, HttpError, LeadUpdate>();
-    const { mutate: updateMany } = useUpdateMany();
+    const { mutate: updateManyLead } = useUpdateMany();
     const { mutate: deleteStatus } = useDelete();
 
     // 5️⃣ Drag & Drop
@@ -115,22 +117,30 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
             mutationMode: "pessimistic",
         });
     };
-
-
-   
-    // 6️⃣ Add / Edit / Delete columnas
-    const handleAddStage = () => {
-        create("lead-status", "replace");
+    
+    const handleAddStage = () => {       
+        create("lead-statuses", "replace");
     };  
    
-    const handleEditStage = (id: number) => edit("lead-status", id);   
+    const handleEditStage = (id: number) => edit("lead-statuses", id,  "replace");   
 
    
     const handleDeleteStage = (id: number) =>
         deleteStatus({
-            resource: "lead-status",
+            resource: "lead-statuses",
             id,
         });
+
+    const handleClearCards = (args: { leads: number[] }) => {
+        updateManyLead({
+        resource: "leads",
+        ids: args.leads,
+        values: {
+            status_id: 1,
+        },
+        successNotification: false,
+        });
+    };
 
     // 7️⃣ Context menu de cada columna
     const getContextMenuItems = (column: LeadStageColumn): MenuProps["items"] => {
@@ -138,25 +148,23 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
         return [
             {
-                label: "Edit status",
+                label: "Editar Estado",
                 key: "1",
                 icon: <EditOutlined />,
                 onClick: () => handleEditStage( column.id ),
             },
             {
-                label: "Vaciar tarjetas",
+                label: "Reiniciar Ciclo",
                 key: "2",
                 icon: <ClearOutlined />,
                 disabled: !hasItems,
                 onClick: () =>
-                    updateMany({
-                        resource: "leads",
-                        ids: column.leads.map((l) => l.id),
-                        values: { status: null },
-                    }),
+                handleClearCards({
+                    leads: column.leads.map((task) => task.id),
+                }),
             },
             {
-                label: "Eliminar etapa",
+                label: "Eliminar Estado",
                 danger: true,
                 key: "3",
                 icon: <DeleteOutlined />,
@@ -172,31 +180,8 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
     return (
         <>
-            <KanbanBoard onDragEnd={handleOnDragEnd}>
-                {/* 8️⃣ Columna sin asignar */}
-                <KanbanColumn
-                    id="unassigned"
-                    title="Sin estado"
-                    count={leadStages.unassignedStage.length || 0}
-                    onAddClick={() => create("leads")}
-                >
-                    {leadStages.unassignedStage.map((lead) => (
-                        <KanbanItem
-                            id={lead.id}
-                            key={lead.id}
-                            data={{ ... lead }}
-                        >
-                            <LeadCardMemo {...lead} />
-                        </KanbanItem>
-                    ))}
-
-                    {!leadStages.unassignedStage.length && (
-                        <KanbanAddCardButton
-                            onClick={() => create("leads")}
-                        />                       
-                    )}
-                </KanbanColumn>
-                    {leadStages.stages?.map((column) => {
+            <KanbanBoard onDragEnd={handleOnDragEnd}>            
+                {leadStages.stages?.map((column) => {
                     const contextMenuItems = getContextMenuItems({...column});
 
                     return (
@@ -204,6 +189,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                         key={column.id}
                         id={column.id}
                         title={column.name}
+                        color={column.color}
                         count={column.leads.length}
                         contextMenuItems={contextMenuItems}
                          onAddClick={() =>

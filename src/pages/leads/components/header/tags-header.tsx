@@ -28,5 +28,5 @@ export const TagsHeader = ({  tags = [] }: Props) => {
     );
   }
 
-  return <Typography.Link>Agregar Tags</Typography.Link>;
+  return <Typography.Link>Agregar Etiquetas</Typography.Link>;
 };

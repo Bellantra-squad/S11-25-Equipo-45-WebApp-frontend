@@ -32,7 +32,7 @@ export const TaskCalendar: React.FC<CalendarProps> = ({
   task_type,
   status,
 }) => {
-  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [selectedId, setSelectedId] = useState<number>();
   const [showModal, setShowModal] = useState(false);
 
   const filteredTasks = tasks.filter((task) => {
@@ -53,8 +53,9 @@ export const TaskCalendar: React.FC<CalendarProps> = ({
             key={task.id}
             style={{ cursor: "pointer" }}
             onClick={() => {
-              setSelectedTask(task);
-              setShowModal(true);
+              if (task){
+              setSelectedId(task.id);
+              setShowModal(true);}
             }}
           >
             <Badge status={getStatusColor(task.status)} text={task.title} />
@@ -71,11 +72,12 @@ export const TaskCalendar: React.FC<CalendarProps> = ({
       />
 
       {/* Modal de show */}
-      <TaskShowDrawer
-        task={selectedTask}
+      {selectedId && (
+        <TaskShowDrawer
+        id={selectedId}
         open={showModal}
         onClose={() => setShowModal(false)}
-      />
+      />)}
     </Card>
   );
 };

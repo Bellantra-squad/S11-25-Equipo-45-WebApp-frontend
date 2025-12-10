@@ -51,7 +51,7 @@ export const TagsForm = ({ initialValues, cancelForm }: Props) => {
         {...formProps}
         initialValues={initialValues}      
       >
-        <Form.Item label="Tags" name="tag_ids">
+        <Form.Item label="Etiquetas" name="tag_ids">
           <Select {...selectProps} mode="multiple" style={{ width: "100%" }} />
         </Form.Item>
       </Form>
@@ -59,10 +59,10 @@ export const TagsForm = ({ initialValues, cancelForm }: Props) => {
 
       <Space>
         <Button type="default" onClick={cancelForm}>
-          Cancel
+          Cancelar
         </Button>
         <Button {...saveButtonProps} type="primary">
-          Save
+          Guardar
         </Button>
       </Space>
     </div>

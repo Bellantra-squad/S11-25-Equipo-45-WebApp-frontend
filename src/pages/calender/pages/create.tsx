@@ -1,22 +1,21 @@
-import React, { useState } from "react";
-import { useForm } from "@refinedev/antd";
+import React from "react";
+import { Create, SaveButton, useForm } from "@refinedev/antd";
 import { HttpError, useNavigation } from "@refinedev/core";
-import { Modal } from "antd";
 import dayjs from "dayjs";
 import { TaskRequest } from "../../../interfaces/models/task.interface";
 import { CalendarForm } from "../components/calendar-form";
+import { Button, Space } from "antd";
+import { CloseOutlined, ReloadOutlined, UnorderedListOutlined } from "@ant-design/icons";
 
 type FormValues = TaskRequest & {
-  rangeDate?: [dayjs.Dayjs, dayjs.Dayjs];
   date?: dayjs.Dayjs;
-  time?: [dayjs.Dayjs, dayjs.Dayjs];
+  time?: dayjs.Dayjs;
 };
 
 const CalendarCreatePage: React.FC = () => {
-  const [isAllDayEvent, setIsAllDayEvent] = useState(false);
   const { list } = useNavigation();
 
-  const { formProps, saveButtonProps, form, onFinish } = useForm<
+  const { formProps, saveButtonProps, form, onFinish, query } = useForm<
     TaskRequest,
     HttpError,
     TaskRequest
@@ -25,18 +24,15 @@ const CalendarCreatePage: React.FC = () => {
   });
 
   const handleOnFinish = async (values: FormValues) => {
-    const { rangeDate, date, time, ...otherValues } = values;
+    const { date, time, ...otherValues } = values;
 
     let dueDate = dayjs();
 
-    if (rangeDate) {
-      // si selecciona un rango, tomamos el final como fecha límite
-      dueDate = rangeDate[1].endOf("day");
-    } else if (date && time) {
+    if (date && time) {
       // si selecciona fecha + hora
       dueDate = date
-        .set("hour", time[1].hour())
-        .set("minute", time[1].minute())
+        .set("hour", time.hour())
+        .set("minute", time.minute())
         .set("second", 0);
     }
 
@@ -48,30 +44,40 @@ const CalendarCreatePage: React.FC = () => {
   };
 
   return (
-    <Modal
-      title="Create Task"
-      open
-      onCancel={() => {
-        list("tasks");
-      }}
-      okButtonProps={{
-        ...saveButtonProps,
-      }}
-      okText="Save"
-      width={560}
+    <Create title="Crear Tarea"
+     saveButtonProps={saveButtonProps}     
+    isLoading={query?.isLoading}     
+    headerButtons={() => (
+      <Space>
+        <Button icon={<ReloadOutlined />} onClick={() => query?.refetch()}>
+          Refrescar
+        </Button>
+        <Button icon={<UnorderedListOutlined />} onClick={() => list("tasks")}>
+          Listar
+        </Button>
+      </Space>
+    )}
+      footerButtons={({ saveButtonProps }) => (
+        <Space>
+          <Button icon={<CloseOutlined />} onClick={() => list("tasks", "replace")}>
+            Cancelar
+          </Button>
+          <SaveButton {...saveButtonProps}>Guardar</SaveButton>
+        </Space>
+      )}
     >
-      <CalendarForm
-        isAllDayEvent={isAllDayEvent}
-        setIsAllDayEvent={setIsAllDayEvent}
+   
+      <CalendarForm  
         form={form}
         formProps={{
           ...formProps,
           onFinish: handleOnFinish,
         }}
       />
-    </Modal>
+    </Create>
   );
 };
 
-
 export default CalendarCreatePage;
+
+

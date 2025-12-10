@@ -18,6 +18,8 @@ import { TagsForm } from "../components/form/tags-form";
 import { MessageList } from "../components/messages-list";
 import { DetailsForm } from "../components/form/details-form";
 import { DetailsHeader } from "../components/header/details-header";
+import { UserHeader } from "../components/header/user-header";
+import { UserLeadForm } from "../components/form/user-form";
 
 const LeadEditModal = () => {
   const [activeKey, setActiveKey] = useState<string | undefined>();
@@ -80,11 +82,32 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
                 fallback={<DescriptionHeader description={lead?.notes} />}
                 isLoading={query.isLoading}
                 icon={<AlignLeftOutlined />}
-                label="Description"
+                label="Descripción"
             >
                  <DescriptionForm
                     initialValues={{notes: lead!.notes }}
                     cancelForm={() => setActiveKey(undefined)}
+                />
+            </Accordion>
+            <Accordion
+                accordionKey="user"
+                activeKey={activeKey}
+                setActive={setActiveKey}
+                fallback={<UserHeader user={lead?.assigned_to} />}
+                isLoading={query.isLoading}
+                icon={<UserOutlined />}
+                label="Asignar Usuario"
+            >
+                <UserLeadForm
+                initialValues={{
+                    userId: lead?.assigned_to
+                    ? {
+                        label: `${lead.assigned_to.first_name} ${lead.assigned_to.last_name}`,
+                        value: lead.assigned_to.id,
+                      }
+                    : undefined,                            
+                }}
+                cancelForm={() => setActiveKey(undefined)}
                 />
             </Accordion>
 
@@ -97,7 +120,7 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
             }
             isLoading={query.isLoading}
             icon={<UserOutlined />}
-            label="Lead Details"
+            label="Detalles del Lead"
         >
             <DetailsForm
                 initialValues={{
@@ -114,13 +137,13 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
         </Accordion>
 
             <Accordion
-                accordionKey="Contactos"
+                accordionKey="contact"
                 activeKey={activeKey}
                 setActive={setActiveKey}
                 fallback={<ContactssHeader contacts={lead?.contacts} />}
                 isLoading={query.isLoading}
                 icon={<UsergroupAddOutlined />}
-                label="Users"
+                label="Contactos"
             >
                 <ContactsForm
                 initialValues={{
@@ -129,18 +152,19 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
                     value: contact.id,
                     })),
                 }}
+                leadId={lead!.id}
                 cancelForm={() => setActiveKey(undefined)}
                 />
             </Accordion>
 
             <Accordion
-            accordionKey="categories"
+            accordionKey="tasg"
             activeKey={activeKey}
             setActive={setActiveKey}
             fallback={<TagsHeader tags={lead?.tags} />}
             isLoading={query.isLoading}
             icon={<TagsOutlined />}
-            label="Tags & Categories"
+            label="Etiquetas"
             >
             <TagsForm
                 initialValues={{               

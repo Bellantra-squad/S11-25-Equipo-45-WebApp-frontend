@@ -1,8 +1,9 @@
-import { useTable, List } from "@refinedev/antd";
-import type { HttpError, LogicalFilter } from "@refinedev/core";
+import { useTable, List, CreateButton } from '@refinedev/antd';
+import { useGo, useNavigation, type HttpError, type LogicalFilter } from '@refinedev/core';
 import { Button, Form, Input, Select, Space } from "antd";
 import { Status, Task, Task_Type } from "../../../interfaces/models/task.interface";
 import { TableViewTasks } from "../components/table-view-task";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 
 interface ISearch {
   search?: string;
@@ -57,6 +58,9 @@ export default function TaskListPage() {
     },
   });
 
+  const { create } = useNavigation();
+  const go = useGo();
+
   const handleResetFilters = () => {
     searchFormProps.form?.resetFields();
     setFilters([], "replace");
@@ -64,7 +68,26 @@ export default function TaskListPage() {
 
   return (
     <div className="page-container">
-      <List>
+      <List     
+      title="Lista de Tareas"
+      headerButtons={() => (
+        <Space>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => window.history.back()}
+          >
+            Atrás
+          </Button>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => go({ to: "/calendar" })} 
+          >
+            Ver Calendario
+          </Button>
+          <CreateButton onClick={() => create("tasks")}>Crear Tarea</CreateButton>
+        </Space>
+      )}
+      >
         <Form {...searchFormProps} style={{ marginBottom: 16 }}>
           <Space.Compact>
             <Form.Item name="search">

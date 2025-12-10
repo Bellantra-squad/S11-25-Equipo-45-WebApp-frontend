@@ -18,7 +18,7 @@ export const KanbanAddCardButton: FC<PropsWithChildren<Props>> = ({
       size="large"
       icon={<PlusSquareOutlined className="md" />}
       style={{
-        margin: "16px",
+        margin: "10px",
       }}
       onClick={onClick}
     >

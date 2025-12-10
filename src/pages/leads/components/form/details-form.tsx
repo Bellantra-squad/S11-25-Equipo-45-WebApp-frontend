@@ -25,44 +25,36 @@ export const DetailsForm = ({ initialValues, cancelForm }: Props) => {
         onMutationSuccess: cancelForm,
     });
 
-    // Categories
     const { selectProps: categorySelectProps } = useSelect({
         resource: "categories",
         optionLabel: "name",
         optionValue: "id",
-    });
-
-    // Assigned user
-    const { selectProps: userSelectProps } = useSelect({
-        resource: "users",
-        optionLabel: "email",
-        optionValue: "id",
+        pagination:{pageSize:20}
     });
 
     return (
-        <div style={{ display: "flex", width: "100%" }}>
+        <div style={{ display: "flex", flexDirection:"column", width: "100%" }}>
             <Form 
                 {...formProps} 
                 style={{ width: "100%" }} 
                 initialValues={initialValues}
             >
-                <Form.Item label="Industry" name="industry">
+                <Form.Item label="Industria" name="industry">
                     <Input />
                 </Form.Item>
 
-                <Form.Item label="Website" name="website">
-                    <Input />
+                <Form.Item label="Sitio Web" name="website"
+                rules={[                   
+                    { type: "url", message: "Debe ser una URL válida (ej: https://ejemplo.com)" },
+                ]}>
+                    <Input placeholder="https://ejemplo.com" />
                 </Form.Item>
 
-                <Form.Item label="Category" name="category_id">
+                <Form.Item label="Categoria" name="category_id">
                     <Select {...categorySelectProps} />
                 </Form.Item>
 
-                <Form.Item label="Assigned To" name="assigned_to_id">
-                    <Select {...userSelectProps} />
-                </Form.Item>
-
-                <Form.Item label="Lead Source" name="lead_source">
+                <Form.Item label="Origen del Lead" name="lead_source">
                     <Select>
                         <Select.Option value="cold_call">Cold Call</Select.Option>
                         <Select.Option value="referral">Referral</Select.Option>
@@ -75,15 +67,23 @@ export const DetailsForm = ({ initialValues, cancelForm }: Props) => {
                     <InputNumber style={{ width: "100%" }} />
                 </Form.Item>
 
-                <Form.Item label="Estimated Value" name="estimated_value">
+                <Form.Item label="Valor estimado" name="estimated_value">
                     <Input />
                 </Form.Item>
             </Form>
-
-            <Space style={{ marginLeft: 12 }}>
-                <Button onClick={cancelForm}>Cancel</Button>
-                <Button type="primary" {...saveButtonProps}>Save</Button>
-            </Space>
+            <div
+                    style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "end",
+                    marginTop: "12px",
+                    }}
+                >
+                <Space >
+                    <Button onClick={cancelForm}>Cancelar</Button>
+                    <Button type="primary" {...saveButtonProps}>Guardar</Button>
+                </Space>
+            </div>           
         </div>
     );
 };

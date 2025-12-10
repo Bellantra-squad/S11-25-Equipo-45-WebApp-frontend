@@ -37,9 +37,9 @@ export const resources = [
 
   {
     name: "leads",
-    list: "/leads",        
-    create: "/leads/create",        
-    edit: "/leads/edit/:id",
+    list: "/kanbas/leads",        
+    create: "/kanbas/leads/create",        
+    edit: "/kanbas/leads/edit/:id",
     meta: {
         label: "Leads",
         icon: <ApartmentOutlined />,
@@ -158,8 +158,8 @@ export const resources = [
   //Definicion de recursos que no aparecen en el menu
     {
         name: "lead-statuses",
-        create:"/lead-statuses/create",
-        edit:"/lead-statuses/edit/:id",
+        create:"/kanbas/leads/lead-statuses/create",
+        edit:"/kanbas/leads/lead-statuses/edit/:id",
         meta: {
           hide: true,
         }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { CreateButton } from "@refinedev/antd";
 import { useNavigation, useList } from "@refinedev/core";
 
-import { Button, Col, Row, Space, Skeleton } from "antd";
+import { Button, Col, Row, Space, Skeleton } from 'antd';
 import { CalendarUpcomingTasks } from "../../../components/upcoming-tasks";
 
 import { Task, Task_Type, Status } from "../../../interfaces/models/task.interface";
@@ -27,39 +27,41 @@ const CalendarPageWrapper: React.FC<React.PropsWithChildren> = ({ children }) =>
   const tasks = data?.data ?? [];
 
   return (
-    <div className="page-container">
+    <div>
       <Row gutter={[32, 32]}>
-        <Col xs={24} xl={6}>
-          <Space.Compact>
-            <CreateButton
-              size="large"
-              onClick={() => create("tasks")}
-              style={{ marginBottom: "1rem" }}
-            >
-              Create Tarea
-            </CreateButton>
+        <Col xs={24} xl={6} >
+        <Space style={{display:"flex", justifyContent:"center" , width:"100%"}}>
+            <Space.Compact >
+              <CreateButton
+                size="large"
+                onClick={() => create("tasks")}
+                style={{ marginBottom: "1rem"}}
+              >
+                Crear Tarea
+              </CreateButton>
 
-            <Button
-              size="large"
-              icon={<UnorderedListOutlined />}
-              onClick={() => list("tasks")}
-              style={{ marginBottom: "1rem" }}
-            >
-              Ver listado
-            </Button>
-          </Space.Compact>
+              <Button
+                size="large"
+                icon={<UnorderedListOutlined />}
+                onClick={() => list("tasks")}
+                style={{ marginBottom: "1rem" }}
+              >
+                Tareas
+              </Button>
+            </Space.Compact>
+          </Space>
 
           <CalendarUpcomingTasks
             limit={3}
             cardProps={{ style: { marginBottom: "1rem" } }}
           />
 
-          {/* Componente de tipos de tareas */}
           <CalendarTaskTypes
             onChange={(e) => {
-              const value = e.target.value as Task_Type;
+              const value = e.target.value as Task_Type | null;
               setSelectedTaskType(value);
             }}
+            cardProps={{ style: { marginBottom: "1rem" } }}
           />
 
           {/* Componente de status */}

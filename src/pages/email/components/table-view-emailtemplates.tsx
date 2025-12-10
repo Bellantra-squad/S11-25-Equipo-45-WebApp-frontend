@@ -30,7 +30,7 @@ export const TableViewEmailTemplates: React.FC<Props> = ({ tableProps, filters, 
       resource: "users",
       optionLabel: "email",
       optionValue: "id",
-      pagination: { mode: "off" },
+      pagination: { pageSize: 50 },
     });
 
   return (

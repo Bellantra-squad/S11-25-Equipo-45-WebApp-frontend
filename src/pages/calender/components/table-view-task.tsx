@@ -12,6 +12,7 @@ import type { TableProps } from "antd";
 import { Task, Task_Type, Priority, Status } from "../../../interfaces/models/task.interface";
 import { PriorityTag } from "../../../components/tags/priority-tag";
 import { StatusTaskTag } from "../../../components/tags/status-task-tag";
+import { UserTag } from "../../../components/tags/user-tag";
 
 type Props = {
   tableProps: TableProps<Task>;
@@ -26,37 +27,50 @@ export const TableViewTasks: React.FC<Props> = ({ tableProps, filters, sorters }
       pagination={{
         ...tableProps.pagination,
         pageSizeOptions: ["10", "20", "50"],
-        showTotal: (total) => `${total} Tasks`,
+        showTotal: (total) => `${total} Tareas`,
       }}
       rowKey="id"
     >
       <Table.Column<Task>
         dataIndex="title"
-        title="Title"      
+        title="Título"      
         render={(value: string) => <span>{value}</span>}
       />
 
-      <Table.Column<Task>
+       <Table.Column<Task>
         dataIndex="description"
-        title="Description"
-        render={(value: string) => <span>{value}</span>}
+        title="Descripción"        
+        render={(value: string) => (
+            <span
+            style={{
+                display: "-webkit-box",
+                WebkitLineClamp: 2,       // máximo 2 líneas
+                WebkitBoxOrient: "vertical",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "normal",     // permite salto de línea
+            }}
+            >
+            {value}
+            </span>
+        )}
       />
 
       <Table.Column<Task>
         dataIndex="task_type"
-        title="Task Type"
+        title="Tipo"
         render={(value: Task_Type) => <span>{value}</span>}
       />
 
       <Table.Column<Task>
         dataIndex="priority"
-        title="Priority"
+        title="Prioridad"
         render={(value: Priority) => <PriorityTag priority={value} />}
         />
 
       <Table.Column<Task>
         dataIndex="status"
-        title="Status"
+        title="Estado"
          defaultFilteredValue={getDefaultFilter("is_active", filters)}
         filterDropdown={(props) => (
           <FilterDropdown {...props}>
@@ -77,13 +91,23 @@ export const TableViewTasks: React.FC<Props> = ({ tableProps, filters, sorters }
       <Table.Column<Task>
         dataIndex="due_date"
         defaultSortOrder={getDefaultSortOrder("due_date", sorters)}
-        title="Due Date"
+        title="Vencimiento"
         render={(value: Date) => <span>{new Date(value).toLocaleDateString()}</span>}
       />
+ 
+      <Table.Column<Task>
+      dataIndex={["assigned_to"]}
+      title="Asignado a"      
+      render={(_, record) => {        
+        return (  
+          (record.assigned_to &&  <UserTag user={record!.assigned_to} />)         
+        );
+      }}
+    />
 
       <Table.Column<Task>
         fixed="right"
-        title="Actions"
+        title="Acciones"
         dataIndex="actions"
         render={(_, record) => (
           <Space>

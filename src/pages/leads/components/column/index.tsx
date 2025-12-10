@@ -165,6 +165,7 @@ import { Lead } from "../../../../interfaces/models/lead.interface";
 type Props = {
   id: string | number;
   title: string;
+  color: string;
   description?: ReactNode;
   count: number;
   data?: Lead;
@@ -177,6 +178,7 @@ export const KanbanColumn: FC<PropsWithChildren<Props>> = ({
   children,
   id,
   title,
+  color,
   description,
   count,
   data,
@@ -191,7 +193,10 @@ export const KanbanColumn: FC<PropsWithChildren<Props>> = ({
 
   return (
     <div ref={setNodeRef} className={cn(styles.container, styles[variant])}>
-      <div className={styles.header}>
+      <div className={styles.header} 
+      style={{
+          borderBottom: `4px solid ${color}`,          
+        }}>
         <div className={styles.title}>
           <Text size="xs" strong style={{ textTransform: "uppercase" }}>
             {title}
@@ -200,7 +205,10 @@ export const KanbanColumn: FC<PropsWithChildren<Props>> = ({
           <div className={styles.titleContainer}>          
 
             {!!count && (
-              <div className={styles.count}>
+              <div className={styles.count}  
+              style={{
+              backgroundColor: `${color}`,         
+            }}>
                 <Text size="xs">{count}</Text>
               </div>
             )}

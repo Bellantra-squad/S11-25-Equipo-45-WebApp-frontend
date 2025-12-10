@@ -11,7 +11,7 @@ export const ModalFooter = () => {
         list("leads", "replace");
       }}
     >
-      Delete card
+      Eliminar Lead
     </DeleteButton>
   );
 };
