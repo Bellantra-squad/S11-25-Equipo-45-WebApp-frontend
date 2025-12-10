@@ -10,7 +10,11 @@ export default function ContactsCreate() {
     const { formProps, saveButtonProps } = useForm<ContactRequest>();
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create title="Crear Contactos"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar", 
+        }} >
       <Form {...formProps} layout="vertical">
         <ContactFormFields />
       </Form>

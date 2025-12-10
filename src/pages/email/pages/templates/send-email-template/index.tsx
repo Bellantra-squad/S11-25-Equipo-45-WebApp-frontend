@@ -1,10 +1,11 @@
-import { Layout, Form, Input, Button, Select, Skeleton, Splitter } from "antd";
-import { BaseOption, useCreate, useOne } from "@refinedev/core";
+import { Layout, Form, Input, Button, Select, Skeleton, Splitter, Space } from "antd";
+import { BaseOption, useCreate, useNavigation, useOne } from "@refinedev/core";
 import { useState } from "react";
 import { useSelect } from "@refinedev/antd";
 import Title from "antd/es/typography/Title";
 import { TemplatePreview } from "../../../components/template-preview";
 import { Contact } from "../../../../../interfaces/models/contact.interface";
+import { ArrowLeftOutlined, FileSearchOutlined, MailOutlined } from "@ant-design/icons";
 
 interface SendEmailParams {
   to: string;
@@ -18,8 +19,11 @@ export default function SendEmailTemplatePage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<BaseOption["value"] | null>(null);
   const [selectedLeadId, setSelectedLeadId] = useState<BaseOption["value"] | null>(null);
 
+  const { Header, Content } = Layout;
+
   // Mutación para enviar email
   const { mutate } = useCreate();
+  const { list } = useNavigation();
 
   // Usar useSelect para poblar el dropdown
   const { selectProps, query: templatesQuery} = useSelect<{ id: number; name: string }>({
@@ -65,12 +69,46 @@ export default function SendEmailTemplatePage() {
   const isLoadingSelects = templatesQuery?.isLoading || leadQuery?.isLoading;
 
   return (
-     <Layout style={{ padding: "24px", background: "#fff" }}>
-      <div style={{ marginBottom: "24px" }}>
-        <Title level={3}>Enviar Plantilla de Email</Title>
-      </div>
+    <Layout style={{ height: "100vh" }}>
+      {/* Header con botones */}
+      <Header style={{ 
+        padding:"1rem", 
+        display: "flex",
+        justifyContent: "space-between", 
+        alignItems: "center", 
+        background: "transparent",
+        borderBottom: "1px solid #dddddd"
+         }}>
+        <Title level={4} style={{ margin: 0 }}>
+          Enviar Plantilla de Email
+        </Title>
+         <Space>
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => window.history.back()}
+          >
+            Atrás
+          </Button>
+          <Button
+            type="text"
+            icon={<MailOutlined />}
+            onClick={() => list("emails")}
+          >
+            Bandeja de entrada
+          </Button>
+          <Button
+            type="text"
+            icon={<FileSearchOutlined />}
+            onClick={() => list("email-templates")}
+          >
+            Ver plantillas
+          </Button>
+        </Space>
+      </Header>
 
-      <Layout style={{ background: "#fff", display: "flex" }}>
+      <Content style={{ padding: "24px" }}>
+        <Layout style={{ display: "flex" }}>
          <Splitter >
             <Splitter.Panel style={{borderRight: "1px solid #dddddd", paddingRight:"20px"}}>
           {isLoadingSelects ? (
@@ -157,7 +195,8 @@ export default function SendEmailTemplatePage() {
             />
           </Splitter.Panel>
         </Splitter>
-      </Layout>
+        </Layout>
+      </Content>
     </Layout>
   );
 }

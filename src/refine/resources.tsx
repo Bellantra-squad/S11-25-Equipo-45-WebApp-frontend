@@ -167,6 +167,7 @@ export const resources = [
     {
       name: "email-templates",      
       list: "/email-templates",
+      show: "/email-templates/show/:id",
       create:"/email-templates/create",
       edit:"/email-templates/edit/:id",
       meta: {

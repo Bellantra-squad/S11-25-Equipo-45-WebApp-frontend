@@ -1,20 +1,21 @@
-import { useTable, List } from "@refinedev/antd";
-import type { HttpError, LogicalFilter } from "@refinedev/core";
-import { Button, Form, Input, Select, Space } from "antd";
+import { useTable, List, CreateButton } from "@refinedev/antd";
+import { useNavigation, type HttpError, type LogicalFilter } from "@refinedev/core";
+import { Button, Form, Input, Space } from "antd";
 
 import { Category } from "../../../interfaces/models/category.interface";
 import { TableViewCategories } from "../components/table-view";
+import { ArrowLeftOutlined, FolderOutlined } from "@ant-design/icons";
+import { Text } from "../../../components/base/text";
 
 interface ISearch {
-  name?: string;
-  color?: string;
+  search?: string;
 }
 
 export default function CategoryListPage() {
+    const { create } = useNavigation();  
     const {
         tableProps,
-        searchFormProps,
-        filters,
+        searchFormProps,        
         sorters,
         setFilters,
     } = useTable<Category, HttpError, ISearch>({
@@ -26,33 +27,11 @@ export default function CategoryListPage() {
                     order: "asc",
                 },
             ],
-        },
-        filters: {
-            initial: [
-                {
-                    field: "name",
-                    operator: "contains",
-                    value: undefined,
-                },
-                {
-                  field: "description",
-                  value: undefined,
-                  operator: "contains",
-                },
-                {
-                  field: "color",
-                  value: undefined,
-                  operator: "eq",
-                },
-            ],
-        },
+        },        
         onSearch: (values) => {
             const f: LogicalFilter[] = [];
-                if (values.name) {
-                    f.push({ field: "name", operator: "contains", value: values.name });
-                }
-                if (values.color) {
-                    f.push({ field: "color", operator: "eq", value: values.color });
+                if (values.search) {
+                    f.push({ field: "search", operator: "contains", value: values.search });
                 }
             return f;
         },
@@ -65,35 +44,40 @@ export default function CategoryListPage() {
 
   return (
     <div className="page-container">
-      <List>
-
- <Form {...searchFormProps} style={{ marginBottom: 16, justifyContent: "flex-end" }}>
-     <Space.Compact>
-        <Form.Item name="name">
-          <Input.Search
-            placeholder="Buscar por nombre"
-            allowClear
-            onSearch={() => searchFormProps.form?.submit()}
-          />
-        </Form.Item>
-        <Form.Item name="color">
-            <Select
-                placeholder="Filtrar por color"
-                style={{ width: 160 }}
-                options={[
-                { value: "#1677ff", label: "Azul" },
-                { value: "#ff0000", label: "Rojo" },
-                ]}
-                onChange={() => searchFormProps.form?.submit()} 
-            />
-        </Form.Item>
-         <Button onClick={handleResetFilters} type="default">
-            Limpiar filtros
-          </Button>
-        </Space.Compact>
-        
-      </Form>
-        <TableViewCategories tableProps={tableProps} filters={filters} sorters={sorters} />
+      <List
+        title={
+          <Space size="middle" style={{ marginTop:"5px"}}>
+            <FolderOutlined />
+            <Text size="lg">Listado de Categorías</Text>
+          </Space>
+        }
+        headerButtons={() => (
+          <Space>
+            <Button
+              icon={<ArrowLeftOutlined />}
+              onClick={() => window.history.back()}
+            >
+              Atrás
+            </Button>           
+            <CreateButton onClick={() => create("categories")}>Crear Categorías</CreateButton>
+          </Space>
+        )}
+      >
+        <Form {...searchFormProps} style={{ marginBottom: 16, justifyContent: "flex-end" }}>
+          <Space.Compact>
+              <Form.Item name="search">
+                <Input.Search
+                  placeholder="Buscar por categoría"
+                  allowClear
+                  onSearch={() => searchFormProps.form?.submit()}
+                />
+              </Form.Item>             
+              <Button onClick={handleResetFilters} type="default">
+                  Limpiar filtros
+                </Button>
+              </Space.Compact>              
+          </Form>
+              <TableViewCategories tableProps={tableProps} sorters={sorters} />
       </List>
     </div>
   );

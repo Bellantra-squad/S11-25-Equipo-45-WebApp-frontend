@@ -6,7 +6,7 @@ import { HttpError, useNavigation, useShow, useUpdate } from "@refinedev/core";
 import { Modal, Skeleton, Typography } from "antd";
 import { Lead, LeadUpdate } from "../../../interfaces/models/lead.interface";
 import { ModalFooter } from "../components/modal-footer";
-import { AlignLeftOutlined, EditOutlined, TagsOutlined, UsergroupAddOutlined, UserOutlined } from "@ant-design/icons";
+import { AlignLeftOutlined, EditOutlined, MenuUnfoldOutlined, TagsOutlined, UsergroupAddOutlined, UserOutlined } from "@ant-design/icons";
 import { StageForm } from "../components/form/stage-form";
 import { Accordion } from "../components/accordion";
 import { DescriptionHeader } from "../components/header/description-header";
@@ -119,7 +119,7 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
                 <DetailsHeader {...lead}  />
             }
             isLoading={query.isLoading}
-            icon={<UserOutlined />}
+            icon={<MenuUnfoldOutlined />}
             label="Detalles del Lead"
         >
             <DetailsForm
@@ -178,8 +178,7 @@ const { mutate: updateMutation } = useUpdate<Lead, HttpError,LeadUpdate>();
             </Accordion>
 
            <div
-            style={{
-                backgroundColor: "#fcfbfb",
+            style={{                
                 padding: "24px",
                 display: "flex",
                 flexDirection: "column",

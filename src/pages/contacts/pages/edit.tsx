@@ -7,7 +7,11 @@ export default function ContactEdit() {
   const { formProps, saveButtonProps, query } = useForm<Contact>();    
 
   return (
-   <Edit saveButtonProps={saveButtonProps} isLoading={query?.isLoading}>
+   <Edit title="Editar Contactos"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar", 
+        }} isLoading={query?.isLoading}>
       <Form {...formProps} layout="vertical">
         <ContactFormFields />
       </Form>

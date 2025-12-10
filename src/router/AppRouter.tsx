@@ -44,6 +44,7 @@ const TaskShowModal = lazy(()=> import("../pages/calender/pages/show"));
 const TaskEdit = lazy(()=> import("../pages/calender/pages/edit"));
 const KanbanCreateStage = lazy(()=> import("../pages/leads/pages/create-status"));
 const KanbanEditStage = lazy(()=> import("../pages/leads/pages/edit-status"));
+const EmailTemplateShow = lazy(()=> import("../pages/email/pages/templates/show"));
 
 export default function AppRouter() {
   return (
@@ -111,6 +112,7 @@ export default function AppRouter() {
             <Route index element={<EmailTemplate />} />
             <Route path="create" element={<TemplateCreatePage />} />
             <Route path="edit/:id" element={<TemplateEdit />} />
+            <Route path="show/:id" element={<EmailTemplateShow />} />
           </Route>
 
           <Route path="/email-templates/send" element={<SendEmailTemplatePage />} />

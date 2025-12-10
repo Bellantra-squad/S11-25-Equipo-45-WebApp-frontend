@@ -1,23 +1,21 @@
 import {
   DeleteButton,
   EditButton,
-  FilterDropdown,
-  getDefaultFilter,
   getDefaultSortOrder,
   ShowButton,
 } from "@refinedev/antd";
-import { CrudFilters, CrudSorting } from "@refinedev/core";
-import { Table, Input, Select, Space } from "antd";
+import { CrudSorting } from "@refinedev/core";
+import { Table, Space } from "antd";
 import type { TableProps } from "antd";
 import { Category } from "../../../interfaces/models/category.interface";
 
 type Props = {
   tableProps: TableProps<Category>;
-  filters: CrudFilters;
+  
   sorters: CrudSorting;
 };
 
-export const TableViewCategories: React.FC<Props> = ({ tableProps, filters, sorters }) => {
+export const TableViewCategories: React.FC<Props> = ({ tableProps, sorters }) => {
   return (
     <Table
       {...tableProps}
@@ -30,34 +28,15 @@ export const TableViewCategories: React.FC<Props> = ({ tableProps, filters, sort
     >
       <Table.Column<Category>
         dataIndex="name"
-        title="Name"
-        defaultFilteredValue={getDefaultFilter("name", filters)}
-        defaultSortOrder={getDefaultSortOrder("name", sorters)}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search Name" />
-          </FilterDropdown>
-        )}
+        title="Nombre"
+        sorter
+        defaultSortOrder={getDefaultSortOrder("name", sorters)}       
         render={(value: string) => <span>{value}</span>}
       />
 
       <Table.Column<Category>
         dataIndex="description"
-        title="Descripción"
-        defaultFilteredValue={getDefaultFilter("description", filters)}
-        defaultSortOrder={getDefaultSortOrder("description", sorters)}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Select
-              placeholder="Filtrar por color"
-              style={{ width: 160 }}
-              options={[
-                { value: "#1677ff", label: "Azul" },
-                { value: "#ff0000", label: "Rojo" },
-              ]}
-            />
-          </FilterDropdown>
-        )}
+        title="Descripción"       
         render={(value: string) => <span>{value}</span>}
       />
 
@@ -83,7 +62,7 @@ export const TableViewCategories: React.FC<Props> = ({ tableProps, filters, sort
 
       <Table.Column<Category>
         fixed="right"
-        title="Actions"
+        title="Acciones"
         dataIndex="actions"
         render={(_, record) => (
           <Space>

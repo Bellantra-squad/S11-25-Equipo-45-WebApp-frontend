@@ -7,7 +7,11 @@ export default function UserEdit() {
   const { formProps, saveButtonProps, query } = useForm<AssignedUser>();    
 
   return (
-   <Edit saveButtonProps={saveButtonProps} isLoading={query?.isLoading}>
+   <Edit title="Editar Usuario"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar"}}
+        isLoading={query?.isLoading}>
       <Form {...formProps} layout="vertical">
         <UserFormEditFields  />
       </Form>

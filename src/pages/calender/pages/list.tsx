@@ -20,15 +20,16 @@ export default function TaskListPage() {
     setFilters,
   } = useTable<Task, HttpError, ISearch>({
     resource: "tasks",
-    pagination: { pageSize: 10 },
+    pagination: { pageSize: 10 },    
     sorters: {
       initial: [
         {
           field: "due_date",
           order: "desc",
-        },
+        },      
       ],
-    },
+      
+    },    
     filters: {
       initial: [       
         {

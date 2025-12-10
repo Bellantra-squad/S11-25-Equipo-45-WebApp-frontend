@@ -9,7 +9,12 @@ export default function TemplateCreatePage() {
     const { formProps, saveButtonProps } = useForm<EmailRequest>();
 
     return (
-        <Create saveButtonProps={saveButtonProps}>
+        <Create 
+        title="Crear Plantilla de Correo"  
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar", 
+        }}>
         <Form {...formProps} layout="horizontal"  labelCol={{ span: 4 }}
         wrapperCol={{ span: 20 }} style={{ maxWidth: 800 }}>
             <TemplateForm />
