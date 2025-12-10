@@ -35,7 +35,6 @@ export const DescriptionForm = ({ initialValues, cancelForm }: Props) => {
     <>
       <Form {...formProps} initialValues={initialValues} layout="vertical">
         <Form.Item
-          label="Notas"
           name="notes"
         >
           <Input.TextArea rows={8} placeholder="Write a description..." />
@@ -51,12 +50,12 @@ export const DescriptionForm = ({ initialValues, cancelForm }: Props) => {
         }}
       >
         <Space>
-          <Button type="default" onClick={cancelForm}>
-            Cancel
+          <Button  type="default" onClick={cancelForm}>
+            Cancelar
           </Button>
 
           <Button type="primary" {...saveButtonProps}>
-            Save
+            Guardar
           </Button>
         </Space>
       </div>

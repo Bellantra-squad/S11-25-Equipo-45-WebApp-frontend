@@ -7,6 +7,7 @@ import { Lead } from "../../../interfaces/models/lead.interface";
 import { useSearchParams } from "react-router";
 import { LeadStatus } from "../../../interfaces/models/lead-status.interfaces";
 import { Tag } from "../../../interfaces/models/tag.interface";
+import { User } from "../../../interfaces";
 
 
 
@@ -31,7 +32,7 @@ const LeadCreateModal = () => {
     //Usuario asignado
     const { selectProps: userSelectProps } = useSelect({
         resource: "users",
-        optionLabel: "email",
+        optionLabel: (user: User) => `${user.first_name} ${user.last_name}`,
         optionValue: "id",
     });
 
@@ -75,15 +76,19 @@ const LeadCreateModal = () => {
       >
         <Row>
           <Col span={24} style={{ padding: '0 8px' }}>
-            <Form.Item label="Nombre de la compañía" name="company_name" rules={[{ required: true }]}>
+            <Form.Item label="Nombre de la compañía" name="company_name" rules={[{ required: true, message:"El nombre de la compañia es Obligatorio" }]}>
               <Input  />
             </Form.Item>          
           </Col>         
         </Row>
         <Row>
           <Col span={12} style={{ padding: '0 8px' }}>
-             <Form.Item label="Website" name="website">
-              <Input />
+             <Form.Item label="Website" name="website"
+              rules={[
+                      { required: true, message: "El sitio web es obligatorio" },
+                      { type: "url", message: "Debe ser una URL válida (ej: https://ejemplo.com)" },
+                  ]}>
+                <Input placeholder="https://ejemplo.com" />
             </Form.Item>          
           </Col>
           <Col span={12} style={{ padding: '0 8px' }}> 
@@ -95,12 +100,16 @@ const LeadCreateModal = () => {
 
          <Row>
           <Col span={12} style={{ padding: '0 8px' }}>
-            <Form.Item label="Estado" name="status_id" rules={[{ required: true }]}>
+            <Form.Item 
+            label="Estado" 
+            name="status_id" 
+            rules={[{ required: true, message:"El estado es obligatorio" }]}
+            >
               <Select {...statusSelectProps} placeholder="Seleccione el estado"/>
             </Form.Item>         
           </Col>
           <Col span={12} style={{ padding: '0 8px' }}> 
-             <Form.Item label="Asignar Usuario" name="assigned_to_id" rules={[{ required: true }]}>
+             <Form.Item label="Asignar Usuario" name="assigned_to_id" rules={[{ required: true, message:"El usuario es obligatorio"  }]}>
               <Select {...userSelectProps} placeholder="Seleccione un usuario" />
             </Form.Item>
           </Col>
@@ -108,7 +117,7 @@ const LeadCreateModal = () => {
 
          <Row>
           <Col span={24} style={{ padding: '0 8px' }}>
-            <Form.Item label="Category"   name="category_id" rules={[{ required: true }]}>
+            <Form.Item label="Category"   name="category_id" rules={[{ required: true , message:"La categoria es obligatorio" }]}>
               <Select {...categorySelectProps} placeholder="Seleccione la categoria"/>
             </Form.Item>          
           </Col>         
@@ -124,7 +133,7 @@ const LeadCreateModal = () => {
         
          <Row>
           <Col span={8} style={{ padding: '0 8px' }}>
-             <Form.Item label="Origen del Lead" name="lead_source" rules={[{ required: true }]}>
+             <Form.Item label="Origen del Lead" name="lead_source" rules={[{ required: true, message:"El Origen es obligatorio"  }]}>
               <Select placeholder="Seleccione un Origen">
                   <Select.Option value="cold_call">Cold Call</Select.Option>
                   <Select.Option value="referral">Referral</Select.Option>
@@ -139,7 +148,7 @@ const LeadCreateModal = () => {
           </Form.Item>
           </Col>
           <Col span={8} style={{ padding: '0 8px' }}> 
-            <Form.Item label="Estimated Value" name="estimated_value">
+            <Form.Item label="Valor Estimado" name="estimated_value">
               <Input />
             </Form.Item>
           </Col>

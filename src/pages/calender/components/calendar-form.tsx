@@ -16,6 +16,7 @@ import { User } from "../../../interfaces";
 import { useSelect } from "@refinedev/antd";
 import { priorityLabels, statusLabels, taskTypeLabels } from "../../../interfaces/constants/task-labels";
 import { BaseOption } from "@refinedev/core";
+import { Contact } from "../../../interfaces/models/contact.interface";
 
 type CalendarFormProps = { 
   formProps: FormProps;
@@ -32,8 +33,9 @@ export const CalendarForm: React.FC<CalendarFormProps> = ({
 
   const { selectProps: userSelectProps } = useSelect<User>({
     resource: "users",
-    optionLabel: "email",
+    optionLabel: (user: User) => `${user.first_name} ${user.last_name}`,
     optionValue: "id",
+    pagination:{pageSize:50}
   });
 
 
@@ -41,11 +43,12 @@ export const CalendarForm: React.FC<CalendarFormProps> = ({
     resource: "leads",
     optionLabel: "company_name",
     optionValue: "id",
+    pagination:{pageSize:50}
   });
 
   const { selectProps: contactSelectProps,  query: contactQuery } = useSelect({
     resource:  `leads/${selectedLeadId}/contacts`,
-    optionLabel: "email",
+    optionLabel: (c: Contact) => `${c.first_name} ${c.last_name}`,
     optionValue: "id",
     queryOptions: {
       enabled: !!selectedLeadId, 

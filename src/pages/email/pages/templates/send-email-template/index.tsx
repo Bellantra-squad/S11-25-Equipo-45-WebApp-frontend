@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSelect } from "@refinedev/antd";
 import Title from "antd/es/typography/Title";
 import { TemplatePreview } from "../../../components/template-preview";
+import { Contact } from "../../../../../interfaces/models/contact.interface";
 
 interface SendEmailParams {
   to: string;
@@ -34,9 +35,9 @@ export default function SendEmailTemplatePage() {
     optionValue: "id",
   });
 
-  const { selectProps: contactSelectProps } = useSelect<{ id: number; email: string; }>({
+  const { selectProps: contactSelectProps } = useSelect({
     resource:  `leads/${selectedLeadId}/contacts`,
-    optionLabel: "email",
+    optionLabel: (c: Contact) => `${c.first_name} ${c.last_name}`,
     optionValue: "id",
     queryOptions: {
       enabled: !!selectedLeadId, 

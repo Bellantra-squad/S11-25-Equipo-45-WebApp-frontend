@@ -12,30 +12,21 @@ import { emailsByFolder } from "../../../mocks/mockData";
 import { EmailMessage } from "../../../interfaces/internal/email.interface";
 import { AppstoreOutlined, FileSearchOutlined, MoreOutlined } from "@ant-design/icons";
 import { useGo, useNavigation } from "@refinedev/core";
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Sider, Content } = Layout;
 
 
 const contentStyle: React.CSSProperties = {
-   minHeight: 120,
+  minHeight: 120,
   lineHeight: '120px',
   color: '#fff',
-  backgroundColor: '#FFF',
+ 
 };
 
 const siderStyle: React.CSSProperties = {
   textAlign: 'center',
   lineHeight: '120px',
   color: '#fff',
-  backgroundColor: '#FFF',
 };
-
-const footerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
-  backgroundColor: '#fafafa',
-};
-
-
 
   export default function EmailPageWrapper() {
 
@@ -81,7 +72,7 @@ const footerStyle: React.CSSProperties = {
             </Space>
             <Space>
               <Button
-                type="text"
+                type="text"                
                 icon={<FileSearchOutlined />}
                 style={{ fontWeight: 500 }}
                 onClick={() => list("email-templates")}
@@ -130,7 +121,6 @@ const footerStyle: React.CSSProperties = {
           </Splitter>
         </Content>
       </Layout>
-      <Footer style={footerStyle}>Footer</Footer>
     </Layout>
   </Flex>
   );

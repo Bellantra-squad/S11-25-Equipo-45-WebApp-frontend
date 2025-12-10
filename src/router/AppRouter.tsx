@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Route, Routes } from "react-router";
+import { Outlet, Route, Routes } from "react-router";
 import { CatchAllNavigate, NavigateToResource } from "@refinedev/react-router";
 import { Authenticated, ErrorComponent } from "@refinedev/core";
 
@@ -38,11 +38,12 @@ const TemplateEdit = lazy(()=> import("../pages/email/pages/templates/edit"));
 const TemplateCreatePage = lazy(()=> import("../pages/email/pages/templates/create"));
 const SendEmailTemplatePage = lazy(()=> import("../pages/email/pages/templates/send-email-template"));
 const CalendarPageWrapper = lazy(()=> import("../pages/calender/pages/wrapper"));
-
 const CalendarCreatePage = lazy(()=> import("../pages/calender/pages/create"));
 const TaskListPage = lazy(()=> import("../pages/calender/pages/list"));
 const TaskShowModal = lazy(()=> import("../pages/calender/pages/show"));
 const TaskEdit = lazy(()=> import("../pages/calender/pages/edit"));
+const KanbanCreateStage = lazy(()=> import("../pages/leads/pages/create-status"));
+const KanbanEditStage = lazy(()=> import("../pages/leads/pages/edit-status"));
 
 export default function AppRouter() {
   return (
@@ -75,10 +76,13 @@ export default function AppRouter() {
             <Route path="show/:id" element={<CategoryShow />} />
           </Route>
 
-          <Route path="leads">
-            <Route index element={<LeadListPage />} />
-            <Route path="create" element={<LeadCreateModal />} />
-            <Route path="edit/:id" element={<LeadEditModal/>} />
+          <Route path="/kanbas" element={<Outlet />}>
+            <Route path="leads" element={<LeadListPage ><Outlet /> </LeadListPage>} >
+              <Route path="create" element={<LeadCreateModal />} />
+              <Route path="edit/:id" element={<LeadEditModal/>} />
+              <Route path="lead-statuses/create" element={<KanbanCreateStage />} />
+              <Route path="lead-statuses/edit/:id" element={<KanbanEditStage />} />
+            </Route>
           </Route>
 
           <Route path="whatsapp">

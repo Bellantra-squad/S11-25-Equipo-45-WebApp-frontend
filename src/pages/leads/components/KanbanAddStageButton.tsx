@@ -20,8 +20,8 @@ export const KanbanAddStageButton: FC<PropsWithChildren<Props>> = ({
       icon={<PlusSquareOutlined className="secondary md" />}
       style={{
         marginTop: "16px",
-        marginLeft: "16px",
-        marginRight: "16px",
+        marginLeft: "10px",
+        marginRight: "10px",
         height: "56px",
         ...style,
       }}
