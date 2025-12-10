@@ -45,13 +45,7 @@ export function TemplateForm() {
             />
         </Form.Item>
 
-        <Form.Item
-            name="created_by_id"
-            initialValue={user?.id}   
-            
-        >
-            <Input type="hidden" />
-        </Form.Item>
+        <Form.Item name="created_by_id" initialValue={user?.id} hidden />
         
     </>
   );

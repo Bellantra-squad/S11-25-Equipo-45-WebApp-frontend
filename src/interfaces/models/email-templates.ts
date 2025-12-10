@@ -25,11 +25,5 @@ export enum TemplateType {
   Welcome = "welcome",
   Reminder = "reminder",
   FollowUp = "follow_up",
-  Custom = "custom",
-  Newsletter = "newsletter",
-  Promotion = "promotion",
-  Survey = "survey",
-  Onboarding = "onboarding",
-  Alert = "alert",
-  ThankYou = "thank_you",
+  Custom = "custom",  
 }

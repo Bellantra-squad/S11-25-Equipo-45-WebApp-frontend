@@ -1,8 +1,9 @@
-import { useTable, List } from "@refinedev/antd";
-import type { HttpError, LogicalFilter } from "@refinedev/core";
+import { useTable, List, CreateButton } from "@refinedev/antd";
+import { useGo, useNavigation, type HttpError, type LogicalFilter } from "@refinedev/core";
 import { Button, Form, Input, Space } from "antd";
 import { EmailTemplate } from "../../../../interfaces/models/email-templates";
 import { TableViewEmailTemplates } from "../../components/table-view-emailtemplates";
+import { ArrowLeftOutlined, InboxOutlined } from "@ant-design/icons";
 
 interface ISearch {
   search?: string;
@@ -48,6 +49,9 @@ export default function TagListPage() {
         },
     });
 
+  const { create } = useNavigation();
+  const go = useGo();
+
   const handleResetFilters = () => {   
     searchFormProps.form?.resetFields();
     setFilters([], "replace");
@@ -56,6 +60,24 @@ export default function TagListPage() {
   return (
     <div className="page-container">
       <List
+      title="Listado de Plantillas"
+      headerButtons={() => (
+        <Space>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => window.history.back()}
+          >
+            Atrás
+          </Button>
+          <Button
+            icon={<InboxOutlined />}
+            onClick={() => go({ to: "/emails" })} 
+          >
+            Bandeja de Correo
+          </Button>
+          <CreateButton onClick={() => create("email-templates")}>Crear Plantilla</CreateButton>
+        </Space>
+      )}
       >
 
  <Form {...searchFormProps} style={{ marginBottom: 16, justifyContent: "flex-end" }}>

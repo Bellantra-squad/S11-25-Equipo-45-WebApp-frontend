@@ -8,7 +8,13 @@ export default function CategoryEdit() {
   const { formProps, saveButtonProps, query } = useForm<Category>();    
 
   return (
-   <Edit saveButtonProps={saveButtonProps} isLoading={query?.isLoading}>
+   <Edit title="Editar Categorías"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar", 
+        }}
+        isLoading={query?.isLoading}
+        >
       <Form {...formProps} layout="vertical">
         <CategoriesForm />
       </Form>

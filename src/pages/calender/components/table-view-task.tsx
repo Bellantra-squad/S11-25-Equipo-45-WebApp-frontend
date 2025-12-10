@@ -13,6 +13,7 @@ import { Task, Task_Type, Priority, Status } from "../../../interfaces/models/ta
 import { PriorityTag } from "../../../components/tags/priority-tag";
 import { StatusTaskTag } from "../../../components/tags/status-task-tag";
 import { UserTag } from "../../../components/tags/user-tag";
+import { statusLabels } from "../../../interfaces/constants/task-labels";
 
 type Props = {
   tableProps: TableProps<Task>;
@@ -33,7 +34,7 @@ export const TableViewTasks: React.FC<Props> = ({ tableProps, filters, sorters }
     >
       <Table.Column<Task>
         dataIndex="title"
-        title="Título"      
+        title="Título"        
         render={(value: string) => <span>{value}</span>}
       />
 
@@ -58,7 +59,7 @@ export const TableViewTasks: React.FC<Props> = ({ tableProps, filters, sorters }
 
       <Table.Column<Task>
         dataIndex="task_type"
-        title="Tipo"
+        title="Tipo"       
         render={(value: Task_Type) => <span>{value}</span>}
       />
 
@@ -76,12 +77,12 @@ export const TableViewTasks: React.FC<Props> = ({ tableProps, filters, sorters }
           <FilterDropdown {...props}>
              <Select
               placeholder="Filtrar por estado"
-              style={{ width: 160 }}>
-                {Object.values(Priority).map((priority) => (
-                <Select.Option key={priority} value={priority}>
-                    {priority}
+              style={{ width: 160 }}>                
+              {Object.values(Status).map((s) => (
+                <Select.Option key={s} value={s}>
+                  {statusLabels[s]}
                 </Select.Option>
-                ))}
+              ))}
             </Select>            
           </FilterDropdown>
         )}
@@ -90,6 +91,7 @@ export const TableViewTasks: React.FC<Props> = ({ tableProps, filters, sorters }
 
       <Table.Column<Task>
         dataIndex="due_date"
+        sorter
         defaultSortOrder={getDefaultSortOrder("due_date", sorters)}
         title="Vencimiento"
         render={(value: Date) => <span>{new Date(value).toLocaleDateString()}</span>}

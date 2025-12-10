@@ -1,6 +1,6 @@
 import { useForm, useSelect } from "@refinedev/antd";
 import { HttpError, useInvalidate } from "@refinedev/core";
-import { Button, Form, Select, Space } from "antd";
+import { Button, Form, Select } from "antd";
 import { Lead } from "../../../../interfaces/models/lead.interface";
 import { Tag } from "../../../../interfaces/models/tag.interface";
 
@@ -39,32 +39,24 @@ export const TagsForm = ({ initialValues, cancelForm }: Props) => {
   });
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "end",
-        justifyContent: "space-between",
-        gap: "12px",
-      }}
-    >
+    <div style={{ display: "flex", gap: "12px" , justifyContent:"center" }}>
       <Form
         {...formProps}
+        style={{ width: "100%" }}
         initialValues={initialValues}      
       >
         <Form.Item label="Etiquetas" name="tag_ids">
-          <Select {...selectProps} mode="multiple" style={{ width: "100%" }} />
+          <Select {...selectProps} mode="multiple"  style={{ width: "100%" }}/>
         </Form.Item>
-      </Form>
+      </Form>     
 
-
-      <Space>
-        <Button type="default" onClick={cancelForm}>
-          Cancelar
-        </Button>
-        <Button {...saveButtonProps} type="primary">
-          Guardar
-        </Button>
-      </Space>
+            <Button type="default" onClick={cancelForm}>
+              Cancelar
+            </Button>
+            <Button {...saveButtonProps} type="primary">
+              Guardar
+            </Button>
+                 
     </div>
   );
 };

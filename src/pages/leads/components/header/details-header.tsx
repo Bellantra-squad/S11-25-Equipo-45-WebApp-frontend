@@ -27,10 +27,9 @@ export const DetailsHeader = ({
         )}
 
         {lead_source && (
-             <Text type="secondary">Origen: 
-             <Tag color="blue">
-            {lead_source}
-          </Tag>
+             <Text type="secondary">Origen:  <Tag color="blue">
+               {lead_source}
+              </Tag>
             </Text>
           
         )}

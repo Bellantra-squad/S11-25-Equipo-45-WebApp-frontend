@@ -7,7 +7,12 @@ export default function TagEdit() {
     const { formProps, saveButtonProps, query } = useForm<Tag>();    
 
     return (
-    <Edit saveButtonProps={saveButtonProps} isLoading={query?.isLoading}>
+    <Edit title="Editar Etiqueta"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar", 
+        }}
+        isLoading={query?.isLoading}>
         <Form {...formProps} layout="vertical">
             <TagForm />
         </Form>

@@ -7,7 +7,10 @@ export default function UserCreate() {
   const { formProps, saveButtonProps } = useForm<AssignedUser>();
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create title="Crear Usuario"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar"}} >
       <Form {...formProps} layout="vertical">
         <UserFormFields />
       </Form>

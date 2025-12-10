@@ -7,9 +7,11 @@ import {
   ShowButton,
 } from "@refinedev/antd";
 import { CrudFilters, CrudSorting } from "@refinedev/core";
-import { Table, Input, Select, Space } from "antd";
+import { Table, Select, Space } from "antd";
 import type { TableProps } from "antd";
 import { Contact } from "../../../interfaces/models/contact.interface";
+import { StatusTag } from "../../../components";
+import { CheckCircleOutlined, CloseCircleOutlined } from "@ant-design/icons";
 
 type Props = {
   tableProps: TableProps<Contact>;
@@ -24,76 +26,75 @@ export const TableView: React.FC<Props> = ({ tableProps, filters, sorters }) => 
       pagination={{
         ...tableProps.pagination,
         pageSizeOptions: ["10", "20", "50"],
-        showTotal: (total) => `${total} contacts`,
+        showTotal: (total) => `${total} contactos`,
       }}
       rowKey="id"
     >
       <Table.Column<Contact>
         dataIndex="first_name"
         title="Nombre"
-        defaultFilteredValue={getDefaultFilter("first_name", filters)}
-        defaultSortOrder={getDefaultSortOrder("first_name", sorters)}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search Nombre" />
-          </FilterDropdown>
-        )}
+        sorter
+        defaultSortOrder={getDefaultSortOrder("first_name", sorters)}        
         render={(value: string) => <span>{value}</span>}
       />
+     
       <Table.Column<Contact>
         dataIndex="last_name"
         title="Apellido"
-        defaultFilteredValue={getDefaultFilter("last_name", filters)}
-        defaultSortOrder={getDefaultSortOrder("last_name", sorters)}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search Apellido" />
-          </FilterDropdown>
-        )}
+        sorter
+        defaultSortOrder={getDefaultSortOrder("last_name", sorters)}      
         render={(value: string) => <span>{value}</span>}
       />
 
       <Table.Column<Contact>
         dataIndex="email"
-        title="Email"
-        defaultFilteredValue={getDefaultFilter("email", filters)}
-        defaultSortOrder={getDefaultSortOrder("email", sorters)}
-        filterDropdown={(props) => (
-          <FilterDropdown {...props}>
-            <Input placeholder="Search Name" />
-          </FilterDropdown>
-        )}
+        title="Correo"       
         render={(value: string) => <span>{value}</span>}
       />
 
       <Table.Column<Contact>
         dataIndex="phone"
-        title="Phone"
+        title="Telefono"
         render={(value: string) => <span>{value}</span>}
       />
 
-      <Table.Column<Contact>
-        dataIndex="lead"
-        title="Lead"
-        defaultFilteredValue={getDefaultFilter("lead", filters)}
+       <Table.Column<Contact>
+        dataIndex="is_primary"
+        title="Principal"
+        defaultFilteredValue={getDefaultFilter("is_primary", filters)}
+        defaultSortOrder={getDefaultSortOrder("is_primary", sorters)}
         filterDropdown={(props) => (
-          <FilterDropdown {...props}>
+         <FilterDropdown {...props}>
             <Select
-              placeholder="Filter by Lead"
+              placeholder="Filtrar por Principal"
               style={{ width: 160 }}
               options={[
-                { value: 1, label: "Lead 1" },
-                { value: 2, label: "Lead 2" },
+                { value: "true", label: "Si" },
+                { value: "false", label: "No" },
               ]}
             />
           </FilterDropdown>
-        )}
-        render={(value?: number) => (value ? `Lead ${value}` : "-")}
-      />
+        )}   
+        render={(value: boolean) =>
+          <StatusTag
+                value={value}
+                trueLabel={"Si"}
+                falseLabel={"No"} 
+                trueIcon= {<CheckCircleOutlined />} 
+                falseIcon={<CloseCircleOutlined />}
+            />
+        }/>  
+
 
       <Table.Column<Contact>
+        dataIndex="lead"
+        title="Lead"        
+        render={(value?: number) => (value ? `Lead ${value}` : "-")}
+      />
+     
+      <Table.Column<Contact>
         fixed="right"
-        title="Actions"
+        title="Acciones"
         dataIndex="actions"
         render={(_, record) => (
           <Space>

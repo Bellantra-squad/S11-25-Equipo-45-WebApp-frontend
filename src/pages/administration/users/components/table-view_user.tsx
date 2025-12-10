@@ -71,7 +71,7 @@ export const TableViewUser: React.FC<Props> = ({ tableProps }) => {
 
       <Table.Column<User>
         fixed="right"
-        title="Actions"
+        title="Acciones"
         dataIndex="actions"
         render={(_, record) => (
           <Space>

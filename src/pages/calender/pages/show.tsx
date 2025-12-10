@@ -43,8 +43,8 @@ const TaskShowModal: React.FC = () => {
             Refrescar
           </Button>
           {task && (
-            <Button icon={<EditOutlined />} onClick={() => edit("tasks", task.id)}>
-              Editar
+            <Button type='primary' icon={<EditOutlined />} onClick={() => edit("tasks", task.id)}>
+              Editar Tarea
             </Button>
           )}
         </Space>

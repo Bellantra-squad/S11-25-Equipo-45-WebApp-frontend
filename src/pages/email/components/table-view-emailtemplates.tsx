@@ -46,6 +46,7 @@ export const TableViewEmailTemplates: React.FC<Props> = ({ tableProps, filters, 
       <Table.Column<EmailTemplate>
         dataIndex="name"
         title="Nombre"
+        sorter
         defaultSortOrder={getDefaultSortOrder("name", sorters)}
         render={(value: string) => <span>{value}</span>}
       />
@@ -62,11 +63,11 @@ export const TableViewEmailTemplates: React.FC<Props> = ({ tableProps, filters, 
             <span
             style={{
                 display: "-webkit-box",
-                WebkitLineClamp: 2,       // máximo 2 líneas
+                WebkitLineClamp: 2,       
                 WebkitBoxOrient: "vertical",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
-                whiteSpace: "normal",     // permite salto de línea
+                whiteSpace: "normal",    
             }}
             >
             {value}
@@ -109,7 +110,7 @@ export const TableViewEmailTemplates: React.FC<Props> = ({ tableProps, filters, 
                   style={{ display: "inline-flex" }}
                   /> 
               <Text style={{whiteSpace: "nowrap"}}>
-                {`${user.last_name} ${user.last_name}`}
+                {`${user.first_name} ${user.last_name}`}
               </Text>
             </Space>
           );
@@ -144,7 +145,7 @@ export const TableViewEmailTemplates: React.FC<Props> = ({ tableProps, filters, 
     
       <Table.Column<EmailTemplate>
         fixed="right"
-        title="Actions"
+        title="Acciones"
         dataIndex="actions"
         render={(_, record) => (
           <Space>

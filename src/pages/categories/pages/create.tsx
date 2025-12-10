@@ -10,7 +10,10 @@ export default function CategoryCreatePage() {
     const { formProps, saveButtonProps } = useForm<Category>();
 
   return (
-    <Create saveButtonProps={saveButtonProps}>
+    <Create title="Crear Categorías"    
+        saveButtonProps={{
+        ...saveButtonProps,
+        children: "Guardar"}} >
       <Form {...formProps} layout="vertical">
         <CategoriesForm />
       </Form>

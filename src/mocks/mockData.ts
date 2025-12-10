@@ -3,21 +3,21 @@ import { EmailFolder, EmailsByFolder } from "../interfaces/internal/email.interf
 export const emailFolders: EmailFolder[] = [
   {
     key: "inbox",
-    label: "Inbox",
+    label: "Bandeja Entrada",
     icon: "InboxOutlined",
     children: [
-      { key: "important", label: "Important", icon: "StarOutlined" },
-      { key: "updates", label: "Updates", icon: "InboxOutlined" },
+      { key: "important", label: "Importante", icon: "StarOutlined" },
+      { key: "updates", label: "Actualizados", icon: "InboxOutlined" },
     ],
   },
   {
     key: "sent",
-    label: "Sent",
+    label: "Enviados",
     icon: "SendOutlined",
   },
   {
     key: "trash",
-    label: "Trash",
+    label: "Borrados",
     icon: "DeleteOutlined",
   },
 ];
