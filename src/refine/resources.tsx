@@ -20,7 +20,7 @@ export const resources = [
     list: "/",
     meta: {
       label: "Dashboard",
-      icon: <DashboardOutlined />,
+      icon: <DashboardOutlined />,      
       order: 1,
     },
   },
@@ -177,5 +177,15 @@ export const resources = [
           send: "/email-templates/send", // ruta personalizada
         },
       }
+    },
+
+     {
+        name: "api-credentials",
+        list: "/settings/integrations/",
+        create:"/settings/integrations/create",        
+        meta: {
+          hide: true,
+          delete:true,
+        }
     },
 ];

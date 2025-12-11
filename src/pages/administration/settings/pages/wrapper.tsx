@@ -8,19 +8,18 @@ const SettingsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Detectar tab activo según la ruta
-  const activeKey = location.pathname.split("/").pop();
+const activeKey = location.pathname.split("/")[2] || "integrations";
 
-  useEffect(() => {    
+  useEffect(() => {
     if (location.pathname === "/settings") {
-      navigate("/settings/email", { replace: true });
+      navigate("/settings/integrations", { replace: true });
     }
   }, [location.pathname, navigate]);
 
   const items = [
-    { key: "email", label: "Email Setting", children: <Outlet /> },
-    { key: "integration", label: "Integration", children: <Outlet /> },
-    { key: "billing", label: "Billing", children: <Outlet /> },
+    { key: "integrations", label: "Integración", children: <Outlet /> },
+    { key: "email", label: "Ajustes Email", children: <Outlet /> },    
+    { key: "billing", label: "Planes", children: <Outlet /> },
   ];
 
   return (

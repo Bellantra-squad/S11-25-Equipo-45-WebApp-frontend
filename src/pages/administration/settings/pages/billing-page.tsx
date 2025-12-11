@@ -3,7 +3,7 @@ const { Title } = Typography;
 
 const BillingPage = () => (
   <div>
-    <Title level={4}>Billing</Title>
+    <Title level={4}>Planes</Title>
     <List
       bordered
       dataSource={[
