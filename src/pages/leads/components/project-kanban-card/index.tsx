@@ -7,6 +7,7 @@ import { Text } from "../../../../components/base/text";
 import {  LeadResponse } from "../../../../interfaces/models/lead.interface";
 import { TextIcon } from "../../../../components/base/TextIcon";
 import { CustomAvatar } from "../../../../components/header/CustomAvatar";
+import { getDateColor } from "../../../../utils/date";
 
 
 export const LeadCard = ({
@@ -140,6 +141,7 @@ export const LeadCard = ({
           )}
           {last_contact_date && (
             <Tag
+              color={getDateColor({ date: last_contact_date ? new Date(last_contact_date).toLocaleDateString() : "" ,  defaultColor: "processing"} )}
               icon={
                 <ClockCircleOutlined
                   style={{
@@ -149,14 +151,14 @@ export const LeadCard = ({
               }
               style={{
                 padding: "1 0px",
-                marginInlineEnd: "0",
-                backgroundColor: "#f6c7c7",
+                marginInlineEnd: "0",                
                 color:"#000",
                 border: "1px"
               }}
             >
               {last_contact_date ? new Date(last_contact_date).toLocaleDateString() : "—"}
             </Tag>
+        
           )}
           {assigned_to && (
             <Space

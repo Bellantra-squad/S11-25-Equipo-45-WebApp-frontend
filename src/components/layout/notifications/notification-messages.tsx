@@ -15,23 +15,25 @@ export const NotificationMessage: React.FC<Props> = ({ audit }) => {
   const { mutate: markRead } = useUpdate();
 
   const handleClick = () => {
-    markRead(
-      {
-        resource: "activities",
-        id: audit.id,
-        values: { is_read: true },
-      },
-      {
-        onSuccess: () => {
-          invalidate({
-            resource: "activities",
-            invalidates: ["list"],
-          });
-
-          redirectUser();
+    if (!audit.is_read) {
+      markRead(
+        {
+          resource: "activities",
+          id: audit.id,
+          values: { is_read: true },
         },
-      }
-    );
+        {
+          onSuccess: () => {
+            invalidate({
+              resource: "activities",
+              invalidates: ["list"],
+            });
+
+            redirectUser();
+          },
+        }
+      );
+    }
   };
 
   const redirectUser = () => {
@@ -42,7 +44,7 @@ export const NotificationMessage: React.FC<Props> = ({ audit }) => {
 
       case ActivityType.Message:
         if (audit.metadata.channel === "whatsapp") navigate("/whatsapp");
-        else navigate("/email");
+        else navigate("/emails");
         break;
 
       case ActivityType.Call:
@@ -50,7 +52,7 @@ export const NotificationMessage: React.FC<Props> = ({ audit }) => {
         break;
 
       case ActivityType.Email:
-        navigate("/email");
+        navigate("/emails");
         break;
 
       case ActivityType.Task:
@@ -58,7 +60,7 @@ export const NotificationMessage: React.FC<Props> = ({ audit }) => {
         break;
 
       case ActivityType.Note:
-        navigate(`/notes/`);
+        navigate(`/leads/`);
         break;
 
       default:
