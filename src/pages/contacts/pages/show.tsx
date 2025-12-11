@@ -3,6 +3,7 @@ import { Button, Descriptions, Space} from "antd";
 import { useNavigation, useShow } from "@refinedev/core";
 import { Contact } from '../../../interfaces/models/contact.interface';
 import { EditOutlined, ReloadOutlined, UnorderedListOutlined } from '@ant-design/icons';
+import { ContactStatusLead } from '../components/contact-status-lead';
 
 
 export default function ContactsShow() {
@@ -41,6 +42,12 @@ export default function ContactsShow() {
             <Descriptions.Item label="Contacto Principal">{record?.is_primary ? "Yes" : "No"}</Descriptions.Item>
             <Descriptions.Item label="Toma Decisiones">{record?.is_decision_maker ? "Yes" : "No"}</Descriptions.Item>
         </Descriptions>
+
+        {record?.lead && (
+          <div style={{ marginTop: "2rem" }}>            
+            <ContactStatusLead leadId={record.lead} />
+          </div>
+        )}
     </Show>
   );
 
