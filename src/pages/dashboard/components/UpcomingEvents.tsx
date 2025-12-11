@@ -1,52 +1,15 @@
 import { Card, List, Avatar, Typography, Tag, Empty } from "antd";
-import {
-  PhoneOutlined,
-  CheckSquareOutlined,
-  MailOutlined,
+import { 
   UserOutlined,
-  CalendarOutlined,
-  SyncOutlined,
 } from "@ant-design/icons";
 import type { RecentTask } from "../../../interfaces/models/metrics.interface";
 import styles from "./UpcomingEvents.module.css";
+import { taskTypeConfig } from "../../../interfaces/internal/task_type";
 
 interface UpcomingEventsProps {
   events?: RecentTask[];
   loading?: boolean;
 }
-
-const taskTypeConfig = {
-  follow_up: {
-    icon: <SyncOutlined />,
-    color: "#1677ff",
-    label: "Seguimiento",
-    tagColor: "blue",
-  },
-  call: {
-    icon: <PhoneOutlined />,
-    color: "#52c41a",
-    label: "Llamada",
-    tagColor: "green",
-  },
-  meeting: {
-    icon: <CalendarOutlined />,
-    color: "#722ed1",
-    label: "Reunión",
-    tagColor: "purple",
-  },
-  email: {
-    icon: <MailOutlined />,
-    color: "#13c2c2",
-    label: "Email",
-    tagColor: "cyan",
-  },
-  other: {
-    icon: <CheckSquareOutlined />,
-    color: "#faad14",
-    label: "Otro",
-    tagColor: "gold",
-  },
-} as const;
 
 const priorityConfig = {
   low: { color: "default", label: "Baja" },

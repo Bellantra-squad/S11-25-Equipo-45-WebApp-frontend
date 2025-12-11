@@ -4,7 +4,7 @@ import {
   ExclamationCircleOutlined,
   ArrowUpOutlined,
   MinusOutlined,
-  CheckOutlined,
+  ArrowDownOutlined,
 } from "@ant-design/icons";
 import { Priority } from "../../interfaces/models/task.interface";
 import { priorityLabels } from "../../interfaces/constants/task-labels";
@@ -25,7 +25,7 @@ const priorityVariant: Record<Priority, { color: string; icon: ReactElement }> =
   },
   [Priority.Low]: {
     color: "green",
-    icon: <CheckOutlined />,
+    icon:<ArrowDownOutlined />,
   },
 };
 
