@@ -31,7 +31,7 @@ const EmailSettingsPage = () => {
 
   return (
     <div>
-      <Title level={4}>Email Settings</Title>
+      <Title level={4}>Configuración de Email</Title>
       <Paragraph>
         Configura tu servidor SMTP, plantillas y etiquetas para envío de correos.
       </Paragraph>

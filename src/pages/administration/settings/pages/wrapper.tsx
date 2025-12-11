@@ -17,9 +17,9 @@ const activeKey = location.pathname.split("/")[2] || "integrations";
   }, [location.pathname, navigate]);
 
   const items = [
-    { key: "integrations", label: "Integration", children: <Outlet /> },
-    { key: "email", label: "Email Setting", children: <Outlet /> },    
-    { key: "billing", label: "Billing", children: <Outlet /> },
+    { key: "integrations", label: "Integración", children: <Outlet /> },
+    { key: "email", label: "Ajustes Email", children: <Outlet /> },    
+    { key: "billing", label: "Planes", children: <Outlet /> },
   ];
 
   return (
