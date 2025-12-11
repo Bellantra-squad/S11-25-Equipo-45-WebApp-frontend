@@ -7,16 +7,37 @@
   overflow-x: hidden;
 
   .date {
+    display: flex;
     margin-bottom: 0.25rem;
+   column-gap: 2px;
+   font-size: small;
   }
 
-  .badge {
-    margin-right: 1.1rem;
+  .contentItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 1rem;
+    align-items: center;
+  }
+  .contentText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .title {
-    padding-left: 1.5rem;
+    flex: 1;
   }
+
+  .completed {
+    text-decoration: line-through;
+  }
+
+  .cancelled {
+    opacity: 0.5;
+  }
+
 }
 
 .item:last-child {

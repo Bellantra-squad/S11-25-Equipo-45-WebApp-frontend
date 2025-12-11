@@ -3,8 +3,9 @@ import { useNavigation, type HttpError, type LogicalFilter } from "@refinedev/co
 import { Button, Form, Input, Select, Space } from "antd";
 import { TableView } from "../components/table-view";
 import { Contact } from "../../../interfaces/models/contact.interface";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, DownloadOutlined } from "@ant-design/icons";
 import { Lead } from "../../../interfaces/models/lead.interface";
+import { useExportFile } from "../../../hooks/useExport";
 
 interface ISearch {
   search?: string; 
@@ -13,7 +14,7 @@ interface ISearch {
 
 export default function ContactsListPage() {
 
-    const { create } = useNavigation();    
+    const { create } = useNavigation(); 
 
     const {
         tableProps,
@@ -60,7 +61,18 @@ export default function ContactsListPage() {
             return f;
         },
     });
+    
+    const { exportCsv , isLoading} = useExportFile();
 
+    const handleExportCsv = () => {
+        exportCsv({
+            url: "/exports/contacts_csv",
+            params: {
+                lead: searchFormProps.form?.getFieldValue("lead"),            
+            }, 
+            filenameFallback: "contacts_export.csv",
+        });
+    };
 
   const { selectProps: leadSelectProps } = useSelect({
     resource: "leads",
@@ -87,6 +99,14 @@ export default function ContactsListPage() {
               Atrás
             </Button>           
             <CreateButton onClick={() => create("contacts")}>Crear Contacto</CreateButton>
+            <Button
+              icon={<DownloadOutlined />}
+              type="default"
+              loading={isLoading}
+              onClick={handleExportCsv}
+            >
+              Exportar CSV
+            </Button>
           </Space>
         )}
       >

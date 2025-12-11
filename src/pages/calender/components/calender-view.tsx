@@ -3,6 +3,7 @@ import { Badge, Calendar, Card } from "antd";
 import { Status, Task, Task_Type } from "../../../interfaces/models/task.interface";
 import dayjs, { Dayjs } from "dayjs";
 import TaskShowDrawer from "../pages/show-drawer";
+import { Text } from "../../../components/base/text";
 
 
 type CalendarProps = {
@@ -57,8 +58,20 @@ export const TaskCalendar: React.FC<CalendarProps> = ({
               setSelectedId(task.id);
               setShowModal(true);}
             }}
-          >
-            <Badge status={getStatusColor(task.status)} text={task.title} />
+          >           
+            <Badge status={getStatusColor(task.status)} text=
+            {
+               <Text               
+                size="sm"
+                style={{
+                  textTransform: "capitalize",
+                  textDecoration: task.status === "completed" ? "line-through" : "none",
+                  opacity: task.status === "cancelled" ? 0.5 : 1,
+                }}
+              >
+                {task.title}
+              </Text> 
+            } />
           </li>
         ))}
       </ul>

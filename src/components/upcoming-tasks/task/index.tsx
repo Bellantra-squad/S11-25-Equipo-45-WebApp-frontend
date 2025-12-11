@@ -1,30 +1,26 @@
 import React, { useState } from "react";
-import { Badge, Tag } from "antd";
+import { Avatar, Tooltip } from "antd";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 dayjs.extend(utc);
 
 import styles from "../index.module.css";
-import { Priority, Task } from "../../../interfaces/models/task.interface";
+import { Task } from "../../../interfaces/models/task.interface";
 import { Text } from "../../base/text";
 import TaskShowDrawer from "../../../pages/calender/pages/show-drawer";
-import { priorityLabels } from "../../../interfaces/constants/task-labels";
+import { statusLabels } from '../../../interfaces/constants/task-labels';
+import { taskTypeConfig } from "../../../interfaces/internal/task_type";
+import { PriorityTag } from "../../tags/priority-tag";
+import { StatusTaskTag } from "../../tags/status-task-tag";
 
 type CalendarUpcomingEventProps = {
   item: Task;
 };
 
-const priorityColorMap: Record<Priority, string> = {
-  [Priority.Urgent]: "red",
-  [Priority.High]: "volcano",
-  [Priority.Medium]: "blue",
-  [Priority.Low]: "green",
-};
-
 export const CalendarUpcomingTask: React.FC<CalendarUpcomingEventProps> = ({
   item
 }) => {
-  const { id, title, priority, due_date } = item;
+  const { id, title, status, task_type, priority, due_date } = item;
   const [open, setOpen] = useState(false);
 
   const isToday = dayjs.utc(due_date).isSame(dayjs.utc(), "day");
@@ -49,27 +45,35 @@ export const CalendarUpcomingTask: React.FC<CalendarUpcomingEventProps> = ({
   return (
     <>
       <div
-        onClick={() => setOpen(true)} // abrir modal
+        onClick={() => setOpen(true)} 
         key={id}
         className={styles.item}
         style={{ cursor: "pointer" }}
       >
-        <div className={styles.date}>
-          <Badge color={"#6fb51fff"} className={styles.badge} />
-          <Text size="xs">{`${renderDate()}, ${renderTime()}`}</Text>
-          <Tag
-            color={priorityColorMap[priority]}
-            style={{ marginLeft: "8px", fontSize: "10px" }}
-          >
-            {priorityLabels[priority].toUpperCase()}
-          </Tag>
+        <div className={styles.contentItem}>
+          <Avatar
+                style={{ backgroundColor:  taskTypeConfig[task_type].color }}
+                icon={taskTypeConfig[task_type].icon}
+            />
+            <div className="styles.contentText">
+              <div className={styles.date}>
+                <Text size="xs" style={{paddingRight:"6px"}}>{`${renderDate()}, ${renderTime()}`}</Text>                
+                <PriorityTag priority={priority} />
+                <Tooltip title={statusLabels[status]}> <StatusTaskTag status={status} mode="icon" /> </Tooltip>
+                          
+              </div>
+              <Text ellipsis={{ tooltip: true }} strong 
+                  className={`${styles.taskTitle} ${
+                          status === "completed" ? styles.completed : ""
+                        } ${status === "cancelled" ? styles.cancelled : ""}`}>
+                  {title.toUpperCase()}
+              </Text>               
+            </div> 
         </div>
-        <Text ellipsis={{ tooltip: true }} strong className={styles.title}>
-          {title}
-        </Text>
+        
+               
+       
       </div>
-
-      {/* Modal de show */}
       <TaskShowDrawer
         id={item.id}
         open={open}

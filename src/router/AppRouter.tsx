@@ -45,6 +45,10 @@ const TaskEdit = lazy(()=> import("../pages/calender/pages/edit"));
 const KanbanCreateStage = lazy(()=> import("../pages/leads/pages/create-status"));
 const KanbanEditStage = lazy(()=> import("../pages/leads/pages/edit-status"));
 const EmailTemplateShow = lazy(()=> import("../pages/email/pages/templates/show"));
+const SettingsPage = lazy(()=> import("../pages/administration/settings/pages/wrapper"));
+const EmailSettingsPage = lazy(()=> import("../pages/administration/settings/pages/email-settings-page"));
+const IntegrationPage = lazy(()=> import("../pages/administration/settings/pages/integration-page"));
+const BillingPage = lazy(()=> import("../pages/administration/settings/pages/billing-page"));
 
 export default function AppRouter() {
   return (
@@ -126,6 +130,14 @@ export default function AppRouter() {
             <Route path="create" element={<CalendarCreatePage />} />
             <Route path="edit/:id" element={<TaskEdit />} />
             <Route path="show/:id" element={<TaskShowModal />} />
+          </Route>
+         
+          <Route>
+            <Route path="/settings" element={<SettingsPage />}>
+              <Route path="email" element={<EmailSettingsPage />} />
+              <Route path="integration" element={<IntegrationPage />} />
+              <Route path="billing" element={<BillingPage />} />
+            </Route>
           </Route>
 
           <Route path="*" element={<ErrorComponent />} />

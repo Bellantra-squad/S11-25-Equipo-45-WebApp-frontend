@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren, useMemo } from "react";
+import { FC, PropsWithChildren, useMemo, useState } from "react";
 import {
     useList,
     useUpdate,
@@ -9,7 +9,7 @@ import {
 } from "@refinedev/core";
 
 import { DragEndEvent } from "@dnd-kit/core";
-import { MenuProps } from "antd";
+import { Form, MenuProps } from "antd";
 import { KanbanBoard, KanbanBoardSkeleton } from "../components/board";
 import { KanbanColumn, KanbanColumnSkeleton } from "../components/column";
 import { KanbanItem } from "../components/item";// tu tarjeta real
@@ -19,30 +19,74 @@ import { LeadCardMemo, LeadCardSkeleton } from "../components/project-kanban-car
 import { Lead, LeadResponse, LeadUpdate } from "../../../interfaces/models/lead.interface";
 import { LeadStatus } from "../../../interfaces/models/lead-status.interfaces";
 import { ClearOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { useExportFile } from "../../../hooks/useExport";
+import { LeadHeader } from "../components/header/lead-header";
+import { PaginationControls } from "../../../interfaces/internal/pagination.interface";
 
 
 type LeadStageColumn = LeadStatus & {
     leads: LeadResponse[];
 };
 
+export interface IFilter {
+  assigned_to?: number,
+  category?: number,
+  lead_source?: string,
+}
 
 export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
     const { create, edit } = useNavigation();
+    const { exportCsv, exportPdf } = useExportFile();
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [pageSize, setPageSize] = useState<number>(20);
+    const [filters, setFilters] = useState<IFilter>({});
 
-    // const go = useGo();
-
-    // 1️⃣ ESTADOS DE LEADS (columnas del kanban)
+    
+    // ESTADOS DE LEADS (columnas del kanban)
     const { result: statusData, query: qstatus } = useList<LeadStatus>({
         resource: "lead-statuses",
-        pagination: { mode: "off" },
+        pagination: { pageSize:20 },       
     });
 
-    // 2️⃣ LEADS (tarjetas dentro de columnas)
-    const { result: leadsData , query: qlead} = useList<LeadResponse>({
+    // LEADS (tarjetas dentro de columnas)
+    const { result: leadsData , query: qlead, } = useList<LeadResponse>({
         resource: "leads",
-        pagination: { pageSize:50},
+        pagination: {
+            currentPage,
+            pageSize,
+        },
+        filters: [
+            {
+                field: "assigned_to",
+                operator: "eq",
+                value: filters.assigned_to,
+            },
+            {
+                field: "category",
+                operator: "eq",
+                value: filters.category,
+            },
+            {
+                field: "lead_source",
+                operator: "contains",
+                value: filters.lead_source,
+            },
+            
+        ]
     });
+
+    const [form] = Form.useForm<IFilter>()    
+
+    const total = leadsData?.total ?? 0;
+    const maxPage = Math.ceil(total / pageSize);
+    const pagination: PaginationControls = {
+        currentPage,
+        maxPage,
+        setCurrentPage,
+        pageSize,
+        setPageSize,
+    };
 
     const leads: LeadResponse[] = useMemo(
         () => leadsData?.data ?? [],
@@ -54,7 +98,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
         [statusData?.data]
     );
 
-      // 3️⃣ AGRUPAR LEADS POR ESTADO
+      // AGRUPAR LEADS POR ESTADO
     const leadStages = useMemo(() => {
         if (!statuses || !leads)
         return {
@@ -62,24 +106,15 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
             stages: [],
         };
 
-        const unassignedStage = leads.filter((l) => !l.status);
-
-        // const winLead = leads.filter((lead) => lead.status.name === "Ganado (Cliente)");
-
-        // const lostLead = leads.filter((lead) => lead.status.name === "Perdido");
-
+        const unassignedStage = leads.filter((l) => !l.status);      
         const filteredStages = leads.filter(
             (lead) =>
-                lead.status.name !== "No asignado" 
-                // lead.status.name !== "Ganado (Cliente)" &&
-                // lead.status.name !== "Perdido"
+                lead.status.name !== "No asignado"                
         );
 
         const filteredStatus = statuses.filter(
             (s) =>
-                s.name !== "No asignado" 
-                // s.name !== "Ganado (Cliente)" &&
-                // s.name !== "Perdido"
+                s.name !== "No asignado"                 
         );
 
         const stages = filteredStatus.map((status) => ({
@@ -89,23 +124,21 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
 
         return {
             unassignedStage,
-            // winLead,
-            // lostLead,
             stages,
         };
     }, [leads, statuses]);
 
-    // 4️⃣ MUTATIONS
+    // MUTATIONS
     const { mutate: updateLead } = useUpdate<Lead, HttpError, LeadUpdate>();
     const { mutate: updateManyLead } = useUpdateMany();
     const { mutate: deleteStatus } = useDelete();
 
-    // 5️⃣ Drag & Drop
+    // Drag & Drop
     const handleOnDragEnd = (event: DragEndEvent) => {
         const leadId = Number(event.active.id);
         const newStatusId = event.over?.id ? Number(event.over.id) : null;
         const oldStatusId = event.active.data.current?.statusId ?? null;
-
+       
         if (newStatusId === oldStatusId) return;
 
         updateLead({
@@ -118,6 +151,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
         });
     };
     
+    // Acciones
     const handleAddStage = () => {       
         create("lead-statuses", "replace");
     };  
@@ -142,7 +176,29 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
         });
     };
 
-    // 7️⃣ Context menu de cada columna
+    
+    const handleExportCsv = (status?: number) => {       
+        exportCsv({
+            url: "/exports/leads_csv",
+            params: { status: status },
+            filenameFallback: `leads_status${status}.csv`,
+        });
+    };
+
+    const handleExportPdf = (status?: number)  => {
+        exportPdf({
+            url: "/exports/leads_pdf",
+            params: { status: status },
+            filenameFallback:  `leads_status${status}.pdf`,
+        });
+    };
+
+    const handleChangeFilters = (values: IFilter) => {
+        setFilters(values);
+        setCurrentPage(1);
+    };
+   
+
     const getContextMenuItems = (column: LeadStageColumn): MenuProps["items"] => {
         const hasItems = column.leads.length > 0;
 
@@ -163,6 +219,22 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                     leads: column.leads.map((task) => task.id),
                 }),
             },
+             {
+                label: "Exportar a CSV",
+                key: "2",
+                icon: <ClearOutlined />,
+                disabled: !hasItems,
+                onClick: () =>
+                handleExportCsv(column.id),
+            },
+             {
+                label: "Exportar a PDF",
+                key: "2",
+                icon: <ClearOutlined />,
+                disabled: !hasItems,
+                onClick: () =>
+                handleExportPdf(column.id),
+            },
             {
                 label: "Eliminar Estado",
                 danger: true,
@@ -174,12 +246,26 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
         ];
     };
 
-    const isLoading = qlead.isLoading || qstatus.isLoading;
+    const menuItems: MenuProps["items"] = [
+        {
+            key: "csv",
+            label: "Exportar CSV",
+            onClick: () => handleExportCsv(),
+        },
+        {
+            key: "pdf",
+            label: "Exportar PDF",
+            onClick: () => handleExportPdf(),
+        },
+    ];
 
+    const isLoading = qlead.isLoading || qstatus.isLoading;
+    
     if (isLoading) return <PageSkeleton />;
 
     return (
         <>
+            <LeadHeader form={form} menuItems={menuItems} onChangeFilters={handleChangeFilters} pagination={pagination}/>
             <KanbanBoard onDragEnd={handleOnDragEnd}>            
                 {leadStages.stages?.map((column) => {
                     const contextMenuItems = getContextMenuItems({...column});
@@ -223,7 +309,7 @@ export const LeadListPage: FC<PropsWithChildren> = ({ children }) => {
                 <KanbanAddStageButton onClick={handleAddStage} />
             </KanbanBoard>
 
-            {children}
+            {children}            
         </>
     );
 };

@@ -54,7 +54,7 @@ const CalendarPageWrapper: React.FC<React.PropsWithChildren> = ({ children }) =>
           <CalendarUpcomingTasks
             limit={3}
             cardProps={{ style: { marginBottom: "1rem" } }}
-          />
+          />         
 
           <CalendarTaskTypes
             onChange={(e) => {
