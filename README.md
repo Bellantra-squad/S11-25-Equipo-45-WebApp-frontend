@@ -1,31 +1,76 @@
-# S11-25-Equipo-45-WebApp
+# 🧩 Startup CRM
 
-# crm-startup
+![Startup CRM](image.png)
 
-<div align="center" style="margin: 30px;">
-    <a href="https://refine.dev">
-    <img alt="refine logo" src="https://refine.ams3.cdn.digitaloceanspaces.com/readme/refine-readme-banner.png">
-    </a>
-</div>
-<br/>
+## 📌 Descripción
+
+**Startup CRM** es un sistema de gestión de relaciones con clientes (CRM) diseñado para startups que necesitan centralizar la comunicación con leads y clientes en tiempo real.  
+El proyecto está construido con **React 19**, **Vite**, **TypeScript** y el ecosistema de **Refine + Ant Design**, ofreciendo una experiencia moderna, colaborativa y personalizable.
+
+---
+
+## 🚀 Objetivo
+
+Desarrollar un CRM inteligente con integración nativa a **WhatsApp Cloud API** y **Brevo (SMTP)** para correo electrónico.  
+La herramienta permite gestionar conversaciones, automatizar seguimientos y segmentar usuarios, priorizando simplicidad, colaboración y trabajo asincrónico.
+
+---
+
+## 🛠️ Tecnologías principales
+
+- **Frontend Framework:** React 19 + Vite
+- **UI Library:** Ant Design 5 + @ant-design/icons
+- **State & Data:** Refine Core, Refine Antd, Refine Router
+- **Drag & Drop:** dnd-kit (board estilo kanban)
+- **TypeScript:** Tipado estricto
+- **Linting & Calidad:** ESLint + TypeScript ESLint
+- **Routing:** React Router v7
+
 
 This [Refine](https://github.com/refinedev/refine) project was generated with [create refine-app](https://github.com/refinedev/refine/tree/master/packages/create-refine-app).
 
-## Getting Started !
+## 📂 Módulos actuales
+- **👤 Usuarios y Settings (Administrador)**
+- **📊 Leads (estilo kanban board)**
+- **📇 Contactos**
+- **🏷️ Categorías y Etiquetas**
+- **📧 Plantillas de correo y envío de emails**
+- **💬 Integración con WhatsApp**
+- **📩 Integración con Brevo (SMTP)**
+- **⚙️ Tareas automáticas y manuales**
+- **📅 Calendario de tareas**
+- **📈 Dashboard de métricas**
+- **🔔 Notificaciones**
 
-A React Framework for building internal tools, admin panels, dashboards & B2B apps with unmatched flexibility ✨
 
-Refine's hooks and components simplifies the development process and eliminates the repetitive tasks by providing industry-standard solutions for crucial aspects of a project, including authentication, access control, routing, networking, state management, and i18n.
+## 🛠️Requerimientos funcionales
+- Gestión de contactos y segmentación por estado del funnel.
+- Integración de canales de comunicación (WhatsApp, Email).
+- Envío de emails con plantillas.
+- Tareas Automaticas.
+- Panel de métricas y analítica.
+- Exportación de datos en CSV o PDF.
 
-## Available Scripts
 
-### Running the development server.
+##🔗 Integraciones externas
+- WhatsApp Cloud API (Meta)
+- Brevo / SMTP API para email
+
+### Clonar e Instalar.
+
+```bash
+    git clone https://github.com/tu-org/crm-startup.git
+    cd crm-startup
+    npm install
+```
+
+### Ejecutar en modo desarrollo.
 
 ```bash
     npm run dev
 ```
 
-### Building for production.
+### Compilar para producción.
 
 ```bash
     npm run build
@@ -37,7 +82,17 @@ Refine's hooks and components simplifies the development process and eliminates 
     npm run start
 ```
 
-## Learn More
+## 🧑‍💻 Contribución
+1. Haz un fork del repositorio.
+2. Crea una rama de feature: ```bash git checkout -b feature/nueva-funcionalidad.```
+3. Haz commit de tus cambios: ```bash git commit -m "Agrega nueva funcionalidad".```
+4. Haz push a la rama: ```bash git push origin feature/nueva-funcionalidad.```
+5. Abre un Pull Request.
+
+## 📜 Licencia
+Simulacion NoCountry.
+
+## Documentacion Externa
 
 To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
 
@@ -45,8 +100,3 @@ To learn more about **Refine**, please check out the [Documentation](https://ref
 - **Ant Design** [Docs](https://refine.dev/docs/ui-frameworks/antd/tutorial/)
 - **React Router** [Docs](https://refine.dev/docs/core/providers/router-provider/)
 - **Custom Auth Provider** [Docs](https://refine.dev/docs/core/providers/auth-provider/)
-
-## License
-
-
-MIT
