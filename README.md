@@ -12,7 +12,7 @@ El proyecto está construido con **React 19**, **Vite**, **TypeScript** y el eco
 ## 🚀 Objetivo
 
 Desarrollar un CRM inteligente con integración nativa a **WhatsApp Cloud API** y **Brevo (SMTP)** para correo electrónico.  
-La herramienta permite gestionar conversaciones, automatizar seguimientos y segmentar usuarios, priorizando simplicidad, colaboración y trabajo asincrónico.
+La herramienta permite gestionar conversaciones, automatizar tareas y segmentar usuarios, priorizando simplicidad, colaboración y trabajo asincrónico.
 
 ---
 
