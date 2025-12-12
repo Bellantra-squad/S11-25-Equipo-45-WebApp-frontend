@@ -24,7 +24,7 @@ export const Header: React.FC<RefineThemedLayoutHeaderProps> = ({
   if (sticky) {
     headerStyles.position = "sticky";
     headerStyles.top = 0;
-    headerStyles.zIndex = 1;
+    headerStyles.zIndex = 999;
   }
 
   return (

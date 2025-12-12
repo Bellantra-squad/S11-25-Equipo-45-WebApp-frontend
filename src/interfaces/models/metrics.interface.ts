@@ -70,3 +70,27 @@ export interface UpcomingEvent {
   lead_id?: number;
   lead_name?: string;
 }
+
+
+export interface LeadStatusMetric {
+  leads_by_status: StatusByLead[];
+  total:           number;
+  start_date:      Date;
+  end_date:        Date;
+}
+
+export interface StatusByLead {
+  status_name: string;
+  status_id:   number;
+  color:       string;
+  count:       number;
+  percentage:  number;
+}
+
+export interface ResponseRateData {
+  response_rate:     number;
+  messages_sent:     number;
+  messages_received: number;
+  start_date:        Date;
+  end_date:          Date;
+}
