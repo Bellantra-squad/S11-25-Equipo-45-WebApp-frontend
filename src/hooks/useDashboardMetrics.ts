@@ -2,12 +2,16 @@ import { useState, useEffect, useCallback } from "react";
 import { httpApi } from "../refine/api/httpApi";
 import type {
   DashboardMetrics,
+  LeadStatusMetric,
   RecentTask,
+  ResponseRateData,
 } from "../interfaces/models/metrics.interface";
 
 interface UseDashboardMetricsResult {
   metrics: DashboardMetrics | null;
   recentTasks: RecentTask[];
+  leadStatusMetric: LeadStatusMetric | null;
+  responseRateData: ResponseRateData | null;
   loading: boolean;
   error: string | null;
   refetch: () => void;
@@ -18,6 +22,9 @@ export const useDashboardMetrics = (): UseDashboardMetricsResult => {
 
   const [recentTasks, setRecentTasks] = useState<RecentTask[]>([]);
 
+  const [leadStatusMetric, setleadStatusMetric] = useState<LeadStatusMetric | null>(null);
+  const [responseRateData, setresponseRateData] = useState<ResponseRateData | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,9 +34,11 @@ export const useDashboardMetrics = (): UseDashboardMetricsResult => {
 
     try {
       // Fetch todas las métricas en paralelo
-      const [metricsRes, tasksRes] = await Promise.allSettled([
+      const [metricsRes, tasksRes, leadsRes, Rateres ] = await Promise.allSettled([
         httpApi.get("/metrics/dashboard/"),
         httpApi.get("/tasks/?ordering=asc&page_size=5"),
+        httpApi.get("/metrics/leads_by_status/"),
+        httpApi.get("/metrics/response_rate/"),
       ]);
 
       // Procesar métricas principales
@@ -41,6 +50,14 @@ export const useDashboardMetrics = (): UseDashboardMetricsResult => {
       if (tasksRes.status === "fulfilled") {
         const data = tasksRes.value.data;
         setRecentTasks(Array.isArray(data) ? data : data.results ?? []);
+      }
+
+      if (leadsRes.status === "fulfilled") {
+        setleadStatusMetric( leadsRes.value.data);
+      }
+
+      if (Rateres.status === "fulfilled") {
+        setresponseRateData( Rateres.value.data);
       }
 
       // Si todos fallaron, mostrar error
@@ -66,6 +83,8 @@ export const useDashboardMetrics = (): UseDashboardMetricsResult => {
   return {
     metrics,
     recentTasks,
+    leadStatusMetric,
+    responseRateData,
     loading,
     error,
     refetch: fetchMetrics,

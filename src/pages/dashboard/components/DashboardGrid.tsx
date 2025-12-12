@@ -1,5 +1,4 @@
 import { StatsCard } from "./StatsCard";
-import { IncomingMessages } from "./IncomingMessages";
 import { UpcomingEvents } from "./UpcomingEvents";
 import { Col, Row, Spin, Alert, Button } from "antd";
 import {
@@ -12,15 +11,17 @@ import {
   DollarOutlined,
 } from "@ant-design/icons";
 import { useDashboardMetrics } from "../../../hooks/useDashboardMetrics";
-import { LeadsByStatus, RecentMessage } from "../../../interfaces";
+import { LeadsByStatus } from "../../../interfaces";
 import styles from "./DashboardGrid.module.css";
+import { DashboardLeadStatusChart } from './DashboardLeadStatusChart';
+import { DashboardResponseRateChart } from "./DashboardResponseRateChart";
 
 export const DashboardGrid = () => {
-  const { metrics, recentTasks, loading, error, refetch } =
+  const { metrics, recentTasks, responseRateData, loading, error, refetch } =
     useDashboardMetrics();
 
   //Todo Mock momentaneo hasta tener llamados de mensajes de whatsapp y emails agregados al hook
-  const recentMessages: RecentMessage[] = [];
+  // const recentMessages: RecentMessage[] = [];
 
   const statsCards = [
     {
@@ -74,10 +75,10 @@ export const DashboardGrid = () => {
   ];
 
   // Filtrar mensajes por canal
-  const whatsappMessages = recentMessages.filter(
-    (msg) => msg.channel === "whatsapp"
-  );
-  const emailMessages = recentMessages.filter((msg) => msg.channel === "email");
+  // const whatsappMessages = recentMessages.filter(
+  //   (msg) => msg.channel === "whatsapp"
+  // );
+  // const emailMessages = recentMessages.filter((msg) => msg.channel === "email");
 
   if (error) {
     return (
@@ -120,20 +121,18 @@ export const DashboardGrid = () => {
           <UpcomingEvents events={recentTasks} loading={loading} />
         </div>
         <div className={styles.cardWrapper}>
-          <IncomingMessages
+          {/* <IncomingMessages
             messages={whatsappMessages}
             loading={loading}
             title="WhatsApp"
             channel="whatsapp"
-          />
+          /> 
+                   */}
+
+          <DashboardResponseRateChart  data={responseRateData} loading={loading} error={error} />
         </div>
         <div className={styles.cardWrapper}>
-          <IncomingMessages
-            messages={emailMessages}
-            loading={loading}
-            title="Correos"
-            channel="email"
-          />
+          <DashboardLeadStatusChart />
         </div>
       </div>
     </Spin>
