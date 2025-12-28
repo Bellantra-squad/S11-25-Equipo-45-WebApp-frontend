@@ -1,0 +1,53 @@
+.card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.emptyState {
+  margin-top: 40px;
+}
+
+.listItem {
+  padding: 12px 0;
+}
+
+.titleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.taskTitle {
+  flex: 1;
+}
+
+.completed {
+  text-decoration: line-through;
+}
+
+.cancelled {
+  opacity: 0.5;
+}
+
+.statusTag {
+  margin-left: auto;
+  font-size: 11px;
+}
+
+.dateText {
+  font-size: 12px;
+}
+
+.separator {
+  font-size: 12px;
+}
+
+.assignedUser {
+  font-size: 12px;
+}
+
+.userIcon {
+  margin-right: 4px;
+}
+

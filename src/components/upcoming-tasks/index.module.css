@@ -1,0 +1,45 @@
+.item {
+  padding: 1rem 0;
+  border-bottom: 3px solid rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  max-height: 360px;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  .date {
+    display: flex;
+    margin-bottom: 0.25rem;
+   column-gap: 2px;
+   font-size: small;
+  }
+
+  .contentItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    gap: 1rem;
+    align-items: center;
+  }
+  .contentText {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title {
+    flex: 1;
+  }
+
+  .completed {
+    text-decoration: line-through;
+  }
+
+  .cancelled {
+    opacity: 0.5;
+  }
+
+}
+
+.item:last-child {
+  border-bottom: none;
+}

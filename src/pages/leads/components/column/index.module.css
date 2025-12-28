@@ -1,0 +1,83 @@
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 1rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 250px; 
+    &.solid {
+        background-color: white;        
+        margin-left: 16px;
+    }
+     
+}
+
+.header {
+    width: 100%;
+    flex-shrink:1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items:center ;       
+    gap: 8px;
+    padding: 12px;   
+}
+
+.titleContainer {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2px;
+}
+
+.title {
+    width: 200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
+    flex: 0.5;
+}
+
+.count {
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+}
+
+.actionContainer {
+    display: flex;
+    gap: 1px;
+}
+
+.columnScrollableContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 24px;
+    border: 2px dashed transparent;
+
+    &.active {
+        overflow-y: unset;
+    }
+}
+
+.childrenWrapper {
+    margin-top: 12px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.isOver {
+    border-radius: 4px;
+    border-color: rgba(0, 0, 0, 0.25);
+    background: rgba(255, 255, 255, 0.3);
+}
